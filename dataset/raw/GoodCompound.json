@@ -1,0 +1,12 @@
+{
+    "name": "GoodCompound",
+    "cause": "Price Manipulation",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x1106418384414ed56cd7cbb9fedc66a02d39b663d580abc618f2d387348354ab"
+    ],
+    "time": "2023-12-11 00:59:11 UTC",
+    "lost": "~$13K (~250 COMP Token)",
+    "root_cause": "claimComp",
+    "report": "The full expert report is unavailable. Please evaluate the generated report strictly based on the provided 'root_cause' information."
+}

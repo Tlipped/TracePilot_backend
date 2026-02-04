@@ -1,0 +1,20 @@
+{
+    "name": "Rikkei Finance",
+    "cause": "Access Control",
+    "platform": "BNBChain",
+    "time": "2022/4/15 03:18",
+    "transaction_hash": [
+        "0x93a9b022df260f1953420cd3e18789e7d1e095459e36fe2eb534918ed1687492"
+    ],
+    "report": "SetOracleData() function whose visibility is public and can be called externally. Anyone can call SetOracleData to manipulate price.",
+    "detection": {
+        "time": "2022/4/15 05:00",
+        "link": "https://twitter.com/CertiKAlert/status/1514831117169405953"
+    },
+    "disclosure": {
+        "time": "2022/4/15 05:08",
+        "link": "https://twitter.com/CertiKAlert/status/1514832924838961153"
+    },
+    "root_cause": "setOracleData",
+    "report_link": "https://web3sec.notion.site/Incorrect-access-control-a46226e2ada841299d2c661cef49f496"
+}

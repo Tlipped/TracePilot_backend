@@ -1,0 +1,17 @@
+{
+    "name": "Bedrock_DeFi",
+    "cause": "Swap ETH/BTC 1/1 in mint function",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x725f0d65340c859e0f64e72ca8260220c526c3e0ccde530004160809f6177940"
+    ],
+    "time": "2024-09-26 18:28:23 UTC",
+    "lost": "27.83925883 BTC (~$1.7M USD)",
+    "disclosure": {
+        "time": "2024-04-29",
+        "link": "['https://www.quillaudits.com/blog/hack-analysis/bedrock-2million-exploit']"
+    },
+    "root_cause": "mint / _amounts",
+    "report": "The attacker exploited an incorrect exchange rate calculation in the mint function (specifically within the _amounts sub-logic) of the Bedrock Vault. By taking a flash loan of 30.8 WETH and depositing it, the flawed logic calculated the mintable uniBTC amount using an improper divisor (1e10), resulting in a highly inflated exchange rate of 1 WETH to 1 uniBTC (instead of the correct 1:1e-8). The attacker then swapped the overvalued uniBTC for WBTC and finally back to WETH, netting a profit of 649.6 WETH (~$1.7 million) after repaying the loan.",
+    "report_link": "https://lunaray.medium.com/bedrock-unibtc-hack-analysis-7808902e5a7c"
+}

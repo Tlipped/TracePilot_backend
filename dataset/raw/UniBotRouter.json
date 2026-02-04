@@ -1,0 +1,17 @@
+{
+    "name": "UniBotRouter",
+    "cause": "Arbitrary External Call",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0xcbe521aea28911fe9983030748028e12541e347b8b6b974d026fa5065c22f0cf"
+    ],
+    "time": "2023-10-31 04:43:59 UTC",
+    "lost": "~$83,944 USD$",
+    "detection": {
+        "time": "2023-10-31 07:14:00 UTC",
+        "link": "['https://twitter.com/PeckShieldAlert/status/1719251390319796477']"
+    },
+    "root_cause": "0xb2bd16ab",
+    "report": "The function 0xb2bd16ab in the UniBot does not properly check input parameters. Thus anyone can use this function to arbitrarily call the external token contract and execute the transferFrom() method. Thus anyone who approves the UniBot contract may suffer from the attack.",
+    "report_link": "https://web3sec.notion.site/Arbitrary-Call-7c381d35b33945f8be387fd03c6dfa48?pvs=23"
+}

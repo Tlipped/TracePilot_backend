@@ -1,0 +1,13 @@
+{
+    "name": "ApeCoin (APE)",
+    "cause": "Flashloan",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0xeb8c3bebed11e2e4fcd30cbfc2fb3c55c4ca166003c7f7d319e78eaab9747098"
+    ],
+    "time": "2022-03-17 12:13:14 UTC",
+    "lost": "$1.1 million",
+    "root_cause": "claimTokens + flashloan",
+    "report": "The attacker exploited a flawed token claiming mechanism by first using a flash loan from the NFTXVaultUpgradeable contract to temporarily acquire BAYC/MAYC NFTs. This allowed them to bypass the `claimTokens` function's balance check in the AirdropGraphsToken contract, which only verified current NFT ownership. After claiming the APE airdrop, the attacker returned the NFTs to repay the flash loan, illicitly obtaining approximately $350,000 worth of tokens.",
+    "report_link": "https://www.freebuf.com/news/328093.html"
+}

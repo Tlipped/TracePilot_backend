@@ -1,0 +1,17 @@
+{
+    "name": "HedgeyFinance",
+    "cause": "Logic Flaw",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x2606d459a50ca4920722a111745c2eeced1d8a01ff25ee762e22d5d4b1595739"
+    ],
+    "time": "2024-04-19 07:06:47 UTC",
+    "lost": "48M USD",
+    "detection": {
+        "time": "2024-04-19 12:11:00 UTC",
+        "link": "['https://x.com/Cube3AI/status/1781294512716820918']"
+    },
+    "root_cause": "createLockedCampaign + cancelCampaign",
+    "report": "The exploit stemmed from insufficient input validation in the createLockedCampaign function of Hedgey Finance's ClaimCampaigns contract. When creating a locked campaign, the contract inadvertently granted token approval to the attacker's contract. Although cancelCampaign revoked claim approvals, it failed to revoke the underlying ERC20 token allowance. This allowed the attacker to use transferFrom to drain authorized tokens—including USDC, NOBL, and MASA—from the contract within the same transaction. The attack, executed via flash loans on both Ethereum and Arbitrum, resulted in total losses of approximately $44.7 million.",
+    "report_link": "https://learnblockchain.cn/article/10865"
+}

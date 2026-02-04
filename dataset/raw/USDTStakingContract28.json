@@ -1,0 +1,17 @@
+{
+    "name": "USDTStakingContract28",
+    "cause": "Lack of access control",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0xfc872bf5ca8f04b18b82041ec563e4abf2e31e1fc27d1ea5dee39bc8a79d2d06"
+    ],
+    "time": "2023-07-15 04:54:59 UTC",
+    "lost": "~20999 USD",
+    "disclosure": {
+        "time": "2023-07-15 07:29:00 UTC",
+        "link": "['https://x.com/DecurityHQ/status/1680117291013267456']"
+    },
+    "root_cause": "tokenAllowAll",
+    "report": "The attacker exploited the tokenAllowAll function in the USDTStakingContract28 contract, which lacks access control, allowing them to grant unlimited USDT approval to themselves and drain ~20,999 USD from the contract.",
+    "report_link": "https://web3sec.notion.site/Access-Control-1d872927411380b4b515e7644d4c60cb?pvs=23"
+}

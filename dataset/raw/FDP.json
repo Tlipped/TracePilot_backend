@@ -1,0 +1,17 @@
+{
+    "name": "FDP",
+    "cause": "Reflection token",
+    "platform": "BNBChain",
+    "transaction_hash": [
+        "0x09925028ce5d6a54801d04ff8f39e79af6c24289e84b301ddcdb6adfa51e901b"
+    ],
+    "time": "2023-02-06 11:11:21 UTC",
+    "lost": "~16 WBNB",
+    "disclosure": {
+        "time": "2023-02-07 03:54:00 UTC",
+        "link": "['https://twitter.com/BeosinAlert/status/1622806011269771266']"
+    },
+    "root_cause": "deliver",
+    "report": "The attacker uses the tAmount to call deliver function, which is to reduce the user-specified tAmount and add it to the fee. After calling deliver, _getRate becomes smaller when _rTotal is 28% less and _tTotal remains the same. Since transaction pair is not a deflation excluded address, the balance obtained becomes larger. The attacker can directly withdraw the increased FDP and swap into WBNB",
+    "report_link": "https://web3sec.notion.site/Price-Manipulation-of-deflationary-tokens-via-flashloan-78ba44b7311343b2a0528eb5e1598fa0?pvs=23"
+}

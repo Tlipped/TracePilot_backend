@@ -1,0 +1,17 @@
+{
+    "name": "DFXFinance",
+    "cause": "Reentrancy",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x6bfd9e286e37061ed279e4f139fbc03c8bd707a2cdd15f7260549052cbba79b7"
+    ],
+    "time": "2022-11-10 19:27:59 UTC",
+    "lost": "$4M",
+    "detection": {
+        "time": "2022-11-11 06:51:00 UTC",
+        "link": "['https://x.com/BlockSecTeam/status/1590960299246780417']"
+    },
+    "root_cause": "flash",
+    "report": "The attacker exploited a cross-function reentrancy vulnerability between the `flash` (flash loan) and `deposit` functions. The `flash` function used `IERC20(derivatives[i]).balanceOf(address(this))` to check if the borrowed amounts plus fees were repaid. By reentering the contract within the flash loan callback and calling `deposit`, the attacker deposited the borrowed tokens (plus the exact fee amount) back into the pool. This deposit action increased the contract's token balance, which satisfied the `flash` function's repayment check (`balance0Before + fee0 <= balance0After`) before the `deposit` function's own non-reentrant guard could take effect. The attacker then used `withdraw` to retrieve the deposited tokens, ultimately draining approximately 3,000 ETH (~$4 million) from the pool.",
+    "report_link": "https://learnblockchain.cn/article/7562?column_id=93"
+}

@@ -1,0 +1,17 @@
+{
+    "name": "UnizenIO",
+    "cause": "unverified external call",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0xdd0636e2598f4d7b74f364fedb38f334365fd956747a04a6dd597444af0bc1c0"
+    ],
+    "time": "2024-03-08 22:23:35 UTC",
+    "lost": "~2M",
+    "detection": {
+        "time": "2024-03-09 01:25:00 UTC",
+        "link": "['https://x.com/Phalcon_xyz/status/1766274000534004187']"
+    },
+    "root_cause": "0x1ef29a02",
+    "report": "Because of the Arbitrary call, the attacker were able to access and drain value from the accounts of users who had created approvals for the contract.",
+    "report_link": "https://web3sec.notion.site/Arbitrary-call-0a4c953a188546729c7a6b942f273b2a?pvs=23"
+}

@@ -1,0 +1,17 @@
+{
+    "name": "BrahTOPG",
+    "cause": "Arbitrary External Call Vulnerability",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0xeaef2831d4d6bca04e4e9035613be637ae3b0034977673c1c2f10903926f29c0"
+    ],
+    "time": "2022-11-09 16:55:47 UTC",
+    "lost": "$89k",
+    "disclosure": {
+        "time": "2022-11-11",
+        "link": "['https://medium.com/neptune-mutual/decoding-brahma-brahtopg-smart-contract-vulnerability-7b7c364b79d8']"
+    },
+    "root_cause": "zapIn",
+    "report": "The attacker exploited insufficient validation in the `zapIn` function of the Zapper contract. By externally modifying the `requiredToken` parameter to a fake token address and manipulating the `swapTarget` call data, the attacker was able to pass the contract's balance check and then make an arbitrary external call. This allowed them to transfer 89,343 USDC from the vaults of three authorized users to themselves.",
+    "report_link": "https://medium.com/neptune-mutual/decoding-brahma-brahtopg-smart-contract-vulnerability-7b7c364b79d8"
+}

@@ -1,0 +1,20 @@
+{
+    "name": "PancakeHunny",
+    "cause": "uncorrected use balanceOf to calculate profit",
+    "platform": "BNBChain",
+    "time": "2021/6/3 2:24",
+    "transaction_hash": [
+        "0x765de8357994a206bb90af57dcf427f48a2021f2f28ca81f2c00bc3b9842be8e"
+    ],
+    "report": "The mintFor function incorrectly calculates profit by using balanceOf(address(this)) to determine the amount of CAKE tokens available for conversion into HUNNY-BNB LP tokens. Since balanceOf includes all CAKE in the contract—including funds belonging to other users—the performance fee calculation is based on an inflated total balance rather than just the fee amount being transferred. This allows an attacker to deposit CAKE, trigger getReward (which calls mintFor), and cause the contract to mint excess HUNNY tokens proportional to the entire pool's CAKE balance. The vulnerability mirrors the PancakeBunny exploit, where shared contract balance is misused as a proxy for user-specific or fee-specific amounts.",
+    "detection": {
+        "time": "2021/6/3 5:06",
+        "link": "https://twitter.com/HunnyFinance/status/1400317982400684038"
+    },
+    "disclosure": {
+        "time": "2021/6/3 13:26",
+        "link": "https://twitter.com/HunnyFinance/status/1400443773436399617"
+    },
+    "root_cause": "mintFor",
+    "report_link": "https://web3sec.notion.site/Incorrect-profit-calculation-via-balanceOf-13bc12c60a24491086b5334242eb47dd"
+}

@@ -1,0 +1,13 @@
+{
+    "name": "HopeLend",
+    "cause": "Precision loss",
+    "platform": "Ethereum",
+    "time": "2023/10/18",
+    "link": "https://lunaray.medium.com/deep-dive-into-hopelend-hack-5962e8b55d3f",
+    "transaction_hash": [
+        "0x1a7ee0a7efc70ed7429edef069a1dd001fbff378748d91f17ab1876dc6d10392"
+    ],
+    "report": "The attacker exploited a precision loss issue in the _burnScaled function, which uses rayDiv for division when calculating the amount of hTokens to burn during withdrawal. Due to Solidity's integer floor division, the calculated burn amount was truncated, causing fewer hTokens to be burned than required. This allowed the attacker to repeatedly deposit and withdraw WBTC, extracting more underlying assets than they should have been entitled to, ultimately draining the initial attack capital and profiting.",
+    "root_cause": "_burnScaled + raydiv",
+    "report_link": "https://www.freebuf.com/articles/blockchain-articles/384594.html"
+}

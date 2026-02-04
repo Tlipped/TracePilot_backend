@@ -1,0 +1,21 @@
+{
+    "name": "SaddleFinance",
+    "cause": "Arbitrage attack",
+    "platform": "Ethereum",
+    "time": "2022/4/30 7:40",
+    "transaction_hash": [
+        "0x2b023d65485c4bb68d781960c2196588d03b871dc9eb1c054f596b7ca6f7da56",
+        "0xe7e0474793aad11875c131ebd7582c8b73499dd3c5a473b59e6762d4e373d7b8"
+    ],
+    "report": "The swap function in MetaSwapUtils incorrectly omitted virtual price scaling when swapping tokens for LP tokens, causing LP tokens to be mispriced relative to underlying assets, which allowed attackers to drain approximately $11 million.",
+    "detection": {
+        "time": "2022/4/30 8:38",
+        "link": "https://twitter.com/BlockSecTeam/status/1520321721500200960"
+    },
+    "disclosure": {
+        "time": "2022/5/1 12:49",
+        "link": "https://twitter.com/SlowMist_Team/status/1520445167035199488"
+    },
+    "root_cause": "swap",
+    "report_link": "https://medium.com/immunefi/hack-analysis-saddle-finance-april-2022-f2bcb119f38"
+}

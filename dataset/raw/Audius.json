@@ -1,0 +1,23 @@
+{
+    "name": "Audius",
+    "cause": "Storage Collision & Malicious Proposal",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0xfefd829e246002a8fd061eede7501bccb6e244a9aacea0ebceaecef5d877a984",
+        "0x4227bca8ed4b8915c7eec0e14ad3748a88c4371d4176e716e8007249b9980dc9",
+        "0x3c09c6306b67737227edc24c663462d870e7c2bf39e9ab66877a980c900dd5d5"
+    ],
+    "time": "2022-07-23 23:12:03 UTC",
+    "lost": "704 ETH (~1.08M US$)",
+    "detection": {
+        "time": "2022-07-24 01:44:00 UTC",
+        "link": "['https://x.com/CertiKAlert/status/1551020421532770305']"
+    },
+    "disclosure": {
+        "time": "2022-07-24 05:26:00 UTC",
+        "link": "['https://x.com/1nf0s3cpt/status/1551076424970563585']"
+    },
+    "root_cause": "initialize",
+    "report": "The attacker exploited a storage slot conflict in the proxy contract upgrade pattern to bypass the protection of the initializer() modifier. This allowed them to call the initialize() function on the Staking and DelegateManagerV2 contracts multiple times, thereby resetting the governance admin address to a controlled contract and ultimately stealing 18.6 million AUDIO tokens (~$6 million).",
+    "report_link": "https://medium.com/coinmonks/audios-protocol-hack-analysis-c4d7b96756da"
+}

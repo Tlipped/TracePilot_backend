@@ -1,0 +1,21 @@
+{
+    "name": "Indexed Finance",
+    "cause": "FlashLoan",
+    "platform": "Ethereum",
+    "time": "2021/10/14 18:37",
+    "transaction_hash": [
+        "0x44aad3b853866468161735496a5d9cc961ce5aa872924c5d78673076b1cd95aa",
+        "0xbde4521c5ac08d0033019993b0e7e1d29b1457e80e7743d318a3c27649ca4417"
+    ],
+    "report": "The attacker exploited the updateMinimumBalance function, which estimates the pool's total value using only a single token (e.g., UNI) via extrapolatePoolValueFromToken. By manipulating the pool’s asset composition—specifically draining UNI—the attacker caused the estimated pool value to be drastically underestimated. This led to a much lower minimumBalance for a newly added token (SUSHI), allowing the attacker to deposit a small amount of SUSHI, trigger gulp(), and receive an inflated weight, enabling massive arbitrage by minting index tokens cheaply and redeeming them for high-value assets.",
+    "detection": {
+        "time": "2021/10/14 19:11",
+        "link": "https://twitter.com/ndxfi/status/1448728249312423946"
+    },
+    "disclosure": {
+        "time": "2021/10/15 4:40",
+        "link": "https://twitter.com/ndxfi/status/1448856180697280514"
+    },
+    "root_cause": "updateMinimumBalance",
+    "report_link": "https://foresightnews.pro/article/detail/15580"
+}

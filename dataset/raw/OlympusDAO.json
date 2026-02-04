@@ -1,0 +1,17 @@
+{
+    "name": "OlympusDAO",
+    "cause": "No input validation",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x3ed75df83d907412af874b7998d911fdf990704da87c2b1a8cf95ca5d21504cf"
+    ],
+    "time": "2022-10-21 05:22:47 UTC",
+    "lost": "~$292K (30500 OHM)",
+    "disclosure": {
+        "time": "2022-10-21 11:16:00 UTC",
+        "link": "['https://twitter.com/peckshield/status/1583416829237526528', 'https://blog.solidityscan.com/olympus-dao-hack-analysis-f07d2a64f5ee', 'https://mirror.xyz/0xbanky.eth/c7G9ZfTB8pzQ5cCMw5UhdFehmR6l0fVqd_B-ZuXz2_o']"
+    },
+    "root_cause": "redeem",
+    "report": "The redeem function in BondFixedExpiryTeller lacks sufficient validation on the input token_ parameter. Since token_ is externally controllable and not restricted to legitimate bond tokens, an attacker deployed a malicious custom contract that mimics a valid ERC20BondToken. When redeem was called with this fake token, the function burned tokens from the caller (which had no real effect) but then transferred amount_ of the underlying asset—configured by the attacker to return OHM—from the teller contract. This allowed the attacker to drain approximately 30,000 OHM (valued at $300K) from the BondFixedExpiryTeller.",
+    "report_link": "https://web3sec.notion.site/Insufficient-validation-1a43e574762943e9b51df7deea9a9caf"
+}

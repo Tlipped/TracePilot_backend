@@ -1,0 +1,13 @@
+{
+    "name": "BEARNDAO",
+    "cause": "Sandwich attack",
+    "platform": "BNBChain",
+    "time": "2023/12/5",
+    "link": "https://twitter.com/AnciliaInc/status/1732159377749180646",
+    "transaction_hash": [
+        "0x51913be3f31d5ddbfc77da789e5f9653ed6b219a52772309802226445a1edd5f"
+    ],
+    "report": "The attack exploited a bug in ConvertDustToEarned() and used a sandwich attack. Relied on the current balance of the `wantToken` token. But the strategy contract is not supposed to hold a huge amount of dust tokens. The attacker first manipulated the ALPACA/WBNB pool through large-valued swaps and invoked a call to the convertDustToEarned function, thereby artificially inflating the swap ratio of the tokens. The reverse swap allowed the attacker to perform a sandwich attack, letting them take away approximately $768,358 worth of assets as profits.",
+    "root_cause": "convertDustToEarned",
+    "report_link": "https://web3sec.notion.site/Business-Logic-Flaw-e9cc2c625479456784764f748ff4edce?pvs=23"
+}

@@ -1,0 +1,21 @@
+{
+    "name": "EFLeverVault",
+    "cause": "Verify flashLoan Callback",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x1f1aba5bef04b7026ae3cb1cb77987071a8aff9592e785dd99860566ccad83d1"
+    ],
+    "time": "2022-10-14 12:27:11 UTC",
+    "lost": "750 ETH",
+    "detection": {
+        "time": "2022-10-14 13:44:00 UTC",
+        "link": "['https://x.com/MevRefund/status/1580917351217627136']"
+    },
+    "disclosure": {
+        "time": "2022-10-14 14:58:00 UTC",
+        "link": "['https://x.com/danielvf/status/1580936010556661761']"
+    },
+    "root_cause": "receiveFlashLoan",
+    "report": "The attacker exploited insufficient validation in the `receiveFlashLoan` function. By directly calling a flash loan from Balancer and setting the userData parameter to '0x2', they triggered the internal `_withdraw` function, which repaid debt and converted stETH to ETH within the vault. Immediately after, by calling the public `withdraw` function, they were able to drain out the newly added ETH from the vault due to a flawed balance calculation that used `address(this).balance` without proper checks.",
+    "report_link": "https://web3sec.notion.site/Insufficient-validation-3c2ccfcd2a624f8fba67b88e69255ec3?pvs=23"
+}

@@ -1,0 +1,21 @@
+{
+    "name": "MIMSpell",
+    "cause": "Precission Loss",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x26a83db7e28838dd9fee6fb7314ae58dcc6aee9a20bf224c386ff5e80f7e4cf2"
+    ],
+    "time": "2024-01-30 10:14:35 UTC",
+    "lost": "~6,5M",
+    "detection": {
+        "time": "2024-01-30 10:35:00 UTC",
+        "link": "['https://x.com/peckshield/status/1752279373779194011']"
+    },
+    "disclosure": {
+        "time": "2024-01-31 06:37:00 UTC",
+        "link": "['https://x.com/kankodu/status/1752581744803680680']"
+    },
+    "root_cause": "repay",
+    "report": "The attacker exploited a precision loss vulnerability by engaging in borrowing and repaying a single token to inflate the ‘part’ variable, representing the user’s share in the total debt. They also executed the repayForAll function, reducing the ‘elastic’ variable. Due to the manipulation of variables—specifically the inflation of the base variable and deflation of the ‘elastic’ variable—a discrepancy arose in the Rebase Library. The protocol’s rounding mechanism favoured the attacker, causing even negligible repayments to be rounded up, essentially making the attacker repay more assets than borrowed shares. Through this loop, the attacker inflated totalBorrowShares to infinity while maintaining totalBorrowAssets at 1 wei.",
+    "report_link": "https://blog.solidityscan.com/mimspell-hack-analysis-05ffcde475f6"
+}

@@ -1,0 +1,13 @@
+{
+    "name": "Bitpaidio",
+    "cause": "Business Logic Flaw",
+    "platform": "BNBChain",
+    "time": "2023/5/13",
+    "link": "",
+    "transaction_hash": [
+        "0x1ae499ccf292a2ee5e550702b81a4a7f65cd03af2c604e2d401d52786f459ba6"
+    ],
+    "report": "The attacker exploited the Lock_Token() function, which failed to properly update the lock timestamps. When a user already had an existing lock, the function incorrectly reused the old `start_time` and `end_time` from their previous lock record instead of resetting them to the current block timestamp and a new 180-day period. This logic flaw allowed the attacker to repeatedly lock tokens without actually extending the lock duration, potentially enabling premature withdrawal.",
+    "root_cause": "Lock_Token",
+    "report_link": "https://web3sec.notion.site/Did-not-properly-update-the-lock-times-22603416025743a4b5c94a87302c47c8?pvs=23"
+}

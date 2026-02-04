@@ -1,0 +1,13 @@
+{
+    "name": "OnyxProtocol",
+    "cause": "Precision loss",
+    "platform": "Ethereum",
+    "time": "2023/11/1",
+    "link": "https://blog.solidityscan.com/onyx-protocol-hack-analysis-372facda4a55",
+    "transaction_hash": [
+        "0xf7c21600452939a81b599017ee24ee0dfd92aaaccd0a55d02819a7658a6ef635"
+    ],
+    "report": "The redeemUnderlying function in the Onyx Protocol—a CompoundV2 fork—suffers from a precision loss vulnerability. When the oPEPE market was initialized and nearly empty, the attacker first minted a small amount of oPEPE tokens, then donated a large quantity of PEPE tokens to the market, artificially inflating the exchange rate. This allowed the attacker to borrow ETH against the inflated collateral value. Subsequently, by calling redeemUnderlying, the attacker exploited precision loss in the redemption calculation to withdraw nearly all of the donated PEPE tokens—despite only holding a negligible share of the market—effectively draining the donated assets due to rounding errors and insufficient numerical precision in the conversion logic.",
+    "root_cause": "redeemUnderlying",
+    "report_link": "https://web3sec.notion.site/CompoundV2-Fork-Precision-Loss-fa5ea1b0967c4d3cbf60b11bf9270f46"
+}

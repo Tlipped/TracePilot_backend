@@ -1,0 +1,17 @@
+{
+    "name": "MEVBOTa47b",
+    "cause": "MEVBOT a47b",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x35ecf595864400696853c53edf3e3d60096639b6071cadea6076c9c6ceb921c1"
+    ],
+    "time": "2022-10-13 19:39:35 UTC",
+    "lost": "~187.75 WETH",
+    "detection": {
+        "time": "2022-10-14 04:35:00 UTC",
+        "link": "['https://x.com/BlockSecTeam/status/1580779311862190080']"
+    },
+    "root_cause": "receiveFlashLoan",
+    "report": "The root cause is insufficient validation in the receiveFlashLoan function. The attacker can input arbitrary data combined in userData. This vulnerability was exploited in the MEV bot (0x00000000000a47b1298f18cf67de547bbe0d72), resulting in a loss of approximately 187.75 WETH.",
+    "report_link": "https://web3sec.notion.site/Insufficient-validation-f147fa78e1b74317bfb128adae0b13ae?pvs=23"
+}

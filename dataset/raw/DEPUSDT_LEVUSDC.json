@@ -1,0 +1,21 @@
+{
+    "name": "DEPUSDT_LEVUSDC",
+    "cause": "Incorrect access control",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x800a5b3178f680feebb81af69bd3dff791b886d4ce31615e601f2bb1f543bb2e"
+    ],
+    "time": "2023-06-15 08:42:23 UTC",
+    "lost": "~$105k",
+    "detection": {
+        "time": "2023-06-15 09:35:00 UTC",
+        "link": "['https://twitter.com/numencyber/status/1669278694744150016?cxt=HHwWgMDS9Z2IvKouAAAA']"
+    },
+    "disclosure": {
+        "time": "2023-06-15 09:40:00 UTC",
+        "link": "['https://twitter.com/numencyber/status/1669278694744150016?cxt=HHwWgMDS9Z2IvKouAAAA']"
+    },
+    "root_cause": "approveToken",
+    "report": "The attacker exploited a critical access control vulnerability in the public `approveToken()` function. This function allowed anyone to arbitrarily set themselves as an approved spender for the $DEPUSDT and $LEVUSDC tokens held by the vulnerable contract. By doing so, the attacker gained the necessary permissions to directly transfer out the contract's funds, resulting in a total loss of approximately 105,000 USD.",
+    "report_link": "https://blog.solidityscan.com/depusdt-and-levusdc-hack-analysis-d27032d8f2cd"
+}

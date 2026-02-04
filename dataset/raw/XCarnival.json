@@ -1,0 +1,26 @@
+{
+    "name": "XCarnival",
+    "cause": "Lack of judging",
+    "platform": "Ethereum",
+    "time": "2022/6/26 12:03",
+    "transaction_hash": [
+        "0x1149b8285bedd6e858c225d0cd187818e66ae12a0dd4de8de98ea132e3d1470c",
+        "0x605488dd5595e9e29a085ca26d7c377dded5fa96099cc33b6193c1b00effed23",
+        "0xd14beb55a20f7d050a3a93320c5cad387041312c4c29fe3b133ebe8a2165d59b",
+        "0xc417ba285a06a0e493ee0ae692217633e11aac50999c7a5474bee966cda2d461",
+        "0x0163856aaa678676b22e072186c1bdc55ed44a5a0e2cf44500362800663ddce9",
+        "0xf1dcc5e32839fb5c17ffe9322fab8d954512e578fccbdf2b533d9e0d91a72f6c",
+        "0x66b1d24442e2a0fc1d4670c543b2f66e952588399f72149975b6c4d259074ca5"
+    ],
+    "report": "The attacker exploited a logic flaw in the pledgeAndBorrow function: after pledging an NFT and immediately withdrawing it, the system still allowed borrowing against the same order because the contract failed to verify whether the pledged NFT had already been withdrawn. This enabled the attacker to borrow funds without actual collateral, stealing 3087 ETH (～$3.8M).",
+    "detection": {
+        "time": "2022/6/26 13:14",
+        "link": "https://twitter.com/peckshield/status/1541047171453034501"
+    },
+    "disclosure": {
+        "time": "2022/6/27 09:16",
+        "link": "https://medium.com/coinmonks/xcarnival-attack-analysis-1e5722f03a09"
+    },
+    "root_cause": "pledgeAndBorrow",
+    "report_link": "https://www.freebuf.com/articles/others-articles/337562.html"
+}

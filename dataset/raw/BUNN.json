@@ -1,0 +1,17 @@
+{
+    "name": "BUNN",
+    "cause": "Reflection tokens",
+    "platform": "BNBChain",
+    "transaction_hash": [
+        "0x24a68d2a4bbb02f398d3601acfd87b09f543d935fc24862c314aaf64c295acdb"
+    ],
+    "time": "2023-06-21 20:26:55 UTC",
+    "lost": "~52BNB",
+    "disclosure": {
+        "time": "2023-06-22 08:53:00 UTC",
+        "link": "['https://twitter.com/DecurityHQ/status/1671803688996806656']"
+    },
+    "root_cause": "deliver",
+    "report": "The attacker exploited the `deliver` function by calling it to directly reduce the `_rTotal` supply. This action artificially and disproportionately increased the effective token balance of the PancakeSwap liquidity pool within the contract's internal accounting. The attacker then performed a swap that took advantage of this inflated pool balance, resulting in a profit of 52 BNB.",
+    "report_link": "https://web3sec.notion.site/deliver-function-8dce738dd2f243ae8abe83e95eeee9d4?pvs=23"
+}

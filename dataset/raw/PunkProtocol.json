@@ -1,0 +1,21 @@
+{
+    "name": "Punk Protocol",
+    "cause": "incorrect function modifier",
+    "platform": "Ethereum",
+    "time": "2021/8/10 06:54",
+    "transaction_hash": [
+        "0xa76cd31bcd48869621e7f2698ac8754699026acd0655a6d33280224dabed4cfa",
+        "0x597d11c05563611cb4ad4ed4c57ca53bbe3b7d3fefc37d1ef0724ad58904742b"
+    ],
+    "report": "The root cause of this attack lies in the lack of security controls on the initialization function in the CompoundModel contract, which allowed it to be re-initialized. The initialization function should only be called once and must include caller permission checks.",
+    "detection": {
+        "time": "2021/8/10 22:11",
+        "link": "https://twitter.com/PunkProtocol/status/1425218390965198849"
+    },
+    "disclosure": {
+        "time": "2021/8/10 22:21",
+        "link": "https://twitter.com/PunkProtocol/status/1425220676382724098"
+    },
+    "root_cause": "initialize",
+    "report_link": "http://www.xmetaera.com/c/20240813/61543.html"
+}

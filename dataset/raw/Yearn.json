@@ -1,0 +1,14 @@
+{
+    "name": "Yearn",
+    "cause": "Wrong setting",
+    "platform": "Ethereum",
+    "time": "2023/4/13",
+    "link": "https://twitter.com/samczsun/status/1646404331967778820",
+    "transaction_hash": [
+        "0xd55e43c1602b28d4fd4667ee445d570c8f298f5401cf04e62ec329759ecda95d",
+        "0x8db0ef33024c47200d47d8e97b0fcfc4b51de1820dfb4e911f0e3fb0a4053138"
+    ],
+    "report": "The attacker exploited a misconfiguration in the yUSDT vault's constructor, which incorrectly set the dependency token to iUSDC instead of iUSDT. This allowed the attacker to manipulate share pricing via rebalance, deposit 1 wei of USDT, and mint over 1 quadrillion yUSDT tokens, ultimately stealing approximately $11.54 million.",
+    "root_cause": "rebalance / constructor",
+    "report_link": "https://blockapex.io/yearn-finance-hack-analysis/"
+}

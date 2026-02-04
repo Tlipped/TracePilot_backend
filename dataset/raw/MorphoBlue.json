@@ -1,0 +1,17 @@
+{
+    "name": "MorphoBlue",
+    "cause": "Overpriced Asset in Oracle",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x256979ae169abb7fbbbbc14188742f4b9debf48b48ad5b5207cadcc99ccb493b"
+    ],
+    "time": "2024-10-13 10:27:35 UTC",
+    "lost": "$230,000",
+    "disclosure": {
+        "time": "2024-10-13 17:23:00 UTC",
+        "link": "['https://x.com/omeragoldberg/status/1845515843787960661']"
+    },
+    "root_cause": "borrow / price",
+    "report": "The exploit stemmed from an oracle misconfiguration that caused the price of PAXG to be inflated by a factor of 10^12 due to a decimal mismatch between USDC (6 decimals) and PAXG (18 decimals). The attacker deposited only $350 worth of PAXG and borrowed $250,000 in USDC by exploiting the highly overvalued asset. The root cause was the incorrect configuration of the oracle's SCALE_FACTOR, which led to a false price feed that the borrowing logic relied upon without sufficient validation.",
+    "report_link": "https://blog.solidityscan.com/morphoblue-hack-analysis-638b685f8bf2"
+}

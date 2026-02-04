@@ -1,0 +1,21 @@
+{
+    "name": "ChaingeFinance",
+    "cause": "Arbitrary External Call ",
+    "platform": "BNBChain",
+    "transaction_hash": [
+        "0x051276afa96f2a2bd2ac224339793d82f6076f76ffa8d1b9e6febd49a4ec11b2"
+    ],
+    "time": "2024-04-15 12:33:59 UTC",
+    "lost": "~560K",
+    "detection": {
+        "time": "2024-04-15 13:26:00 UTC",
+        "link": "['https://x.com/CertiKAlert/status/1779863821122691519']"
+    },
+    "disclosure": {
+        "time": "2024-04-16 02:42:00 UTC",
+        "link": "['https://x.com/ChainAegis/status/1780064080512143429']"
+    },
+    "root_cause": "swap",
+    "report": "The attacker exploited an arbitrary external call vulnerability in the `swap` function of the MinterProxyV2 contract. By controlling the `target` and `callData` parameters, the attacker crafted a call that invoked the `transferFrom` function of any ERC20 token. This allowed them to transfer out the entire approved token balance from a victim address (0x8a4a) that had previously granted unlimited approval to the vulnerable contract, resulting in the theft of multiple tokens.",
+    "report_link": "https://autosaida.github.io/DeFiHackAnalysis/2024/240415_ChaingeFinance/"
+}

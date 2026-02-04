@@ -1,0 +1,20 @@
+{
+    "name": "Qubit Finance",
+    "cause": "Logic bug",
+    "platform": "Ethereum",
+    "time": "2022/1/27 21:34",
+    "transaction_hash": [
+        "0xac7292e7d0ec8ebe1c94203d190874b2aab30592327b6cc875d00f18de6f3133"
+    ],
+    "report": "safeTransferFrom() in SafeToken.sol does not revert when the token is an EOA. tokenAddress can be address(0) to pass all checks to mint xETH.",
+    "detection": {
+        "time": "2022/1/27 23:19",
+        "link": "https://twitter.com/peckshield/status/1486841239450255362"
+    },
+    "disclosure": {
+        "time": "2022/1/28 7:33",
+        "link": "https://twitter.com/QubitFin/status/1486965562903531522"
+    },
+    "root_cause": "deposit + safeTransferFrom",
+    "report_link": "https://web3sec.notion.site/Insufficient-validation-6ae40b36b37849b08e6e2bebdc87f1fb"
+}

@@ -1,0 +1,21 @@
+{
+    "name": "Seneca",
+    "cause": "Arbitrary External Call Vulnerability",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x23fcf9d4517f7cc39815b09b0a80c023ab2c8196c826c93b4100f2e26b701286"
+    ],
+    "time": "2024-02-28 12:09:59 UTC",
+    "lost": "~6M",
+    "detection": {
+        "time": "2024-02-28 17:00:00 UTC",
+        "link": "['https://x.com/SenecaUSD/status/1762886130561630227']"
+    },
+    "disclosure": {
+        "time": "2024-02-29 03:00:00 UTC",
+        "link": "['https://twitter.com/Phalcon_xyz/status/1763045563040411876']"
+    },
+    "root_cause": "performOperations",
+    "report": "The performoperations()  in Seneca which uses the parameters passed in to choose to execute different function logic. When the user specifies action as 30, the function will choose to call the _call(). The attacker directly calls the performOperations function and constructs the following parameters. Actions is passed in the above 30, and the _call function is called.",
+    "report_link": "https://web3sec.notion.site/Arbitrary-call-d8cdf083f3114ded8c848c110d10a4c3"
+}

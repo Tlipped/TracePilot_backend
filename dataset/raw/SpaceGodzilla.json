@@ -1,0 +1,20 @@
+{
+    "name": "SpaceGodzilla",
+    "cause": "Access Control",
+    "platform": "BNBChain",
+    "time": "2022/7/13 12:16",
+    "transaction_hash": [
+        "0x7f183df11f1a0225b5eb5bb2296b5dc51c0f3570e8cc15f0754de8e6f8b4cca4"
+    ],
+    "report": "The swapAndLiquifyStepv1() function lacks proper access control, allowing any external caller to trigger it and manipulate liquidity operations by adding arbitrary token and ETH balances as liquidity.",
+    "detection": {
+        "time": "2022/7/14 05:42",
+        "link": "https://twitter.com/BlockSecTeam/status/1547456591900749824"
+    },
+    "disclosure": {
+        "time": "2022/7/15 00:00",
+        "link": "https://medium.com/numen-cyber-labs/spacegodzilla-attack-event-analysis-d29a061b17e1"
+    },
+    "root_cause": "swapAndLiquifyStepv1",
+    "report_link": "https://web3sec.notion.site/Incorrect-access-control-25b8a47d86024ad6819c9a959cdc91bb?pvs=23"
+}

@@ -1,0 +1,25 @@
+{
+    "name": "AzukiDAO",
+    "cause": "The validity of the signature in the contract was not correctly verified",
+    "platform": "Ethereum",
+    "time": "2023/7/3",
+    "link": "https://app.chainaegis.com/home/news/detail?contentId=341&lang=en-US",
+    "transaction_hash": [
+        "0x6233c9315dd3b6a6fcc7d653f4dca6c263e684a76b4ad3d93595e3b8e8714d34",
+        "0xfd7a9e2b06dea5f40edcc50d7e03831ad2ce9eacbcc7e0ee21a931c769567372",
+        "0xba0e140e83bbf39cf9e2fdca8b8865a824b49fb1225eb739a1480b6e1b9d2fea",
+        "0x0d84c61680ab0c98b51a75c3044aa47f05ac6a8ac96f919e3ead310729397d0a",
+        "0x22571c1eece54e3e5ab0ba2c2d8ae4354307e26161c15a8dcd993b1260dc5c01",
+        "0x816d38ca4d35554eaf3f7c348501e971a0db09789b46d066e98c542a76618c23",
+        "0x6233c9315dd3b6a6fcc7d653f4dca6c263e684a76b4ad3d93595e3b8e8714d34",
+        "0xf296c90c9482e6feef266af6162fdf67bf21799bc4d82078861ed0f17b47ae97",
+        "0x57e4ac6ae7ede6322254ab50131229a6a016441273c001fe3b9cdd745e772e21",
+        "0xee36ac81f630ed464b123135ea8842f3a980a8085c60d30d183a1b48122bbb91",
+        "0xd8ce78e5e64453cf14c5a328cc0ea0f8cdc6a296916eecac72bfa5642f129503",
+        "0x5f027af5a96ce5de3b5f3447ccabbef61322cbd100700db94e972d38ed179a07",
+        "0x939427386b57ef006d8fc386f3f1bef490e95ee9976abfb9a5ee27b3aed28926"
+    ],
+    "report": "The attacker exploited a missing signature reuse validation flaw in the claim function. By repeatedly calling the function with the same valid signature before its expiry, the attacker was able to bypass the contract's existing record of claimed signatures, extracting a total of 6,250,000 Bean tokens and converting them to approximately 36 ETH (~$69,000).",
+    "root_cause": "claim",
+    "report_link": "https://www.freebuf.com/articles/blockchain-articles/371312.html"
+}

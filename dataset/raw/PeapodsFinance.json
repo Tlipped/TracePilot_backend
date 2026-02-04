@@ -1,0 +1,13 @@
+{
+    "name": "PeapodsFinance",
+    "cause": "Reentrancy",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x95c1604789c93f41940a7fd9eca11276975a9a65d250b89a247736287dbd2b7e"
+    ],
+    "time": "2024-01-29 04:14:35 UTC",
+    "lost": "~1K $DAI",
+    "root_cause": "flash",
+    "report": "The attacker exploited the `flash` function in the ppPP contract, which lacks validation, allowing multiple flash loans in a single transaction to bond and debond Peas tokens, accumulating enough to swap for ～$1K in WETH.",
+    "report_link": "https://web3sec.notion.site/Insufficient-validation-1d8729274113808ba18ae11fae1d8ba2"
+}

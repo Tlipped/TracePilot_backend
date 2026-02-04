@@ -1,0 +1,13 @@
+{
+    "name": "Uwerx",
+    "cause": "Business Logic Flaw",
+    "platform": "Ethereum",
+    "time": "2023/8/2",
+    "link": "https://blog.solidityscan.com/uwerx-hack-analysis-f03b061bb07b",
+    "transaction_hash": [
+        "0x3b19e152943f31fe0830b67315ddc89be9a066dc89174256e17bc8c2d35b5af8"
+    ],
+    "report": "The attacker exploited the ability to burn UWERX tokens, decreasing the total supply and raising the token price artificially. They borrowed 20,000 ETH via flash loans, exchanged it for 5,053,637 UWERX tokens, and used the private _transfer() function to burn 1% of transferred tokens. This reduction in supply allowed them to sell UWERX tokens at a higher price, resulting in a profit.",
+    "root_cause": "_transfer",
+    "report_link": "https://web3sec.notion.site/Price-Manipulation-a4f97cb0d7df48f2b8ecdc7db1247e4c?pvs=23"
+}

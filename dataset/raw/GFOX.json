@@ -1,0 +1,21 @@
+{
+    "name": "GFOX",
+    "cause": "lack of access control",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x12fe79f1de8aed0ba947cec4dce5d33368d649903cb45a5d3e915cc459e751fc"
+    ],
+    "time": "2024-05-10 00:00:35 UTC",
+    "lost": "330K USD",
+    "detection": {
+        "time": "2024-05-10 02:01:00 UTC",
+        "link": "['https://x.com/CertiKAlert/status/1788751142144401886']"
+    },
+    "disclosure": {
+        "time": "2025-05-11",
+        "link": "['https://neptunemutual.com/blog/how-was-galaxy-fox-token-exploited/']"
+    },
+    "root_cause": "setMerkleRoot",
+    "report": "The root cause of the exploit is a lack of regulated access control. The setMerkleRoot function was set to a public visibility access specifier and lacked enough access control to allow anyone to change the merkle roots. This allowed them to invoke a call to the claim function to falsely claim and withdraw 108 ETH worth of funds from the contract, resulting in a loss of over 108 ETH, worth approximately $330,000.",
+    "report_link": "https://medium.com/neptune-mutual/how-was-galaxy-fox-token-exploited-c0860520cdc2"
+}

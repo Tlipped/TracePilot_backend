@@ -1,0 +1,13 @@
+{
+    "name": "Circle",
+    "cause": "Price Manipulation",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0xf1818f62c635e5c80ef16b7857da812c74ce330ebed46682b4d173bffe84c666"
+    ],
+    "time": "2022-08-16 20:20:02 UTC",
+    "lost": "~$151.6K",
+    "root_cause": "burn",
+    "report": "The attacker manipulated MakerDAO's CDP (Collateralized Debt Position) system and a vulnerable UniswapV2 LP token contract",
+    "report_link": "https://web3sec.notion.site/Price-Manipulation-1ce72927411380f5a15ecd2ca5d1ca37?pvs=23"
+}

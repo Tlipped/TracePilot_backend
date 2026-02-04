@@ -1,0 +1,13 @@
+{
+    "name": "OMPx Contract",
+    "cause": "FlashLoan",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0xd927843e30c6b2bf43103d83bca6abead648eac3cad0d05b1b0eb84cd87de9b6"
+    ],
+    "time": "2024-08-06 09:58:11 UTC",
+    "lost": "4.37 ETH (~11527 USD)",
+    "root_cause": "purchase + buyBack",
+    "report": "The OMPxContract contains a logic flaw that allows the purchase and buyBack functions to be called repeatedly within a single transaction without any price validation, time lock, or state reset between operations. The attacker exploited this by taking a 100 ETH flash loan and alternately calling purchase (to inflate the token price by sending large amounts of ETH) and buyBack (to redeem tokens at the artificially inflated price). Because the contract does not enforce price consistency, use a time-weighted average price (TWAP), or restrict rapid successive calls, the attacker was able to manipulate the internal price calculation to extract 4.37 ETH in profit.",
+    "report_link": "https://web3sec.notion.site/Logic-Flaw-1a172927411380e19b53f1fd8d9e336f"
+}

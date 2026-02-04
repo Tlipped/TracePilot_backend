@@ -1,0 +1,29 @@
+{
+    "name": "Force DAO",
+    "cause": "Missing return value",
+    "platform": "Ethereum",
+    "time": "2021/4/4 06:55",
+    "transaction_hash": [
+        "0x8da606ecfe18034c6de8317d524643dcde15121bc6309c6faccbd44f2d35f8f3",
+        "0x9f34b18984f2e0ee5bcd9f279ddee2a1952fc9f30117e5f8fd05855b3e99d2d1",
+        "0x047d2f5ca117de92a65de25d04e00db9bc0f1a899ba61140550afc6618d282ac",
+        "0x1eeaac386e872b0965c355c16637ed252ad08ebb940f2e617df141f6b1ec6721",
+        "0xb205c9c811f1c114cf6ca1fa3854ca0a6df90cc16b9f5aac78d46e1a645c0dc9",
+        "0xc0656559ee4618982ec7a752c448239f8ec94a0d37dd42297cedc9ad8efe6afd",
+        "0xef3e8afd09e00d6a8457894653e261d3d00613b7fc9790405e9de38d6b39a8f5",
+        "0xbdf1e75b9e21932d298f9a8d784c332ad630687fa1434dbcada1ca9d20978245",
+        "0x7df2fe63dfb43676a13146060d36ded98779092e0f7c9fd46caf18b791d4b9fd",
+        "0xe7be5bf25b0ea9fad2fd51021f4a51e5099cf4c91c2ffef94547072fe25ca8d1"
+    ],
+    "report": "The deposit function in the xFORCE contract did not validate the return value of force.transferFrom. As a result, attackers could mint xFORCE tokens without actually transferring FORCE tokens, and then redeem them for real FORCE tokens. Attackers exploited this vulnerability to mint tens of millions of FORCE tokens.",
+    "detection": {
+        "time": "2021/4/4 09:39",
+        "link": "https://twitter.com/force_dao/status/1378643450803929089"
+    },
+    "disclosure": {
+        "time": "2021/4/4 17:40",
+        "link": "https://twitter.com/force_dao/status/1378764434026287104"
+    },
+    "root_cause": "deposit",
+    "report_link": "https://zhuanlan.zhihu.com/p/362592672"
+}

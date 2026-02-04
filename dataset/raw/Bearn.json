@@ -1,0 +1,20 @@
+{
+    "name": "Bearn",
+    "cause": "Flashloan",
+    "platform": "BNBChain",
+    "time": "2021/5/16 10:36",
+    "transaction_hash": [
+        "0x603b2bbe2a7d0877b22531735ff686a7caad866f6c0435c37b7b49e4bfd9a36c"
+    ],
+    "report": "The attacker exploited a critical flaw in the `withdraw` function's internal logic by depositing a large flash loan of BUSD into the BvaultsBank contract. Due to a mismatch in how the contract and its underlying strategy (BvaultsStrategy) interpreted asset denominations, the withdrawn amount of BUSD was incorrectly calculated as its equivalent in the more valuable interest-bearing ibBUSD tokens. This exploit, which hinged on the withdrawal process, resulted in an artificial profit and a total loss of approximately $18 million from the protocol.",
+    "detection": {
+        "time": "2021/5/16 13:31",
+        "link": "https://twitter.com/BEARNDAO/status/1393922068014538755"
+    },
+    "disclosure": {
+        "time": "2021/5/16 19:26",
+        "link": "https://twitter.com/BEARNDAO/status/1394011490097762309"
+    },
+    "root_cause": "withdraw",
+    "report_link": "https://www.vidma.io/blog/the-bearn-exploit-a-18-million-lesson-in-defi-smart-contract-vulnerabilities"
+}

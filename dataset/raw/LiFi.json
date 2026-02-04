@@ -1,0 +1,20 @@
+{
+    "name": "Li.Fi",
+    "cause": "swap() function can be called arbitrarily",
+    "platform": "Ethereum",
+    "time": "2022/3/20 02:51",
+    "transaction_hash": [
+        "0x4b4143cbe7f5475029cf23d6dcbb56856366d91794426f2e33819b9b1aac4e96"
+    ],
+    "report": "The root cause of the attack was unverified external calls. The attacker executed the only operation by calling the swapAndStartBridgeTokensViaCBridge(0x01c0a31a) function of the CBridgeFacet contract, which subsequently transferred various tokens (such as USDC, MATIC, RPL, GNO, USDT, MVI, AUDIO, AAVE, JRT, and DAI) from different spenders to an EOA controlled by the attacker. According to the above code, swapAndStartBridgeTokensViaCBridge is the entry point for cross-chain transactions on the source chain. LI.FI project claims they can find the best route for users, called Smart Routing, which happens off-chain. Specifically, the front-end website calculates the best route and encodes parameters (including swap contracts and routing paths) into the arguments of the swapAndStartBridgeTokensViaCBridge function. Most critically, LIFI did not consider that this function could be called by any account on the blockchain because it does not check parameters such as whitelist and slippage. The most severe issue is that the CBridgeFacet contract requires user approval of tokens, putting users' funds at risk.",
+    "detection": {
+        "time": "2022/3/20 14:05",
+        "link": "https://twitter.com/lifiprotocol/status/1505545992183111681"
+    },
+    "disclosure": {
+        "time": "2022/3/21 02:49",
+        "link": "https://twitter.com/lifiprotocol/status/1505738407938387971"
+    },
+    "root_cause": "swapAndStartBridgeTokensViaCBridge",
+    "report_link": "https://blocksec.com/zh/blog/li-fi-attack-a-cross-chain-bridge-vulnerability-no-it-s-due-to-unchecked-external-call"
+}

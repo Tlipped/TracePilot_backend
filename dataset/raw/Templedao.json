@@ -1,0 +1,21 @@
+{
+    "name": "Templedao",
+    "cause": "Insufficient access control",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x8c3f442fc6d640a6ff3ea0b12be64f1d4609ea94edd2966f42c01cd9bdcf04b5"
+    ],
+    "time": "2022-10-11 13:08:35 UTC",
+    "lost": "$2.3 million",
+    "detection": {
+        "time": "2022-10-11 14:09:00 UTC",
+        "link": "['https://x.com/spreekaway/status/1579836562338361345']"
+    },
+    "disclosure": {
+        "time": "2022-10-11 14:38:00 UTC",
+        "link": "['https://twitter.com/BlockSecTeam/status/1579843881893769222']"
+    },
+    "root_cause": "migrateStake",
+    "report": "The migrateStake function lacks proper access control, allowing any external caller to trigger migration of an arbitrary amount from an old staking contract on behalf of any user. This could lead to unauthorized inflation of stakes or reward manipulation in the new contract.",
+    "report_link": "https://web3sec.notion.site/Incorrect-access-control-f5e0efb872754102b82731745b102ba3?pvs=23"
+}

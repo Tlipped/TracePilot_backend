@@ -1,0 +1,17 @@
+{
+    "name": "HeavensGate",
+    "cause": "Rebasing logic issue",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x8e1b0ab098c4cc5f632e00b0842b5f825bbd15ded796d4a59880bb724f6c5372"
+    ],
+    "time": "2023-09-05 15:33:47 UTC",
+    "lost": "~$8ETH",
+    "detection": {
+        "time": "2023-09-05 10:17:00 UTC",
+        "link": "['https://twitter.com/hexagate_/status/1699003711937216905']"
+    },
+    "root_cause": "stake+unstake",
+    "report": "The vulnerability stems from the stake() function in the HeavensGate contract, which transfers sHATE to the user before completing the rebase logic. This causes the rebase calculation to include the newly staked amount as part of the circulating supply, creating a mismatch between the contract's HATE balance and sHATE supply. The attacker exploited this by repeatedly calling stake() and unstake() within the same transaction to drain funds.",
+    "report_link": "https://web3sec.notion.site/Bad-Staking-Unstaking-Logic-1c533aa639864bb3a8561246facef432?pvs=23"
+}

@@ -1,0 +1,17 @@
+{
+    "name": "ElasticSwap",
+    "cause": "Business Logic Flaw",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0xb36486f032a450782d5d2fac118ea90a6d3b08cac3409d949c59b43bcd6dbb8f"
+    ],
+    "time": "2022-12-13 02:32:47 UTC",
+    "lost": "$845k",
+    "disclosure": {
+        "time": "2022-12-15",
+        "link": "['https://quillaudits.medium.com/decoding-elastic-swaps-850k-exploit-quillaudits-9ceb7fcd8d1a']"
+    },
+    "root_cause": "addLiquidity",
+    "report": "The attacker exploited a calculation inconsistency between the `addLiquidity` and `removeLiquidity` functions. While `addLiquidity` updates internal reserve balances, `removeLiquidity` calculates payouts based on the contract's actual `balanceOf`. By first performing a normal liquidity cycle to drive the internal USDC reserve to 0.5 units, then swapping 50 USDC for undervalued TIC tokens and directly transferring USDC to the contract, the attacker manipulated the pool's state. A final `addLiquidity` and `removeLiquidity` cycle allowed them to withdraw a large amount of USDC based on the inflated real balance rather than the negligible internal reserve.",
+    "report_link": "https://hit0on.github.io/2023/01/04/ElasticSwap%E6%94%BB%E5%87%BB%E4%BA%8B%E4%BB%B6%E5%88%86%E6%9E%90%E4%B8%8E%E5%A4%8D%E7%8E%B0/"
+}

@@ -1,0 +1,17 @@
+{
+    "name": "Uerii Token",
+    "cause": "Access Control",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0xf4a3d0e01bbca6c114954d4a49503fc94dfdbc864bded5530b51a207640d86b5"
+    ],
+    "time": "2022-10-17 12:31:11 UTC",
+    "lost": "$2.4 k",
+    "disclosure": {
+        "time": "2022-10-17 12:41:00 UTC",
+        "link": "['https://x.com/peckshield/status/1581988895142526976']"
+    },
+    "root_cause": "mint",
+    "report": "The mint function has incorrect access control: it is declared public with no authorization checks, allowing any address to call it and mint 100,000,000,000,000,000 tokens to themselves.",
+    "report_link": "https://web3sec.notion.site/Incorrect-access-control-b96a3407da09492f92033c7e5b1286eb?pvs=23"
+}

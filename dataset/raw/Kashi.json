@@ -1,0 +1,17 @@
+{
+    "name": "Kashi",
+    "cause": "Price-caching Design Defect",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x3d163bfbec5686d428a6d43e45e2626a220cc4fcfac7620c620b82c1f2537c78"
+    ],
+    "time": "2022-11-08 22:27:11 UTC",
+    "lost": "$110k",
+    "disclosure": {
+        "time": "2022-12-16 06:08:00 UTC",
+        "link": "['https://eigenphi.substack.com/p/casting-a-magic-spell-on-abracadabra', 'https://twitter.com/BlockSecTeam/status/1603633067876155393']"
+    },
+    "root_cause": "_borrow",
+    "report": "The attacker exploited the _borrow function in Abracadabra's Cauldron contract, which used a stale price cache for collateral valuation. During the borrow operation, the protocol relied on an outdated exchange rate between xSUSHI and MIM that had not been updated despite a 15% market drop in xSUSHI price. This allowed the attacker to borrow more MIM than justified by current market value. Immediately after borrowing, the attacker triggered a price update to reflect the lower xSUSHI price, then liquidated their own position at the new rate—repaying less MIM while reclaiming all collateral. The core vulnerability lay in the _borrow function’s failure to ensure fresh oracle prices before committing to a loan, enabling arbitrage through price-cache manipulation.",
+    "report_link": "https://eigenphi.substack.com/p/casting-a-magic-spell-on-abracadabra"
+}

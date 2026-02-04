@@ -1,0 +1,25 @@
+{
+    "name": "Beanstalk",
+    "cause": "Malicious code logic",
+    "platform": "Ethereum",
+    "report_text": "Beanstalk's EmergencyCommit feature can be implemented 24 hours after receiving overwhelming (2/3 vote) approval, rather than going through the standard process.\nIn order for a proposal to be approved, an attacker needs to control 2/3 of the votes for the governance protocol. However, the votes are based on donations to the Beanstalk protocol diamond contract.\nAfter the one-day waiting period, the attackers were able to make a large deposit to the contract using Flash Credit. This allowed them to control 79% of the votes for the governance protocol, which is far greater than the 2/3 needed for the proposal to be approved. with this power, the attackers were able to use EmergencyCommit to unilaterally approve their proposal.",
+    "time": "2022/4/17 12:24",
+    "transaction_hash": [
+        "0xd09b72275962b03dd96205f8077fdc08bec87c0ebd07e431aadc760f31f34b01",
+        "0x68cdec0ac76454c3b0f7af0b8a3895db00adf6daaf3b50a99716858c4fa54c6f",
+        "0x9575e478d7c542558ecca52b27072fa1f1ec70679106bdbd62f3bb4d6c87a80d",
+        "0x677660ce489935b94bf5ac32c494669a71ee76913ffabe623e82a7de8226b460",
+        "0xcd314668aaa9bbfebaf1a0bd2b6553d01dd58899c508d4729fa7311dc5d33ad7"
+    ],
+    "report": "The attacker exploited the `emergencyCommit` function to bypass the standard 7-day timelock for governance proposals. After using a flash loan to acquire a supermajority (2/3) of governance tokens, the attacker immediately voted for and executed a malicious proposal (BIP18) via `emergencyCommit`. This proposal drained the protocol's liquidity pools, resulting in a total loss of approximately $182 million, with the attacker netting a profit of about $76 million in WETH.",
+    "detection": {
+        "time": "2022/4/17 13:15",
+        "link": "https://twitter.com/peckshield/status/1515680335769456640"
+    },
+    "disclosure": {
+        "time": "2022/4/17 14:02",
+        "link": "https://twitter.com/peckshield/status/1515692144190648322"
+    },
+    "root_cause": "emergencyCommit",
+    "report_link": "https://medium.com/coinmonks/beanstalk-exploit-a-simplified-post-mortem-analysis-92e6cdb17ace"
+}

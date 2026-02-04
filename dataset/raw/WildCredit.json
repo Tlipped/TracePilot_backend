@@ -1,0 +1,19 @@
+{
+    "name": "Wild Credit",
+    "cause": "Contract Vulnerability",
+    "platform": "Ethereum",
+    "time": "2021/5/27 3:56",
+    "transaction_hash": [
+        "0xdbef3b393a64608756c284568217355f694a0e5c8edf80eac75ec087d642ce07"
+    ],
+    "report": "The full expert report is unavailable. Please evaluate the generated report strictly based on the provided 'root_cause' information.",
+    "detection": {
+        "time": "2021/5/27 5:28",
+        "link": "https://twitter.com/WildCredit/status/1397786796675649538"
+    },
+    "disclosure": {
+        "time": "2021/5/27 12:12",
+        "link": "https://twitter.com/Mudit__Gupta/status/1397888546686398470"
+    },
+    "root_cause": "initialize"
+}

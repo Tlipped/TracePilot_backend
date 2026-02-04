@@ -1,0 +1,17 @@
+{
+    "name": "TheNFTV2",
+    "cause": "logic flaw",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0xd5b4d68432cbbd912130bbb5b93399031ddbb400d8f723c78050574de7533106"
+    ],
+    "time": "2023-11-25 08:17:23 UTC",
+    "lost": "~$19K",
+    "disclosure": {
+        "time": "2023-11-26 03:28:00 UTC",
+        "link": "['https://x.com/MetaTrustAlert/status/1728616715825848377?s=20']"
+    },
+    "root_cause": "burn + transferFrom",
+    "report": "A logic flaw allows attackers to repeatedly burn the same NFT and reclaim it. The burn function rewards the caller with $THEDAO tokens and transfers the NFT to a dead address. However, because approvals persist across ownership changes in some implementations or due to improper state cleanup, the attacker can use transferFrom (leveraging a prior approval) to recover the burned token from the dead address—or more likely, re-mint or re-claim it via contract logic—and burn it again, looping to extract unlimited rewards.",
+    "report_link": "https://web3sec.notion.site/Logic-Flaw-e978fee700a14ba7ab1201ffcc131ba1?pvs=23"
+}

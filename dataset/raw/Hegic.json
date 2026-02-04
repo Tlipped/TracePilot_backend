@@ -1,0 +1,20 @@
+{
+    "name": "Hegic",
+    "cause": "Clerical error",
+    "platform": "Ethereum",
+    "time": "2020/4/25 05:09",
+    "transaction_hash": [
+        "0x3ee220a210148e53f2bb8d33edda2be128c278218920764064fac218ff88d859",
+        "0x2355e889be00edc00da421ba10b447aa2c3a539bf23ad34935b477889401ffd2"
+    ],
+    "report": "The full expert report is unavailable. Please evaluate the generated report strictly based on the provided 'root_cause' information.",
+    "detection": {
+        "time": "2020/4/25 06:41",
+        "link": "https://twitter.com/HegicOptions/status/1253937104666742787"
+    },
+    "disclosure": {
+        "time": "2020/4/25 10:02",
+        "link": "https://twitter.com/gakonst/status/1253987785574211584"
+    },
+    "root_cause": "getSlippageFee"
+}

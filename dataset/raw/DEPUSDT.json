@@ -1,0 +1,13 @@
+{
+    "name": "DEPUSDT",
+    "cause": "Arbitrary external call",
+    "platform": "Ethereum",
+    "time": "2023/6/15",
+    "link": "https://twitter.com/numencyber/status/1669278694744150016?cxt=HHwWgMDS9Z2IvKouAAAA",
+    "transaction_hash": [
+        "0xf0a13b445674094c455de9e947a25bade75cac9f5176695fca418898ea25742f"
+    ],
+    "report": "The attacker exploited a critical access control vulnerability in the public `approveToken()` function. This function allowed anyone to arbitrarily set themselves as an approved spender for the $DEPUSDT and $LEVUSDC tokens held by the vulnerable contract. By doing so, the attacker gained the necessary permissions to directly transfer out the contract's funds, resulting in a total loss of approximately 105,000 USD.",
+    "root_cause": "approveToken",
+    "report_link": "https://blog.solidityscan.com/depusdt-and-levusdc-hack-analysis-d27032d8f2cd"
+}

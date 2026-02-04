@@ -1,0 +1,13 @@
+{
+    "name": "Poolz",
+    "cause": "Overflow",
+    "platform": "BNBChain",
+    "time": "2023/3/15",
+    "link": "https://twitter.com/peckshield/status/1635860470359015425",
+    "transaction_hash": [
+        "0x39718b03ae346dfe0210b1057cf9f0c378d9ab943512264f06249ae14030c5d5"
+    ],
+    "report": "The attacker called the vulnerable function ‘CreateMassPools’ and triggered an integer overflow vulnerability in the parameter _StartAmount.",
+    "root_cause": "CreateMassPools",
+    "report_link": "https://web3sec.notion.site/CreateMassPools-748f37f2cab04769a883235b8c123d23"
+}

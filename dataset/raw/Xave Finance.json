@@ -1,0 +1,17 @@
+{
+    "name": "Xave Finance",
+    "cause": "Malicious Proposal Mint & Transfer Ownership",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0xc18ec2eb7d41638d9982281e766945d0428aaeda6211b4ccb6626ea7cff31f4a"
+    ],
+    "time": "2022-10-08 17:04:11 UTC",
+    "lost": "100,000,000,000,000 RNBW",
+    "disclosure": {
+        "time": "2022-10-09 11:24:00 UTC",
+        "link": "['https://x.com/BeosinAlert/status/1579040051853303808']"
+    },
+    "root_cause": "executeProposalWithIndex",
+    "report": "The DaoModule contract was compromised due to misconfiguration: the questionCooldown and minimumBond were set to 0 by default. The attacker called executeProposalWithIndex to invoke mint(0x0f44f3489D17e42ab13A6beb76E57813081fc1E2, 100000000000000000000000000000000) and transferOwnership(0x0f44f3489D17e42ab13A6beb76E57813081fc1E2).",
+    "report_link": "https://web3sec.notion.site/DaoModule-misconfiguration-865207fc337346bfae1d64acf9c2f40f?pvs=23"
+}

@@ -1,0 +1,14 @@
+{
+    "name": "BRA",
+    "cause": "Business Logic Flaw",
+    "platform": "BNBChain",
+    "time": "2023/1/10",
+    "link": "https://twitter.com/BlockSecTeam/status/1612701106982862849",
+    "transaction_hash": [
+        "0x6759db55a4edec4f6bedb5691fc42cf024be3a1a534ddcc7edd471ef205d4047",
+        "0x4e5b2efa90c62f2b62925ebd7c10c953dc73c710ef06695eac3f36fe0f6b9348"
+    ],
+    "report": "The attacker exploited a logic flaw in the BRA contract's _transfer function. The flaw caused the contract to double the tax fee sent to the PancakeSwap liquidity pool without invoking the sync() function to update the pair's reserves. This discrepancy allowed the attacker to profit, extracting approximately 675 WBNB and 144 WBNB across two separate transactions.",
+    "root_cause": "_transfer",
+    "report_link": "https://web3sec.notion.site/doubles-reward-the-tax-fee-to-the-pancake-pair-67248a5a986645b8a3fd4e2b2395da79?pvs=23"
+}

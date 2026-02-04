@@ -1,0 +1,12 @@
+{
+    "name": "ChannelsFinance",
+    "cause": "CompoundV2 Inflation Attack",
+    "platform": "BNBChain",
+    "transaction_hash": [
+        "0x0237855c63eb85c5f437fba5267cc869a08c58a49501e3e5ebec9990bdd97565"
+    ],
+    "time": "2023-12-30 12:17:51 UTC",
+    "lost": "~320K",
+    "root_cause": "redeemUnderlying / redeemFresh",
+    "report": "The full expert report is unavailable. Please evaluate the generated report strictly based on the provided 'root_cause' information."
+}

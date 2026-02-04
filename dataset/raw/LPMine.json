@@ -1,0 +1,17 @@
+{
+    "name": "LPMine",
+    "cause": "Incorrect reward calculation ",
+    "platform": "BNBChain",
+    "transaction_hash": [
+        "0x00c5a772a58b117f142b2cbc8721b80d145ef7a910043ad08439863d0e78e300"
+    ],
+    "time": "2025-01-08 12:43:50 UTC",
+    "lost": "~24k USDT",
+    "disclosure": {
+        "time": "2025-01-08 16:31:00 UTC",
+        "link": "['https://x.com/TenArmorAlert/status/1877030261067571234']"
+    },
+    "root_cause": "extractReward",
+    "report": "The exploit resulted from a logical vulnerability within the ILPMine contract's reward distribution system. The contract calculated rewards based on the LP token pair's balance. However, it did not accurately track or enforce the time elapsed between reward claims. By manipulating the blockchain's timestamp and repeatedly calling the extractReward function, the attacker bypassed the intended cooldown or time-based restrictions. This allowed them to claim rewards multiple times in quick succession after initially providing liquidity, effectively draining the reward pool beyond their legitimate entitlement. The core flaw was the inadequate management of the last reward claim timestamp, leading to exploitable repeated reward withdrawals.",
+    "report_link": "https://web3sec.notion.site/Business-Logic-Flow-1c972927411380c1aaead9b23e746a51?pvs=23"
+}

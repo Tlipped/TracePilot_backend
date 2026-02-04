@@ -1,0 +1,17 @@
+{
+    "name": "TINU",
+    "cause": "Reflection token",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x6200bf5c43c214caa1177c3676293442059b4f39eb5dbae6cfd4e6ad16305668"
+    ],
+    "time": "2023-01-26 07:10:47 UTC",
+    "lost": "22 ETH",
+    "disclosure": {
+        "time": "2023-01-26 22:05:00 UTC",
+        "link": "['https://twitter.com/libevm/status/1618731761894309889']"
+    },
+    "root_cause": "deliver",
+    "report": "The deliver function (a renamed reflect function) in the TINU reflection token lacked proper safeguards. Because the Uniswap pair address was not excluded from reflection, calling deliver after purchasing TINU tokens caused the pair's effective balance to inflate beyond its reserves. Combined with a logic flaw that minted rOwned 'out of thin air' during transfers, this allowed an attacker to repeatedly drain WETH from the pool by buying TINU, calling deliver, and swapping the inflated balance.",
+    "report_link": "https://autosaida.github.io/DeFiHackAnalysis/2023/230126_TINU/"
+}

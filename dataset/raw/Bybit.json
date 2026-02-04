@@ -1,0 +1,23 @@
+{
+    "name": "Bybit",
+    "cause": "Phishing attack",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0xb61413c495fdad6114a7aa863a00b2e3c28945979a10885b12b30316ea9f072c",
+        "0xbcf316f5835362b7f1586215173cc8b294f5499c60c029a3de6318bf25ca7b20",
+        "0xa284a1bc4c7e0379c924c73fcea1067068635507254b03ebbbd3f4e222c1fae0",
+        "0x847b8403e8a4816a4de1e63db321705cdb6f998fb01ab58f653b863fda988647",
+        "0x25800d105db4f21908d646a7a3db849343737c5fba0bc5701f782bf0e75217c9",
+        "0x46deef0f52e3a983b67abf4714448a41dd7ffd6d32d32da69d62081c68ad7882",
+        "0x50a51f781567a003662b933fc1224a35d824ba695edce7687473800299c7d1ef"
+    ],
+    "time": "2025-02-21 14:16:11 UTC",
+    "lost": "1.5B",
+    "detection": {
+        "time": "2025-02-21 15:43:00 UTC",
+        "link": "['https://x.com/SlowMist_Team/status/1892963250385592345']"
+    },
+    "root_cause": "Supply Chain Attack on Safe{Wallet} UI (JavaScript)",
+    "report": "The core of the massive Bybit theft lies in the attacker gaining direct control of the wallet through a malicious upgrade of the Safe multisig wallet contract, rather than exploiting conventional smart contract permission vulnerabilities. The entire attack process underwent meticulous planning and rehearsal: the attacker first obtained initial funds from Binance to evade security monitoring associated with mixing services, and subsequently conducted a complete on-chain test two days prior to the formal attack. This included deploying the attack contract, creating a test Safe wallet, simulating the malicious upgrade operation, and testing withdrawals for specific assets (matching those held by Bybit), thereby verifying the feasibility of hijacking funds via contract upgrade . Once prepared, the attacker exploited the inability of hardware wallets to parse complex transaction data, inducing the multisig operators into \"blind signing\" the malicious upgrade transaction—meaning the operators signed a transaction that altered the wallet's core logic while believing they were performing a normal operation. Ultimately, the attacker submitted sufficient signatures on-chain to successfully execute the contract upgrade, replacing the originally secure Safe wallet logic with malicious code, thereby bypassing existing permission restrictions and draining all funds. This failure profoundly exposes the security risks of upgradable contracts under multisig management, specifically that once upgrade authority is abused, a legitimate signing process can lead to the complete subversion of contract logic .",
+    "report_link": "https://blocksec.com/blog/bybit-1-5-b-hack-in-depth-analysis-of-the-malicious-safe-wallet-upgrade-attack"
+}
