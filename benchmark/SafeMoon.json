@@ -1,0 +1,13 @@
+{
+    "name": "SafeMoon",
+    "cause": "Arbitrary external call",
+    "platform": "BNBChain",
+    "time": "2023/3/28",
+    "link": "https://rekt.news/zh/safemoon-rekt/",
+    "transaction_hash": [
+        "0x48e52a12cb297354a2a1c54cbc897cf3772328e7e71f51c9889bb8c5e533a934"
+    ],
+    "report": "An access control vulnerability was introduced in the public burn() function during a contract upgrade, allowing an attacker to burn tokens from any address and manipulate token price, resulting in a loss of approximately $8.9 million.",
+    "root_cause": "mint + burn",
+    "report_link": "https://web3sec.notion.site/Public-burn-fa3c3cffd3254c0181ae3f9cd640890b"
+}

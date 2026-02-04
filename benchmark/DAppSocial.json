@@ -1,0 +1,21 @@
+{
+    "name": "DAppSocial",
+    "cause": "Business Logic Flaw",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0xbd72bccec6dd824f8cac5d9a3a2364794c9272d7f7348d074b580e3c6e44312e"
+    ],
+    "time": "2023-09-02 12:58:59 UTC",
+    "lost": "~$16K",
+    "detection": {
+        "time": "2023-09-02 16:52:00 UTC",
+        "link": "['https://x.com/dAppSocial/status/1698016176994189396']"
+    },
+    "disclosure": {
+        "time": "2023-09-02 20:05:00 UTC",
+        "link": "['https://twitter.com/DecurityHQ/status/1698064511230464310']"
+    },
+    "root_cause": "lockTokens",
+    "report": "The attacker exploited a business logic flaw in the `lockTokens` function by using it in combination with other functions. They first created a helper contract and called `lockTokens` on its behalf with a minimal locking period (0 seconds). This initial step was valid but set the stage for exploitation. The attacker then exploited issues in subsequent functions (`withdrawTokensWithAlt` and `withdrawTokens`), which had mismatched balance checks and lacked underflow protection. This allowed the attacker to arbitrarily set high token balances for their controlled address and ultimately drain approximately 16,000 USD worth of USDT and USDC from the vulnerable contract.",
+    "report_link": "https://blog.solidityscan.com/dappsocial-hack-analysis-3b8bf243a850"
+}

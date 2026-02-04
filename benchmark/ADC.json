@@ -1,0 +1,20 @@
+{
+    "name": "ADC",
+    "cause": "incorrect-access-control",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0xe83b7ff7c56329cedddf6e39c065495a552079f164183bf253694c02fd1e7b2e",
+        "0x26e263447afc1b5a818a77a10bd30d8070f8d660760b4d52e65939f0e74a68c5",
+        "0x5b17283268d401d1c8854af40f6bf9d2738a1d70b271318d55a7397f34c8ee3b",
+        "0xcf834aff4de9992f5da9c443600dad9c6277a8a00de5007842fece51564992db"
+    ],
+    "time": "2024-02-02 05:28:47 UTC",
+    "lost": "~20 eth",
+    "detection": {
+        "time": "2024-02-02 05:50:00 UTC",
+        "link": "['https://x.com/EXVULSEC/status/1753294675971313790']"
+    },
+    "root_cause": "calcStepIncome",
+    "report": "The attacker exploited the calcStepIncome function in the MainPool contract by passing an inflated value_ parameter (36_099_999_999_999_999_900), which improperly updated the withdrawable balance, allowing them to drain ~20 ETH.",
+    "report_link": "https://web3sec.notion.site/ADC-1d8729274113800f9961d1c2d66e50d7?pvs=23"
+}

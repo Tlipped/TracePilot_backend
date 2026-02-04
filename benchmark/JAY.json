@@ -1,0 +1,20 @@
+{
+    "name": "JAY",
+    "cause": "Reentrancy",
+    "platform": "Ethereum",
+    "time": "2022/12/29 05:02",
+    "transaction_hash": [
+        "0xd4fafa1261f6e4f9c8543228a67caf9d02811e4ad3058a2714323964a8db61f6"
+    ],
+    "report": "The attacker exploits this vulnerability to reenter the JAY contract. Specifically, the attacker first borrows 72.5 ETH for flash loan and uses 22 ETH to buy JAY token. Then he uses another 50.5 ETH to call the buyJay function, passing the fake ERC-721 token.In the transferFrom function of the fake ERC-721 token, the attacker reenters the JAY contract by calling the sell function, selling all the JAY token. As the Ether balance has been increased at the start of the buyJay function, the JAY token price is manipulated.The attacker repeated the procedure twice in a single transaction, with a total profit of 15.32 Ether.",
+    "detection": {
+        "time": "2022/12/29 08:00",
+        "link": "https://twitter.com/BlockSecTeam/status/1608372475225866240"
+    },
+    "disclosure": {
+        "time": "2022/12/29 08:00",
+        "link": "https://twitter.com/BlockSecTeam/status/1608372475225866240"
+    },
+    "root_cause": "buyJay",
+    "report_link": "https://web3sec.notion.site/Reenter-by-pass-fake-token-5dc4fdc2f76e4cdd899ad61de195677b?pvs=23"
+}

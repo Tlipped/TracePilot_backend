@@ -1,0 +1,18 @@
+{
+    "name": "CowSwap",
+    "cause": "Arbitrary External Call Vulnerability",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x92f906bce94bab417cccc87ae046448d7fb8c2c0350b7ed911545577acb3bfc1",
+        "0x90b468608fbcc7faef46502b198471311baca3baab49242a4a85b73d4924379b"
+    ],
+    "time": "2023-02-07 02:53:11 UTC",
+    "lost": "~$120k",
+    "detection": {
+        "time": "2023-02-07 03:06:00 UTC",
+        "link": "['https://x.com/MevRefund/status/1622793836291407873']"
+    },
+    "root_cause": "envelope",
+    "report": "The attacker exploited the CoW Swap settlement contract's ability to process arbitrary data within a transaction 'envelope'. By crafting malicious interaction data that tricked the contract into approving the attacker's own contract (SwapGuard) with the vault relayer, the attacker gained unauthorized transfer permissions. This allowed them to directly transfer out 180,000 DAI tokens from the protocol's vaults, resulting in a total loss of $180,000.",
+    "report_link": "https://blog.solidityscan.com/cow-swap-hack-analysis-arbitrary-callable-swapguard-6a6ee3de346f"
+}

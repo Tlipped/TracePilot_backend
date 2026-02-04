@@ -1,0 +1,13 @@
+{
+    "name": "SHOCO",
+    "cause": "Reflection token",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x2e832f044b4a0a0b8d38166fe4d781ab330b05b9efa9e72a7a0895f1b984084b"
+    ],
+    "time": "2023-01-19 12:54:11 UTC",
+    "lost": "~4ETH",
+    "root_cause": "deliver",
+    "report": "The deliver function in SHOCO's contract allows attackers to burn their own tokens, increasing the reflected token amount for other holders and creating discrepancies between reserves and balances. By repeatedly calling deliver and skim functions, an attacker inflated SHOCO token balances in Uniswap pairs and transferred the excess tokens for profit, ultimately swapping them for ETH and earning approximately 4.3 ETH ($14,000).",
+    "report_link": "https://learnblockchain.cn/article/11982"
+}

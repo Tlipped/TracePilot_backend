@@ -1,0 +1,22 @@
+{
+    "name": "SushiSwap",
+    "cause": "Manipulate",
+    "platform": "Ethereum",
+    "time": "2021/1/25 20:07",
+    "transaction_hash": [
+        "0xa815480589250d649314731d084fb4f58137b5fef70c8b19dc3cadc2ccc0b21f",
+        "0x747088ed3054d66fbd2c2ec6f6e0b077e71c3155dab0d56ccea2b5841903738f",
+        "0xba833487c09f934c7ed77ad415ff4f322d470a1fa508120aacea8a8f0bb656a9"
+    ],
+    "report": "The root cause of this attack lies in the combination of the logical defect in the bridgeFor function of the SushiMaker contract and the manipulation of liquidity. When this function is not preset with a specific token routing, it defaults to using WETH as the intermediate exchange bridge (Bridge). The attacker exploited this mechanism and pre-created a DIGG-WETH trading pair with extremely low initial liquidity (containing only a small amount of WETH and DIGG). When the attacker called the convert function to trigger the fee redemption logic, the bridgeFor function forcibly converted the accumulated huge amount of DIGG fees through this low-liquidity pool into WETH. This resulted in an extreme slippage and a large amount of DIGG being dumped into the pool, causing the price of WETH against DIGG in the pool to be extremely inflated. Eventually, the attacker only needed to use a very small amount of WETH to exchange the previously injected large amount of DIGG fees at a low price from this pool, thereby achieving the profit.",
+    "detection": {
+        "time": "2021/1/25 20:17",
+        "link": "https://rekt.news/badgers-digg-sushi/"
+    },
+    "disclosure": {
+        "time": "2021/1/27 0:00",
+        "link": "https://slowmist.medium.com/slow-mist-sushiswap-was-attacked-for-the-second-time-a47f2d110a84"
+    },
+    "root_cause": "bridgeFor",
+    "report_link": "https://www.freebuf.com/articles/others-articles/262212.html"
+}

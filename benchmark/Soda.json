@@ -1,0 +1,29 @@
+{
+    "name": "Soda",
+    "cause": "Wrong variable",
+    "platform": "Ethereum",
+    "time": "2020/9/20 12:06",
+    "transaction_hash": [
+        "0x79d70f5abc3ca1b212823d12e2eae3f5217e2ce43b5d1f3c374ea8697c0e608d",
+        "0xa0e2e302ad937238da062e5b62b1e1e97420e5dff3dab19eb5555a952d714934",
+        "0xcc472cb107ad17b8edbbde06b55d33bf92aaa6176997df02dca116cfdc784493",
+        "0xcfc7c7a14c66fce063afa263a7f77d6a00253f00fc4b557c667d775aab7f0551",
+        "0x9b5310f845a612835c80e0d8b782be3c01932a8256b76ab0d7f1bf2c15666f5e",
+        "0xac4418b6a0ef422d3635298c4e6a88430c6b24b7a591ba35cdcf796c389f3aa2",
+        "0x07e5568b71f1f4d9234d5925473c598865c5ee1800348c1c4b044c6f0223f308",
+        "0x5767b29a60d64ce56182d1f8bc212b766e1c21a3ed52d1ad678dbc6d3e43401a",
+        "0x19c04bc04ee8117abfdf0c9301787b12b27f3c5c13308b4f66711a8f0ecacc62",
+        "0x48d22ea24c1ae707b8b17ca2a3ea81a1aee64a075d93e5bff81a7370e2cacea7",
+        "0x6c23497b945b5e614cc3caa2df07c921fe13e189a8b061678f397063047294b9"
+    ],
+    "report": "The full expert report is unavailable. Please evaluate the generated report strictly based on the provided 'root_cause' information.",
+    "detection": {
+        "time": "",
+        "link": ""
+    },
+    "disclosure": {
+        "time": "2020/9/20 14:35",
+        "link": "https://twitter.com/Soda_finance/status/1307689921629560833"
+    },
+    "root_cause": "collectDebt"
+}

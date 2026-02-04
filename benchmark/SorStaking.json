@@ -1,0 +1,17 @@
+{
+    "name": "SorStaking",
+    "cause": "Incorrect reward calculation",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x6439d63cc57fb68a32ea8ffd8f02496e8abad67292be94904c0b47a4d14ce90d"
+    ],
+    "time": "2025-01-04 11:59:23 UTC",
+    "lost": "$43K",
+    "disclosure": {
+        "time": "2025-01-05 04:38:00 UTC",
+        "link": "['https://x.com/TenArmorAlert/status/1875582709512188394']"
+    },
+    "root_cause": "withdraw + getPendingRewards",
+    "report": "The getPendingRewards function incorrectly calculates rewards based on the total deposited amount rather than the withdrawn amount. As a result, an attacker could repeatedly withdraw 1 token and receive full pending rewards each time, draining approximately $43,000.",
+    "report_link": "https://main.learnblockchain.cn/index.php/article/10563"
+}

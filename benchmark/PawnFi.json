@@ -1,0 +1,13 @@
+{
+    "name": "PawnFi",
+    "cause": "Business Logic Flaw",
+    "platform": "Ethereum",
+    "time": "2023/6/17",
+    "link": "https://blog.solidityscan.com/pawnfi-hack-analysis-38ac9160cbb4",
+    "transaction_hash": [
+        "0xe855cc3bad87933bf742fd474bd0ae0ec58d45e9c1a0643b9700dafe8faf0864"
+    ],
+    "report": "The root cause of the attack was due to a failure of the protocol to verify whether the NFT had actually been transferred when users used a specified NFT as collateral for borrowing. The attacker took advantage of the contract by borrowing APE tokens using an NFT that was already staked in the APE Staking Pool. Afterward, the attacker triggered the depositAndBorrowApeAndStake() function again, causing the contract to stake the APE tokens in the APE Staking Pool. Unfortunately, the contract incorrectly identified the newly staked funds as being deposited by the attacker. Consequently, the attacker gained direct access to invoke the withdrawApeCoin() function, allowing them to withdraw the APE tokens and make a profit.",
+    "root_cause": "depositAndBorrowApeAndStake",
+    "report_link": "https://blog.solidityscan.com/pawnfi-hack-analysis-38ac9160cbb4"
+}

@@ -1,0 +1,20 @@
+{
+    "name": "Umbrella Network",
+    "cause": "Underflow",
+    "platform": "Ethereum",
+    "time": "2022/3/20 07:48",
+    "transaction_hash": [
+        "0x33479bcfbc792aa0f8103ab0d7a3784788b5b0e1467c81ffbed1b7682660b4fa"
+    ],
+    "report": "The vulnerability lies in the _balance function of the StakingRewards contract, where the contract failed to validate the balance value. The attacker triggered an underflow by manipulating the amount parameter, draining tokens from the pool. The contract did not properly use the SafeMath library or include overflow/underflow checks, resulting in a loss of approximately $700,000.",
+    "detection": {
+        "time": "",
+        "link": ""
+    },
+    "disclosure": {
+        "time": "2022/3/20 10:44",
+        "link": "https://twitter.com/ishwinder/status/1505555913658314761"
+    },
+    "root_cause": "_balance + _withdraw",
+    "report_link": "https://zhuanlan.zhihu.com/p/485220134"
+}

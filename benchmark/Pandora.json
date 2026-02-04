@@ -1,0 +1,17 @@
+{
+    "name": "Pandora",
+    "cause": "interger underflow",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x7c5a909b45014e35ddb89697f6be38d08eff30e7c3d3d553033a6efc3b444fdd"
+    ],
+    "time": "2024-02-08 16:17:35 UTC",
+    "lost": "~17K USD",
+    "disclosure": {
+        "time": "2024-03-03 12:59:00 UTC",
+        "link": "['https://learnblockchain.cn/article/11981']"
+    },
+    "root_cause": "transferFrom / _transfer",
+    "report": "The _transfer function contains an integer underflow vulnerability when subtracting the transfer amount from the sender's balance. Since the contract does not use SafeMath or Solidity 0.8+'s built-in overflow checks, an attacker can trigger a balance underflow by transferring more tokens than they own. This causes the sender's balance to wrap around to a very large number due to unsigned integer arithmetic. The attacker then exploits this inflated balance to gain unauthorized Pandora tokens, effectively minting tokens out of thin air.",
+    "report_link": "https://web3sec.notion.site/Integer-Overflow-1fe4daa88adc48cd8c7e7ce4c0fbad2f"
+}

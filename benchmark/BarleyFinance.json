@@ -1,0 +1,17 @@
+{
+    "name": "BarleyFinance",
+    "cause": "Reentrancy",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x995e880635f4a7462a420a58527023f946710167ea4c6c093d7d193062a33b01"
+    ],
+    "time": "2024-01-28 17:48:35 UTC",
+    "lost": "~130K",
+    "detection": {
+        "time": "2024-01-29 02:04:00 UTC",
+        "link": "['https://x.com/Phalcon_xyz/status/1751788389139992824']"
+    },
+    "root_cause": "bond",
+    "report": "The attacker exploited a lack of reentrancy protection in the bond function of the Wrapped Barley (wBARL) contract. By taking a flash loan of BARL tokens and immediately using them to call bond, the attacker triggered a callback that allowed the same borrowed tokens to be counted as repayment for the flash loan, essentially allowing them to mint wBARL tokens for free. This was repeated to extract more than 10% of the BARL supply from the pool, resulting in a loss of approximately $130,000.",
+    "report_link": "https://medium.com/neptune-mutual/analysis-of-the-barley-finance-exploit-d2df61b98c80"
+}

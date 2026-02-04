@@ -1,0 +1,20 @@
+{
+    "name": "CreamFinance",
+    "cause": "Reentrancy attack",
+    "platform": "Ethereum",
+    "time": "2021/8/30 04:03",
+    "transaction_hash": [
+        "0xa9a1b8ea288eb9ad315088f17f7c7386b9989c95b4d13c81b69d5ddad7ffe61e"
+    ],
+    "report": "The attacker exploited a reentrancy vulnerability in the AMP token's `transfer` function, which internally calls `_callPreTransferHooks`. By utilizing this hook, the attacker was able to reenter Cream Finance's lending contract during the `doTransferOut` operation (the function that sends out borrowed tokens). This allowed them to execute a second `borrow()` function before the contract's internal state (like the user's borrow balance) was updated from the first borrow. Through this reentrancy loop across 17 transactions, the attacker illicitly borrowed additional funds, ultimately profiting approximately 6,000 ETH (worth about $18.8 million at the time).",
+    "detection": {
+        "time": "2021/8/30 06:10",
+        "link": "https://twitter.com/peckshield/status/1432224092275548160?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1432228488405307395%7Ctwgr%5Eb900715aa78a7868f88d2dc4cb2c17a5fa413c0c%7Ctwcon%5Es2_&ref_url=https%3A%2F%2Fcoingape.com%2Fcream-finance-faces-second-flash-loan-attack-in-2021-loses-18-million%2F"
+    },
+    "disclosure": {
+        "time": "2021/8/30 06:27",
+        "link": "https://twitter.com/peckshield/status/1432228488405307395?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1432228488405307395%7Ctwgr%5Eb900715aa78a7868f88d2dc4cb2c17a5fa413c0c%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fcoingape.com%2Fcream-finance-faces-second-flash-loan-attack-in-2021-loses-18-million%2F"
+    },
+    "root_cause": "doTransferOut",
+    "report_link": "https://rekt.news/cream-rekt"
+}

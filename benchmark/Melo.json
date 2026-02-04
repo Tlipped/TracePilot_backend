@@ -1,0 +1,13 @@
+{
+    "name": "Melo",
+    "cause": "Arbitrary external call",
+    "platform": "BNBChain",
+    "time": "2023/5/6",
+    "link": "https://twitter.com/peckshield/status/1654667621139349505",
+    "transaction_hash": [
+        "0x3f1973fe56de5ecd59a815d3b14741cf48385903b0ccfe248f7f10c2765061f7"
+    ],
+    "report": "The mint function in the MELO token contract is publicly accessible without any access control, allowing anyone to mint arbitrary amounts of tokens. In the attack transaction 0x3f1973fe56de5ecd59a815d3b14741cf48385903b0ccfe248f7f10c2765061f7, the attacker minted 146,965,900.2021899513963488 MELO tokens and immediately swapped them for 90,488.67 BSC-USD (approximately $90,377), resulting in a significant loss for the protocol.",
+    "root_cause": "mint",
+    "report_link": "https://web3sec.notion.site/Public-mint-c26e99d8419a4fca930183100b0a32f6?pvs=23"
+}

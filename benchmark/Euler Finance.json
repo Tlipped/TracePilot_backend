@@ -1,0 +1,18 @@
+{
+    "name": "Euler Finance",
+    "cause": "Flashloan",
+    "platform": "Ethereum",
+    "time": "2023/3/13",
+    "link": "https://medium.com/coinmonks/decoding-euler-finances-197-million-exploit-quillaudits-c70fed910d2c",
+    "transaction_hash": [
+        "0xc310a0affe2169d1f6feec1c63dbc7f7c62a887fa48795d327d4d2da2d6b111d",
+        "0x71a908be0bef6174bccc3d493becdfd28395d78898e355d451cb52f7bac38617",
+        "0x62bd3d31a7b75c098ccf28bc4d4af8c4a191b4b9e451fab4232258079e8b18c4",
+        "0x465a6780145f1efe3ab52f94c006065575712d2003d83d85481f3d110ed131d9",
+        "0x3097830e9921e4063d334acb82f6a79374f76f0b1a8f857e89b89bc58df1f311",
+        "0x47ac3527d02e6b9631c77fad1cdee7bfa77a8a7bfd4880dccbda5146ace4088f"
+    ],
+    "report": "The attack was possible due to a lack of liquidity checks in the donateToReserves function of the Etoken. Based on on-chain data analysis, the attacker has successfully executed multiple transactions resulting in the theft of approximately $196 million, making it the largest hack of 2023 thus far.",
+    "root_cause": "donateToReserves",
+    "report_link": "https://medium.com/@numencyberlabs/a-detailed-analysis-of-euler-finances-196-million-flash-loan-attack-81cdef370024"
+}

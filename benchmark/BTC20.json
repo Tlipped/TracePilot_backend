@@ -1,0 +1,17 @@
+{
+    "name": "BTC20",
+    "cause": "Price Manipulation",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0xcdd93e37ba2991ce02d8ca07bf6563bf5cd5ae801cbbce3dd0babb22e30b2dbe"
+    ],
+    "time": "2023-08-19 13:48:11 UTC",
+    "lost": "~$18ETH",
+    "disclosure": {
+        "time": "2023-08-19 15:39:00 UTC",
+        "link": "['https://twitter.com/DecurityHQ/status/1692924369662513472']"
+    },
+    "root_cause": "fetchPrice",
+    "report": "The attacker exploited the `fetchPrice` function by conducting a large buy order for BTC20 tokens in the WETH-BTC20 liquidity pool on Uniswap. This transaction manipulated the pair's reserves, which the function directly queries via `getAmountsIn`. The manipulated, inflated price was then used by the protocol, allowing the attacker to extract illicit value based on the false pricing information.",
+    "report_link": "https://web3sec.notion.site/Price-Manipulation-380dff0f6e76499ab6c00ff5acd40677?pvs=23"
+}

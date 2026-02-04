@@ -1,0 +1,16 @@
+{
+    "name": "CompoundUni",
+    "cause": "Oracle bad price",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0xaee0f8d1235584a3212f233b655f87b89f22f1d4890782447c4ef742b37af58d"
+    ],
+    "time": "2024-02-23 14:35:35 UTC",
+    "lost": "~439,537 USD",
+    "disclosure": {
+        "time": "2024-02-24 09:47:00 UTC",
+        "link": "['https://www.coinlive.com/news/compound-incurred-bad-debts-of-us-660-000-due-to-uni-s-instant']"
+    },
+    "root_cause": "getUnderlyingPrice",
+    "report": "The full expert report is unavailable. Please evaluate the generated report strictly based on the provided 'root_cause' information."
+}

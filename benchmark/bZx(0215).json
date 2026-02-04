@@ -1,0 +1,20 @@
+{
+    "name": "bZx(0215)",
+    "cause": "Arbitrage",
+    "platform": "Ethereum",
+    "time": "2020/2/15 1:38",
+    "transaction_hash": [
+        "0xb5c8bd9430b6cc87a0e2fe110ece6bf527fa4f170a4bc8cd032f768fc5219838"
+    ],
+    "report": "The attacker exploited a logical flaw in bZx protocol's `marginTradeFromDeposit()` function (within its internal call chain). The flaw caused the contract to skip a critical risk validation check (`shouldLiquidate()`) that was designed to prevent unhealthy leveraged positions. This allowed the attacker to use a flash loan and 5x leverage to manipulate the WBTC price on Uniswap via KyberSwap, creating an artificial price spike. The attacker then profited by dumping pre-borrowed WBTC at the inflated price, ultimately netting approximately 1,271 ETH (worth ~$355,880 at the time).",
+    "detection": {
+        "time": "2020/2/15 2:46",
+        "link": "https://twitter.com/defipulse/status/1228698197863755776"
+    },
+    "disclosure": {
+        "time": "2020/2/18 0:00",
+        "link": "https://peckshield.medium.com/bzx-hack-full-disclosure-with-detailed-profit-analysis-e6b1fa9b18fc\n"
+    },
+    "root_cause": "_borrowTokenAndUse + marginTradeFromDeposit",
+    "report_link": "https://learnblockchain.cn/article/622"
+}

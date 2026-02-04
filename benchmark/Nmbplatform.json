@@ -1,0 +1,20 @@
+{
+    "name": "Nmbplatform",
+    "cause": "FlashLoan",
+    "platform": "BNBChain",
+    "time": "2022/12/14 03:40",
+    "transaction_hash": [
+        "0x42f56d3e86fb47e1edffa59222b33b73e7407d4b5bb05e23b83cb1771790f6c1"
+    ],
+    "report": "The staking reward calculation in getReward relies on a price feed that uses the spot price from a manipulated NIMB-NBU_WBNB trading pair. Specifically, the earnedByNonce function computes rewards in the native reward token and then converts it to the payment token via getTokenAmountForToken, which queries a price feed. Since the price feed for NIMB is derived from a liquidity pool that can be manipulated, an attacker artificially inflated the NIMB price to extract disproportionately large rewards in the stable payment token.",
+    "detection": {
+        "time": "2022/12/14 04:04",
+        "link": "https://twitter.com/BlockSecTeam/status/1602877048124735489"
+    },
+    "disclosure": {
+        "time": "2022/12/14 04:22",
+        "link": "https://twitter.com/BlockSecTeam/status/1602881707958407168"
+    },
+    "root_cause": "getReward",
+    "report_link": "https://web3sec.notion.site/Staking-reward-is-based-on-spot-price-626996b6df1a41599e9d1443fb1617ff"
+}

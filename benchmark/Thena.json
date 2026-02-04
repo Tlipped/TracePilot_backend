@@ -1,0 +1,12 @@
+{
+    "name": "Thena",
+    "cause": "Yield Protocol Flaw",
+    "platform": "BNBChain",
+    "transaction_hash": [
+        "0xdf6252854362c3e96fd086d9c3a5397c303d265649aee0b023176bb49cf00d4b"
+    ],
+    "time": "2023-03-27 17:35:56 UTC",
+    "lost": "$10k",
+    "root_cause": "unstake",
+    "report": "The full expert report is unavailable. Please evaluate the generated report strictly based on the provided 'root_cause' information."
+}

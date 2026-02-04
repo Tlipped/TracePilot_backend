@@ -1,0 +1,18 @@
+{
+    "name": "bZxProtocol",
+    "cause": "Inflation Attack",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x0fc5c0d41e5506fdb9434fab4815a4ff671afc834e47a533b3bed7182ece73b0",
+        "0xb072f2e88058c147d8ff643694b43a42e36525b7173ce1daf76e6c06170b0e77"
+    ],
+    "time": "2023-12-02 02:30:23 UTC",
+    "lost": "~$208k",
+    "detection": {
+        "time": "2023-12-02 4:48:00 UTC",
+        "link": "['https://x.com/MetaSec_xyz/status/1730811240942088263']"
+    },
+    "root_cause": "borrow",
+    "report": "The attacker exploited an inflation attack vector related to the `borrow` function in an empty or newly forked liquidity pool. By first depositing a minimal amount to acquire pool tokens and then front-running a legitimate large deposit transaction with a massive 'donation' (inflation) of assets, the attacker artificially and drastically inflated the value of each pool token. This manipulation allowed the attacker to subsequently use the `borrow` function (or a similar withdrawal mechanism) to illicitly withdraw a far greater quantity of tokens than they rightfully owned or had initially deposited.",
+    "report_link": "https://web3sec.notion.site/Inflation-Attack-90b5a0937ec64641bac809884ee45a2c"
+}

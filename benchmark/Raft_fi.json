@@ -1,0 +1,17 @@
+{
+    "name": "Raft_fi",
+    "cause": "Donate Inflation ExchangeRate & Rounding Error",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0xfeedbf51b4e2338e38171f6e19501327294ab1907ab44cfd2d7e7336c975ace7"
+    ],
+    "time": "2023-11-10 18:59:23 UTC",
+    "lost": "~$3.2 M",
+    "disclosure": {
+        "time": "2023-11-11 06:41:00 UTC",
+        "link": "['https://twitter.com/BlockSecTeam/status/1723229393529835972']"
+    },
+    "root_cause": "managePosition",
+    "report": "The essence of the attack was a precision calculation issue during the minting of share tokens, which allowed manipulation of the critical variable 'index' and failed to properly account for rounding in token precision, resulting in a loss of approximately $3.6 million.",
+    "report_link": "https://www.freebuf.com/articles/blockchain-articles/383686.html"
+}

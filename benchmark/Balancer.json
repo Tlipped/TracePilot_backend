@@ -1,0 +1,13 @@
+{
+    "name": "Balancer",
+    "cause": "Rounding Error && Business Logic Flaw",
+    "platform": "Ethereum",
+    "time": "2023/8/27",
+    "link": "https://blocksec.com/blog/tiny-rounding-down-big-fund-losses-an-in-depth-analysis-of-the-recent-balancer-incident",
+    "transaction_hash": [
+        "0x2a027c8b915c3737942f512fc5d26fd15752d0332353b3059de771a35a606c2d"
+    ],
+    "report": "The attacker exploited a two-step vulnerability in the `onSwap` function of Balancer's composable pools. First, they manipulated a linear pool's rounding down logic to unilaterally increase the pool's BPT balance, inflating the exchange rate. Second, they exploited the virtual supply mechanism of a composable stable pool by driving the BPT supply to zero through a swap, allowing a subsequent reverse swap at a nearly 1:1 ratio—far more favorable than the manipulated rate. This two-step manipulation across interconnected pools within a single `batchSwap` transaction resulted in a profit of approximately $108,843.7.",
+    "root_cause": "onSwap",
+    "report_link": "https://slowmist.medium.com/review-and-recommendations-of-balancer-incident-d2b31b5bd863"
+}

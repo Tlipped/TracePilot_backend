@@ -1,0 +1,13 @@
+{
+    "name": "XSTABLE Protocol",
+    "cause": "Incorrect Logic Check",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x873f7c77d5489c1990f701e9bb312c103c5ebcdcf0a472db726730814bfd55f3"
+    ],
+    "time": "2022-08-09 20:04:26 UTC",
+    "lost": "",
+    "root_cause": "_transfer",
+    "report": "The vulnerability stems from an incorrect logic check in the _transfer function: when tokens are transferred to a supported pool, the transaction is classified as type 1 (buy), triggering _implementBuy and allowing the sender to receive rewards via skim(). This enables an attacker to transfer more XST tokens to the pair to get more XST tokens.",
+    "report_link": "https://web3sec.notion.site/Incorrect-Logic-Check-get-rewards-over-skim-b1cfa378291841fc98bf599a8d1d4fc6?pvs=23"
+}

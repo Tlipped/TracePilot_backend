@@ -1,0 +1,17 @@
+{
+    "name": "KyberSwap",
+    "cause": "precision loss",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x485e08dc2b6a4b3aeadcb89c3d18a37666dc7d9424961a2091d6b3696792f0f3"
+    ],
+    "time": "2023-11-22 22:55:11 UTC",
+    "lost": "~$48M",
+    "disclosure": {
+        "time": "2023-11-23 05:30:00 UTC",
+        "link": "['https://x.com/BlockSecTeam/status/1727560157888942331']"
+    },
+    "root_cause": "estimateIncrementalLiquidity",
+    "report": "The root cause lies in the flawed tick calculation caused by the incorrect rounding direction within the delta liquidity calculation (i.e., the estimateIncrementalLiquidity function) of the SwapMath contract. deltaL is intended to be rounded up in order to round down the nextSqrtP. However, deltaL is mistakenly rounded down due to the use of the mulDivFloor function at line 189. Consequently, nextSqrtP is inaccurately rounded up. This subsequently led to improper tick calculations and, ultimately, to double counting of liquidity. These attacks resulted in a total loss of over $48 million.",
+    "report_link": "https://blocksec.com/blog/kyberswap-incident-masterful-exploitation-of-rounding-errors-with-exceedingly-subtle-calculations"
+}

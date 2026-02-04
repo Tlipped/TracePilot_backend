@@ -1,0 +1,21 @@
+{
+    "name": "Cover Protocol",
+    "cause": "Contract Vulnerability",
+    "platform": "Ethereum",
+    "time": "2020/12/28 8:08",
+    "transaction_hash": [
+        "0xd721b0ef2886f14b75548b70d2d1fd82bea085ca24f5de29b833a64cfd8f7a50",
+        "0xadf27f5dd052482d46fdf69a5208a27cc7352522c7c19bbde5aee18f6ea4373b"
+    ],
+    "report": "The attacker exploited a critical state inconsistency between `memory` and `storage` in the `deposit` and `updatePool` functions. When `deposit` was called, it read the pool data into memory and then called `updatePool`, which correctly updated the key reward variable (`pool.accRewardsPerToken`) in storage. However, the subsequent `_claimCoverRewards` function incorrectly used the outdated value from memory (instead of the updated one in storage) to calculate mintable COVER tokens. Simultaneously, it also used an outdated `miner.rewardWriteoff` value because its update occurred after the minting calculation. This double accounting error allowed the attacker to mint vastly inflated amounts of COVER tokens with each deposit/withdraw cycle, leading to unlimited token minting and a profit of approximately $4.4 million for the initial attacker.",
+    "detection": {
+        "time": "2020/12/28 10:54",
+        "link": "https://coverprotocol.medium.com/12-28-post-mortem-34c5f9f718d4"
+    },
+    "disclosure": {
+        "time": "2020/12/28 23:51",
+        "link": "https://twitter.com/emilianobonassi/status/1343839568919932933"
+    },
+    "root_cause": "deposit + updatePool",
+    "report_link": "https://www.aicoin.com/zh-Hans/article/239546"
+}

@@ -1,0 +1,13 @@
+{
+    "name": "Orion Protocol",
+    "cause": "Reentrancy",
+    "platform": "Ethereum",
+    "time": "2023/2/2",
+    "link": "https://www.numencyber.com/analysis-of-orionprotocol-reentrancy-attack-with-poc/",
+    "transaction_hash": [
+        "0xa6f63fcb6bec8818864d96a5b1bb19e8bd85ee37b2cc916412e720988440b2aa"
+    ],
+    "report": "The doSwapThroughOrionPool function is vulnerable to reentrancy because it uses a user-provided swap path that may include malicious tokens. During the token transfer within _doSwapTokens, the contract updates curBalance only after the transfer completes. An attacker deployed a fake token with a callback in its transfer function that re-enters the depositAsset function, causing curBalance to be incorrectly updated before the original swap finishes. After manipulating the balance, the attacker called withdraw to extract funds, repaid the flash loan, and profited from the discrepancy.",
+    "root_cause": "doswapThroughOrionPool",
+    "report_link": "https://web3sec.notion.site/Reentrancy-in-the-doSwapThroughOrionPool-function-0102b3104d52439a93de79ea722d55c0"
+}

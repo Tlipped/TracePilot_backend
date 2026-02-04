@@ -1,0 +1,20 @@
+{
+    "name": "Uranium Finance",
+    "cause": "Precision processing error",
+    "platform": "BNBChain",
+    "time": "2021/4/28 3:02",
+    "transaction_hash": [
+        "0x5a504fe72ef7fc76dfeb4d979e533af4e23fe37e90b5516186d5787893c37991"
+    ],
+    "report": "Incorrect calculation due to inconsistent constants in the code: 10000 is used for balance adjustment while 1000 is used in the K invariant check.",
+    "detection": {
+        "time": "2021/4/28 3:22",
+        "link": "https://twitter.com/UraniumFinance/status/1387245696454041600"
+    },
+    "disclosure": {
+        "time": "2021/4/28 10:04",
+        "link": "https://twitter.com/FrankResearcher/status/1387347025742557186"
+    },
+    "root_cause": "swap",
+    "report_link": "https://web3sec.notion.site/Incorrect-calculation-10000-vs-1000-5382319195184d1d85ab70b193b7d444?pvs=23"
+}

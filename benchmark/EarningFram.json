@@ -1,0 +1,13 @@
+{
+    "name": "EarningFram",
+    "cause": "Reentrancy",
+    "platform": "Ethereum",
+    "time": "2023/8/9",
+    "link": "https://neptunemutual.com/blog/how-was-the-earning-farm-exploited/",
+    "transaction_hash": [
+        "0x6e6e556a5685980317cb2afdb628ed4a845b3cbd1c98bdaffd0561cb2c4790fa"
+    ],
+    "report": "The attacker exploited a reentrancy vulnerability in the `withdraw()` function. After depositing 320 ETH to acquire LP tokens (ENF_ETHLEV), the attacker initiated a withdrawal. During the withdrawal process (likely in a fallback or callback), the attacker reentered the contract and transferred the majority of the LP tokens to another attack contract. This action, due to flawed logic in the contract's accounting, caused the internal `shares` value to be incorrectly overridden. As a result, the attacker was able to burn only a minimal amount of the remaining LP tokens to redeem the full 320 ETH, and then swap the surplus LP tokens for an additional 159 ETH, leading to a total loss of approximately 286,000 USD.",
+    "root_cause": "withdraw",
+    "report_link": "https://blog.solidityscan.com/earningfarm-hack-analysis-f5eba2a1e080"
+}

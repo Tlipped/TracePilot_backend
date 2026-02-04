@@ -1,0 +1,17 @@
+{
+    "name": "JokInTheBox",
+    "cause": "business logic flaw",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0xe8277ef6ba8611bd12dc5a6e7ca4b984423bc0b3828159f83b466fdcf4fe054f"
+    ],
+    "time": "2024-06-11 00:12:47 UTC",
+    "lost": "~9.2 ETH",
+    "disclosure": {
+        "time": "2024-06-26 05:28:00 UTC",
+        "link": "['https://foresightnews.pro/article/detail/64264']"
+    },
+    "root_cause": "unstake",
+    "report": "The attacker exploited the unstake function in the JokInTheBox contract, which failed to check whether a stake had already been withdrawn. Specifically, the function did not validate the stakes[msg.sender][stakeIndex].unstaked flag before allowing withdrawal. This omission enabled the attacker to repeatedly call unstake on the same stake index, draining all staked assets from the contract—effectively withdrawing the same deposit multiple times and stealing funds belonging to other users.",
+    "report_link": "https://www.freebuf.com/news/404550.html"
+}

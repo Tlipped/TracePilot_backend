@@ -1,0 +1,16 @@
+aiohttp==3.12.15
+anytree==2.13.0
+eth_abi==5.2.0
+eth_utils==5.3.1
+fastmcp==2.14.2
+httpx==0.28.1
+matplotlib==3.10.6
+mcp==1.25.0
+multidict==6.1.0
+networkx==3.4.2
+openai==2.3.0
+Requests==2.32.5
+tiktoken==0.12.0
+tqdm==4.67.1
+transformers==4.51.3
+aiofiles==25.1.0

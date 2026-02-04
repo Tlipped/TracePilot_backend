@@ -1,0 +1,17 @@
+{
+    "name": "UnverifiedContr_0x452E25",
+    "cause": "lack-of-access-control",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x1194e1d6085885ce054a7ff8cd3cd0c3fa308ec87e4ccde8dd0549842fef4f1b"
+    ],
+    "time": "2024-07-03 02:47:23 UTC",
+    "lost": "27 ETH",
+    "detection": {
+        "time": "2024-07-03 03:00:00 UTC",
+        "link": "['https://x.com/SlowMist_Team/status/1808334870650970514']"
+    },
+    "root_cause": "uniswapV3SwapCallback",
+    "report": "Any malicious fake LP contract could invoke uniswapV3SwapCallback. The attacker deployed a malicious liquidity pool and exploited the unprotected callback to drain funds from the arbitrageur router contract.",
+    "report_link": "https://blog.blockmagnates.com/watch-your-back-while-you-want-to-do-aribitrage-with-uniswap-flashloan-f456e4f3e99d"
+}

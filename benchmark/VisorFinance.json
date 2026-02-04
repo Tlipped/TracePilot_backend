@@ -1,0 +1,21 @@
+{
+    "name": "Visor Finance",
+    "cause": "logic bug",
+    "platform": "Ethereum",
+    "time": "2021/12/21 14:18",
+    "transaction_hash": [
+        "0x27f2210536553392cf180c0b37055b3dc92094a5d585d7d2a51f790c9145e47c",
+        "0x69272d8c84d67d1da2f6425b339192fa472898dce936f24818fda415c1c1ff3f"
+    ],
+    "report": "The attacker exploited the deposit function in the RewardsHypervisor contract by performing a reentrancy attack, forging a deposit of 200 million VISR to obtain 195,249,950 vVISR, and ultimately withdrawing 8,812,958 VISR. The total loss was approximately $8.2 million.",
+    "detection": {
+        "time": "2021/12/21 14:58",
+        "link": "https://twitter.com/GammaStrategies/status/1473306777131405314"
+    },
+    "disclosure": {
+        "time": "2021/12/21 15:57",
+        "link": "https://twitter.com/storming0x/status/1473321779250802693"
+    },
+    "root_cause": "deposit",
+    "report_link": "https://www.panewslab.com/zh/articles/N1145282"
+}

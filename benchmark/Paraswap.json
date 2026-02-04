@@ -1,0 +1,17 @@
+{
+    "name": "Paraswap",
+    "cause": "Incorrect Access Control",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x35a73969f582872c25c96c48d8bb31c23eab8a49c19282c67509b96186734e60"
+    ],
+    "time": "2024-03-19 18:25:35 UTC",
+    "lost": "~24K",
+    "disclosure": {
+        "time": "2024-03-22",
+        "link": "['https://medium.com/neptune-mutual/analysis-of-the-paraswap-exploit-1f97c604b4fe']"
+    },
+    "root_cause": "uniswapV3SwapCallback",
+    "report": "The root cause of the exploit is a vulnerability in the contract’s handling of external callback functions, which allowed unauthorized redirection of funds. When the uniswapV3SwapCallback method is called in the affected UniswapV3Utils contract within AugustusV6, the attacker is able to enter any address in the `fromAddress` that has authorized funds and transfer funds from this address to the address controlled by them.",
+    "report_link": "https://medium.com/neptune-mutual/analysis-of-the-paraswap-exploit-1f97c604b4fe"
+}

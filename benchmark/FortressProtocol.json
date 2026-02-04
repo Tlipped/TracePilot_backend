@@ -1,0 +1,24 @@
+{
+    "name": "FortressProtocol",
+    "cause": "Lack of validation",
+    "platform": "BNBChain",
+    "time": "2022/5/8 20:34",
+    "transaction_hash": [
+        "0x18dc1cafb1ca20989168f6b8a087f3cfe3356d9a1edd8f9d34b3809985203501",
+        "0x83a4f8f52b8f9e6ff1dd76546a772475824d9aa5b953808dbc34d1f39250f29d",
+        "0xc368afb2afc499e7ebb575ba3e717497385ef962b1f1922561bcb13f85336252",
+        "0x647c6e89cd1239381dd49a43ca2f29a9fdeb6401d4e268aff1c18b86a7e932a0",
+        "0x13d19809b19ac512da6d110764caee75e2157ea62cb70937c8d9471afcb061bf"
+    ],
+    "report": "The submit function lacked validation of the signer and voting power, allowing attackers to modify the fcds state variable and manipulate the price oracle. This enabled the attacker to pass a malicious governance proposal to set an inflated collateral factor, then profit via arbitrage.",
+    "detection": {
+        "time": "",
+        "link": ""
+    },
+    "disclosure": {
+        "time": "2022/5/9 5:09",
+        "link": "https://twitter.com/BlockSecTeam/status/1523530484877209600"
+    },
+    "root_cause": "submit",
+    "report_link": "https://learnblockchain.cn/article/4062"
+}

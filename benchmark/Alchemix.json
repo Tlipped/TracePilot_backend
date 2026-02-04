@@ -1,0 +1,25 @@
+{
+    "name": "Alchemix",
+    "cause": "Contract Vulnerability",
+    "platform": "Ethereum",
+    "time": "2021/6/16 12:15",
+    "transaction_hash": [
+        "0x3e86045bb9cde8f8cfcb5d943df531c7e68370c2d71cd631b1cee0950cf068f5",
+        "0xed3ea69b36024afb5389c3b940d46108a13fd31212992229d5c8257769cf8eeb",
+        "0x73df02bb2372d5a1f4278eb84d8222f90e12e4d0c9131c5831d0e62587bbe1bb",
+        "0x4fa64411ccd2982c43947a54b8e780ea6523da5c7e0c9545bf85697422b21577",
+        "0x3cc071f9f40294bb250fc7b9aa6b2d7e6ca5707ce4d6d222157d7a0feef618b3",
+        "0x38ecc8363836e43aca99d994bb9325a8f3770d7a1d1fffd62c82cf5230525836"
+    ],
+    "report": "A deployment script error in the _plantOrRecallExcessFunds function accidentally created additional alETH vaults, causing wrong array indexing in vault operations. This miscalculated outstanding rewards in the excess funds processing logic, forcing transmuter funds to be entirely sent to pay off user debts and resulting in unauthorized collateral withdrawals with a 2,688.634 ETH shortfall (~$6.53M).",
+    "detection": {
+        "time": "2021/6/16 15:35",
+        "link": "https://twitter.com/AlchemixFi/status/1405187348678148101"
+    },
+    "disclosure": {
+        "time": "2021/6/17 07:43",
+        "link": "https://twitter.com/AlchemixFi/status/1405430945360998408"
+    },
+    "root_cause": "_plantOrRecallExcessFunds",
+    "report_link": "https://forum.alchemix.fi/public/d/137-incident-report-06162021"
+}

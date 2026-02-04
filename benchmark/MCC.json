@@ -1,0 +1,17 @@
+{
+    "name": "MCC",
+    "cause": "Reflection token",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0xf72f1d10fc6923f87279ce6c0aef46e372c6652a696f280b0465a301a92f2e26"
+    ],
+    "time": "2023-05-09 07:35:35 UTC",
+    "lost": "~$10 ETH",
+    "disclosure": {
+        "time": "2023-05-09 08:05:00 UTC",
+        "link": "['https://twitter.com/BeosinAlert/status/1655846558762692608']"
+    },
+    "root_cause": "deliver",
+    "report": "The deflationary token does not exclude pair from the excluded address, allowing the attacker to use deliver function to mint tokens, and finally swapped the minted tokens for 10 $ETH.",
+    "report_link": "https://web3sec.notion.site/Flash-Loan-1ce72927411380df9fe2f9c330b2e97a?pvs=23"
+}

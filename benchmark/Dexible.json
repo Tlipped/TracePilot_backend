@@ -1,0 +1,18 @@
+{
+    "name": "Dexible",
+    "cause": "Arbitrary external call",
+    "platform": "Ethereum",
+    "time": "2023/2/17",
+    "link": "https://twitter.com/peckshield/status/1626493024879673344",
+    "transaction_hash": [
+        "0x138daa4cbeaa3db42eefcec26e234fc2c89a4aa17d6b1870fc460b2856fd11a6",
+        "0x3bfba5c0694d7c9737074d45ca6d03ff582d534d445691f78b767c60a3c25419",
+        "0x0b4e1f88b48b00007e9572d4b2168c9ecafb16e3f1e2b8a991acf1cec2cb2b68",
+        "0x7ad2395dccee9e0fd86e53890c1db347de91796bd68b1999dc1f64600917c154",
+        "0x1ac525f927d88a1cf81db6c3bfc8a545e138577463b4dcdc0b09665e128a4495",
+        "0x2fbaa71086e027c1cfc9f4a1c5ea88f281138c52269eac1607f9f25ad2b90864"
+    ],
+    "report": "The attacker exploited a critical lack of validation in the `selfSwap` and `fill` functions. By crafting a malicious contract that mimicked a legitimate DEX router, and then passing its address as the `routerID` in a `selfSwap` request, the attacker bypassed any on-chain verification. When the `fill` function executed, it performed a delegate call to the attacker-controlled contract, which contained a `transferFrom` function. This allowed the attacker to directly transfer out all approved tokens from victim accounts. The attack drained approximately $1.5 million from Ethereum and an additional $450k from other chains, affecting 17 users in total.",
+    "root_cause": "selfSwap + fill",
+    "report_link": "https://blockapex.io/dexible-hack-analysis/"
+}

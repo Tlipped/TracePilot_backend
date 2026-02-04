@@ -1,0 +1,20 @@
+{
+    "name": "SashimiSwap",
+    "cause": "Logic Error",
+    "platform": "Ethereum",
+    "time": "2021/12/30 9:06",
+    "transaction_hash": [
+        "0xd6a816cc291b24267c03c23c730a84a2699f32a7cf714c8cbe3e47321c76b08f"
+    ],
+    "report": "The swapExactTokensForETHSupportingFeeOnTransferTokens function incorrectly used the WETH balance from the first trading pair for calculations across multiple pairs, enabling an attacker to exploit this flaw via flash loans and drain approximately $230,000 worth of assets.",
+    "detection": {
+        "time": "2021/12/31 3:16",
+        "link": "https://twitter.com/SASHIMISASHIMI5/status/1476935418138353667"
+    },
+    "disclosure": {
+        "time": "2021/12/31 6:46",
+        "link": "https://www.tuoluo.cn/article/detail-10093322.html"
+    },
+    "root_cause": "swapExactTokensForETHSupportingFeeOnTransferTokens",
+    "report_link": "https://www.freebuf.com/articles/blockchain-articles/323849.html"
+}

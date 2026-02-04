@@ -1,0 +1,20 @@
+{
+    "name": "FEGtoken",
+    "cause": "No Parameter Validate",
+    "platform": "BNBChain",
+    "time": "2022/5/15 20:22",
+    "transaction_hash": [
+        "0x77cf448ceaf8f66e06d1537ef83218725670d3a509583ea0d161533fda56c063"
+    ],
+    "report": "First, swapToSwap function with unvalidated parameter led to arbitrary approval. Second, due to the fake swap in swapToSwap function, there is an inconsistency between the actual and recorded balances of the victim contract. This was used to restore the attacker’s deposit amount and repeatedly perform approvals. Attackers launched a series of attacks on both ETH and BSC mainnets, with a cumulative value of approximately $1.3 million.",
+    "detection": {
+        "time": "2022/5/15 21:25",
+        "link": "https://twitter.com/peckshield/status/1525950439367135232"
+    },
+    "disclosure": {
+        "time": "2022/5/15 21:31",
+        "link": "https://twitter.com/peckshield/status/1525952084725534720"
+    },
+    "root_cause": "swapToSwap",
+    "report_link": "https://blocksec.com/zh/blog/the-analysis-of-fegtoken-security-incident-devils-in-the-details"
+}

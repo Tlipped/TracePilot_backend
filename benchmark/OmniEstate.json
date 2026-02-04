@@ -1,0 +1,14 @@
+{
+    "name": "OmniEstate",
+    "cause": "Parameter verification",
+    "platform": "BNBChain",
+    "time": "2023/1/17",
+    "link": "https://blog.solidityscan.com/omni-estate-group-hack-analysis-missing-zero-duration-validation-285c1c54498",
+    "transaction_hash": [
+        "0x49bed801b9a9432728b1939951acaa8f2e874453d39c7d881a62c2c157aa7613",
+        "0xa916674fb8203fac6d78f5f9afc604be468a514aa61ea36c6d6ef26ecfbd0e97"
+    ],
+    "report": "The _Check_reward function lacks proper input validation for the durations parameter. When the invest function is called with an end_date value other than 3, 6, 12, or 24, the duration[msg.sender] is left at its default value of 0. In _Check_reward, since none of the conditional branches (durations == 3/6/12/24) are satisfied when durations is 0, the function returns the uninitialized global variable total_percent, which retains its previous value—often a large reward amount from prior calculations. This allows an attacker to bypass intended staking duration logic and claim disproportionately high rewards by passing an invalid end_date during investment.",
+    "root_cause": "_Check_reward",
+    "report_link": "https://web3sec.notion.site/insufficient-check-of-the-arguments-96129dae563248e69fbf349f8ad720cd"
+}

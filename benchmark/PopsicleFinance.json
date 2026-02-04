@@ -1,0 +1,20 @@
+{
+    "name": "Popsicle Finance",
+    "cause": "double-claiming attack",
+    "platform": "Ethereum",
+    "time": "2021/8/3 22:53",
+    "transaction_hash": [
+        "0xcd7dae143a4c0223349c16237ce4cd7696b1638d116a72755231ede872ab70fc"
+    ],
+    "report": "From the above attack process, it can be seen that the attacker exploited the SorbettoFragola contract's failure to verify LP ownership, used flash loan funds to move LPs across multiple addresses and call the collectFees method, and after multiple cycles of this operation, obtained a large amount of tokens.",
+    "detection": {
+        "time": "2021/8/4 2:37",
+        "link": "https://twitter.com/PopsicleFinance/status/1422748604524019713"
+    },
+    "disclosure": {
+        "time": "2021/8/4 5:53",
+        "link": "https://twitter.com/Mudit__Gupta/status/1422797923037814786"
+    },
+    "root_cause": "collectFees",
+    "report_link": "https://www.freebuf.com/articles/blockchain-articles/283904.html"
+}

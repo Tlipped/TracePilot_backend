@@ -1,0 +1,17 @@
+{
+    "name": "EFVault",
+    "cause": "Storage Collision",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x1fe5a53405d00ce2f3e15b214c7486c69cbc5bf165cf9596e86f797f62e81914"
+    ],
+    "time": "2023-02-24 05:50:11 UTC",
+    "lost": "~$5.1M",
+    "disclosure": {
+        "time": "2023-02-28 08:49:00 UTC",
+        "link": "['https://twitter.com/peckshield/status/1630490333716029440']"
+    },
+    "root_cause": "redeem (assetsPerShare)",
+    "report": "The attacker exploited a critical storage collision vulnerability introduced during a contract upgrade. In the new version, the `assetDecimal` variable was incorrectly placed in the storage slot previously occupied by `maxDeposit`, causing it to inherit an incorrect, arbitrary value. The `assetsPerShare()` function, which is fundamental to calculating redemption values, used this corrupted `assetDecimal` value in its computation (`totalAssets * assetDecimal * 1e18 / totalSupply`). This miscalculation led to a severe mispricing of shares, allowing the attacker to redeem vault shares for a massively inflated amount of underlying assets, resulting in a loss of approximately $5.1 million.",
+    "report_link": "https://medium.com/cryptodevopsacademy/efvault-hacking-a-post-mortem-of-a-solidity-attack-9ce20e9896c3"
+}

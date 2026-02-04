@@ -1,0 +1,17 @@
+{
+    "name": "Zenterest",
+    "cause": "Price Out Of Date",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0xfe8bc757d87e97a5471378c90d390df47e1b29bb9fca918b94acd8ecfaadc598"
+    ],
+    "time": "2024-08-16 13:58:23 UTC",
+    "lost": "~21000 USD",
+    "disclosure": {
+        "time": "2024-08-21 08:29:00 UTC",
+        "link": "['https://share.foresightnews.pro/article/detail/66811']"
+    },
+    "root_cause": "accrueInterest / ZenterestPriceFeed",
+    "report": "The ZenterestPriceFeed price oracle had not been updated for 570 days, resulting in expired prices. The attacker exploited the distorted oracle prices—MPH reported as 944,836,858,607,953 (vs actual $0.4677) and WHITE as 66,570,137,662,599,764 (vs actual $4200)—to borrow 89.91 WHITE with only 23,200 MPH. After repaying the 85.0085 WHITE flash loan, the attacker profited 4.9 WHITE, worth approximately $21,000.",
+    "report_link": "https://learnblockchain.cn/article/9079"
+}

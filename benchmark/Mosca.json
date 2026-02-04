@@ -1,0 +1,17 @@
+{
+    "name": "Mosca",
+    "cause": "Logic Flaw",
+    "platform": "BNBChain",
+    "transaction_hash": [
+        "0x4e5bb7e3f552f5ee6ee97db9a9fcf07287aae9a1974e24999690855741121aff"
+    ],
+    "time": "2025-01-06 05:22:49 UTC",
+    "lost": "19K",
+    "disclosure": {
+        "time": "2025-01-13",
+        "link": "['https://blog.verichains.io/p/mosca-hack-analysis']"
+    },
+    "root_cause": "join + exitProgram",
+    "report": "The exploit resulted from incorrect balance calculations and incomplete state updates in the exitProgram function. Specifically, the withdrawAll function summed user.balance, user.balanceUSDT, and user.balanceUSDC for withdrawal, but only reset user.balance to zero afterward, leaving user.balanceUSDT and user.balanceUSDC unchanged. The attacker first increased their user.balanceUSDC via the buy function, then used join to add their address to the rewardQueue, and repeatedly called exitProgram to withdraw funds multiple times using the unreset balances, ultimately stealing approximately $19.5K.",
+    "report_link": "https://blog.solidityscan.com/mosca-hack-analysis-85485d0e6bb2"
+}

@@ -1,0 +1,13 @@
+{
+    "name": "BNO",
+    "cause": "Lack of inspection mechanism",
+    "platform": "BNBChain",
+    "time": "2023/7/18",
+    "link": "https://blog.solidityscan.com/bno-hack-analysis-15436d73e44e",
+    "transaction_hash": [
+        "0x33fed54de490797b99b2fc7a159e43af57e9e6bdefc2c2d052dc814cfe0096b9"
+    ],
+    "report": "Emergency withdrawals were made without withdrawing the staked NFTs, and the rewardDebt ledger is set to 0, resulting in them still being claimable when the stake was canceled.The attacker repeats this process and obtains a large reward.",
+    "root_cause": "emergencyWithdraw",
+    "report_link": "https://web3sec.notion.site/Business-Logic-Flow-de73c3842eca4ce7bc65c4b40e5c3646?pvs=23"
+}

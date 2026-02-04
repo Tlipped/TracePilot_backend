@@ -1,0 +1,17 @@
+{
+    "name": "BEGO",
+    "cause": "Incorrect signature verification",
+    "platform": "BNBChain",
+    "transaction_hash": [
+        "0x9f4ef3cc55b016ea6b867807a09f80d1b2e36f6cd6fccfaf0182f46060332c57"
+    ],
+    "time": "2022-10-19 16:34:35 UTC",
+    "lost": "12 BNB",
+    "disclosure": {
+        "time": "2022-10-20 00:30:00 UTC",
+        "link": "['https://twitter.com/peckshield/status/1582892058800685058']"
+    },
+    "root_cause": "mint",
+    "report": "The attacker exploited insufficient input validation in the mint function's `isSigned` modifier. By passing empty arrays for the signature parameters (`_r`, `_s`, `_v`), they bypassed the signature verification logic. The `isSigners` function would iterate over the empty `_signers` array and return `true` without performing any actual checks, allowing the attacker to illegitimately mint an arbitrary amount of BEGO tokens.",
+    "report_link": "https://web3sec.notion.site/Insufficient-validation-5f0b5f9f1412498fb569f538c4e8ce88?pvs=23"
+}

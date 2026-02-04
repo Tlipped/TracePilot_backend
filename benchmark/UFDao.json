@@ -1,0 +1,13 @@
+{
+    "name": "UFDao",
+    "cause": "Incorrect parameter setting",
+    "platform": "BNBChain",
+    "time": "2023/1/11",
+    "link": "https://twitter.com/BlockSecTeam/status/1613507804412940289",
+    "transaction_hash": [
+        "0x933d19d7d822e84e34ca47ac733226367fbee0d9c0c89d88d431c4f99629d77a"
+    ],
+    "report": "It’s due to the incorrect parameter setting. The attacker bought a public offer of the UF Dao with 1:1 rate using USDC, then redeemed almost all in UF Dao.",
+    "root_cause": "buyPublicOffer",
+    "report_link": "https://web3sec.notion.site/Misconfiguration-83e2224099e54ea0bfda1138223527eb?pvs=23"
+}

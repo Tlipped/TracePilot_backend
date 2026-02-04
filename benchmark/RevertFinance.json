@@ -1,0 +1,21 @@
+{
+    "name": "RevertFinance",
+    "cause": "Arbitrary External Call Vulnerability",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0xdaccbc437cb07427394704fbcc8366589ffccf974ec6524f3483844b043f31d5"
+    ],
+    "time": "2023-02-18 05:16:23 UTC",
+    "lost": "~$30k",
+    "detection": {
+        "time": "2023-02-18 13:39:00 UTC",
+        "link": "['https://x.com/revertfinance/status/1626939407126376448']"
+    },
+    "disclosure": {
+        "time": "2023-02-20 02:07:00 UTC",
+        "link": "['https://x.com/revertfinance/status/1627490043026890752']"
+    },
+    "root_cause": "swap",
+    "report": "The V3Utils contract had insufficient input validation, allowing arbitrary external calls, resulting in the theft of funds from approved users.",
+    "report_link": "https://web3sec.notion.site/Arbitrary-External-Call-Vulnerability-2cc8559005984ec2b917b975b32c9f67"
+}

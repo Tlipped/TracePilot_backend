@@ -1,0 +1,17 @@
+{
+    "name": "Burner",
+    "cause": "sandwich ack",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x3bba4fb6de00dd38df3ad68e51c19fe575a95a296e0632028f101c5199b6f714"
+    ],
+    "time": "2024-05-21 09:08:47 UTC",
+    "lost": "1.7 eth",
+    "disclosure": {
+        "time": "2024-05-30",
+        "link": "['https://hackfor.fun/burner-exploit-analysis-829e5ff510c0401a81d5f98b4be8b8c1']"
+    },
+    "root_cause": "convertAndBurn",
+    "report": "The attacker exploited the `convertAndBurn` function to manipulate the token ratio within a decentralized exchange pool. After obtaining a 70 ETH flash loan and converting it to WETH, the attacker swapped the WETH for a large amount of PNT tokens. By calling `convertAndBurn`, they then artificially altered the pool's reserves, decreasing PNT and increasing WETH. This manipulation created a favorable price imbalance, allowing the attacker to swap their PNT back for a greater amount of WETH (71.7 WETH), netting a profit of approximately 1.7 ETH (~$6,400) after repaying the flash loan.",
+    "report_link": "https://learnblockchain.cn/article/12010"
+}

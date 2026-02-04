@@ -1,0 +1,17 @@
+{
+    "name": "landNFT",
+    "cause": "external permission",
+    "platform": "BNBChain",
+    "time": "2023/5/14",
+    "link": "https://twitter.com/BeosinAlert/status/1658000784943124480",
+    "transaction_hash": [
+        "0xe4db1550e3aa78a05e93bfd8fbe21b6eba5cce50dc06688949ab479ebed18048",
+        "0x8de1921ae538264917f99f8ebd567890061d39c92a8fe58f4abd108d2373a265",
+        "0x1df92a1f4e1ebfe2416b68ad3e8f29da779b8c7239a44281f99d933eb4ddc763",
+        "0x10943277a48ae315f7dc39ee4ba32ab9d7a681f36a409abc6315ba5d4902749b",
+        "0x48878f4751f05e4366eb6c6d52a7a637f39d70a4f28cdb82b042118d9e5c81fb"
+    ],
+    "report": "On May 14, 2023, $LAND suffered a hack due to a Missing Access Control vulnerability that resulted in a total loss of 149,616 $BUSD. The $land project allowed multiple miner addresses to mint NFTs, and one of these addresses was identified as 0x2e599883715d2f92468fa5ae3f9aab4e930e3ac7. The attacker took advantage of the vulnerability and interacted with the 0x2e599883715d2f92468fa5ae3f9aab4e930e3ac7 contract to mint 200 NFTs. The attacker continued to mint additional NFTs until the issuance limit for NFTs was reached.",
+    "root_cause": "mint",
+    "report_link": "https://blog.solidityscan.com/land-hack-analysis-missing-access-control-66fb9555a3e3"
+}

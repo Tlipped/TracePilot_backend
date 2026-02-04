@@ -1,0 +1,13 @@
+{
+    "name": "TrustPad",
+    "cause": "business logic vulnerability",
+    "platform": "BNBChain",
+    "time": "2023/11/6",
+    "link": "https://blog.solidityscan.com/trustpad-hack-analysis-f0f8f1fdeb84",
+    "transaction_hash": [
+        "0x191a34e6c0780c3d1ab5c9bc04948e231d742b7d88e0e4f85568d57fcdc03182"
+    ],
+    "report": "The function receiveUpPool has no access control or msg.sender validation, as a result, it could be called by anyone to manipulate the newlockstartTime. By repeatedly calling receiveUpPool and withdraw, the attacker could keep claiming rewards.",
+    "root_cause": "receiveUpPool",
+    "report_link": "https://web3sec.notion.site/Access-control-ba5a4a25fa304d918337190d4cb485d9?pvs=23"
+}

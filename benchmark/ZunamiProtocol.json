@@ -1,0 +1,21 @@
+{
+    "name": "ZunamiProtocol",
+    "cause": "Price Manipulation",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x0788ba222970c7c68a738b0e08fb197e669e61f9b226ceec4cab9b85abe8cceb"
+    ],
+    "time": "2023-08-13 22:34:47 UTC",
+    "lost": "~$2M",
+    "detection": {
+        "time": "2023-08-13 22:47:00 UTC",
+        "link": "['https://x.com/peckshield/status/1690857760412610560']"
+    },
+    "disclosure": {
+        "time": "2023-08-14 00:06:00 UTC",
+        "link": "['https://x.com/peckshield/status/1690877589005778945']"
+    },
+    "root_cause": "cacheAssetPrice",
+    "report": "The cacheAssetPrice() function calculates asset price based on totalHoldings, which the attacker manipulated by flash loaning funds from multiple sources and swapping them for 4.8M UZD on Curve. This artificially inflated totalHoldings and sdtPrice in strategies like MIMCurveStakeDao, leading to a flawed LP price calculation. The attack resulted in a loss of over $2 million.",
+    "report_link": "https://web3sec.notion.site/Flawed-Price-Dependency-a1396fbf87814894a2c417ea1f41a299?pvs=23"
+}

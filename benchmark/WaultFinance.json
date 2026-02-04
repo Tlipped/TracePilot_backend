@@ -1,0 +1,20 @@
+{
+    "name": "WaultFinance",
+    "cause": "FlashLoan",
+    "platform": "BNBChain",
+    "time": "2021/8/4 1:49",
+    "transaction_hash": [
+        "0x31262f15a5b82999bf8d9d0f7e58dcb1656108e6031a2797b612216a95e1670e"
+    ],
+    "report": "The attacker exploited the stake function in the WUSDMaster contract, which allows 1:1 conversion between BSC_USDT and WUSD while also performing a swap that unbalances the WaultSwapPair (BSC_USDT-WEX) pool, creating arbitrage opportunities. The attacker used flash loans to repeatedly call stake, manipulated the pool price, and ultimately profited approximately $930,000.",
+    "detection": {
+        "time": "2021/8/4 3:21",
+        "link": "https://twitter.com/Wault_Finance/status/1422759668317925376"
+    },
+    "disclosure": {
+        "time": "2021/8/4 16:29",
+        "link": "https://twitter.com/InspexCo/status/1422776666892378115"
+    },
+    "root_cause": "stake",
+    "report_link": "https://zhuanlan.zhihu.com/p/396525700"
+}

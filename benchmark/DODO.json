@@ -1,0 +1,20 @@
+{
+    "name": "DODO",
+    "cause": "Init function unlimited",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x0b062361e16a2ea0942cc1b4462b6584208c8c864609ff73aaa640aaa2d92428"
+    ],
+    "time": "2021/3/8 20:57",
+    "detection": {
+        "time": "2021/3/9 1:33",
+        "link": "https://twitter.com/BreederDodo/status/1369098897008648192"
+    },
+    "disclosure": {
+        "time": "2021/3/9 15:17",
+        "link": "https://dodoexhelp.zendesk.com/hc/en-us/articles/900004851126-Important-update-regarding-recent-events-on-DODO"
+    },
+    "root_cause": "init",
+    "report": "The attacker exploited a vulnerability that allowed the `init()` function of DODO's V2 crowdfunding pool contracts to be called multiple times. First, the attacker called `init()` to initialize the contract with a fake token. Then, they called `sync()` to set the pool's reserve balance to zero. Immediately after, they called `init()` again to reinitialize the pool with the genuine token pair (e.g., WCRES/USDT). This malicious reinitialization, combined with the manipulated reserves, allowed the attacker to bypass the pool's liquidity checks. Subsequently, by utilizing a flash loan, they were able to illegitimately withdraw all the genuine tokens from the pool, resulting in a total loss of approximately $3.8 million across multiple pools.",
+    "report_link": "https://rekt.news/zh/au-dodo-rekt"
+}

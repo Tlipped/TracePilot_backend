@@ -1,0 +1,13 @@
+{
+    "name": "Astrid Finance",
+    "cause": "Lack of input validation",
+    "platform": "Ethereum",
+    "time": "2023/10/28",
+    "link": "https://neptunemutual.com/blog/understanding-the-astrid-finance-exploit/",
+    "transaction_hash": [
+        "0x8af9b5fb3e2e3df8659ffb2e0f0c1f4c90d5a80f4f6fccef143b823ce673fb60"
+    ],
+    "report": "The attacker exploited the withdraw function in the ADC protocol by first manipulating the calcStepIncome function with an inflated value_ parameter (36_099_999_999_999_999_900) to improperly update the withdrawable balance, then calling the withdraw function to drain approximately 20 ETH from the contract.",
+    "root_cause": "withdraw",
+    "report_link": "https://web3sec.notion.site/ADC-1d8729274113800f9961d1c2d66e50d7?pvs=23"
+}

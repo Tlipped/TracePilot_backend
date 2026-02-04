@@ -1,0 +1,20 @@
+{
+    "name": "InverseFinance",
+    "cause": "function usage error",
+    "platform": "Ethereum",
+    "time": "2022/6/16 08:47",
+    "transaction_hash": [
+        "0x958236266991bc3fe3b77feaacea120f172c0708ad01c7a715b255f218f9313c"
+    ],
+    "report": "The attacker exploited the protocol's reliance on a flawed oracle implementation that uses pool asset balances to compute LP token prices. By manipulating the underlying Curve pool's composition via a large WBTC-to-USDT swap, the attacker inflated the reported value of yvcrv3Crypto collateral. This allowed them to borrow far more DOLA than justified. The oracle likely used a function like latestAnswer (or equivalent) that returns a price derived directly from on-chain balances without time-weighted averaging or manipulation resistance, enabling instantaneous price distortion.",
+    "detection": {
+        "time": "2022/6/16 09:51",
+        "link": "https://twitter.com/InverseFinance/status/1537372199769845760"
+    },
+    "disclosure": {
+        "time": "2022/6/16 10:36",
+        "link": "https://twitter.com/peckshield/status/1537383690262589440"
+    },
+    "root_cause": "latestAnswer",
+    "report_link": "https://rekt.news/zh/inverse-rekt2"
+}

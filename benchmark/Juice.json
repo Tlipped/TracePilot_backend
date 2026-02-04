@@ -1,0 +1,13 @@
+{
+    "name": "Juice",
+    "cause": "Business Logic Flaw",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0xc9b2cbc1437bbcd8c328b6d7cdbdae33d7d2a9ef07eca18b4922aac0430991e7"
+    ],
+    "time": "2024-03-09 06:06:59 UTC",
+    "lost": "~54 ETH",
+    "root_cause": "harvest",
+    "report": "The attacker exploited a vulnerability in the $JUICE staking contract that allowed unauthorized withdrawal of staked tokens and liquidity pool funds. Although the provided article does not explicitly name the 'harvest' function, the nature of the exploit—draining both user-staked tokens and protocol liquidity in a single action—is characteristic of a flawed reward or withdrawal (harvest) mechanism. The attacker stole 1,303,811 $JUICE tokens and immediately sold them for ～54 ETH, indicating the vulnerability enabled bulk extraction of accrued or principal assets, consistent with a 'harvest'-style function lacking proper access control or state validation.",
+    "report_link": "https://olympixai.medium.com/juicebot-app-hack-analysis-1303e99774fe"
+}

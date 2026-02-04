@@ -1,0 +1,17 @@
+{
+    "name": "Civfund",
+    "cause": "Lack of access control",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0xc42fc0e22a0f60cc299be80eb0c0ddce83c21c14a3dddd8430628011c3e20d6b"
+    ],
+    "time": "2023-07-08 02:40:59 UTC",
+    "lost": "~$165k",
+    "detection": {
+        "time": "2023-07-08 04:06:00 UTC",
+        "link": "['https://x.com/HypernativeLabs/status/1677529544062803969']"
+    },
+    "root_cause": "uniswapV3MintCallback",
+    "report": "The attacker exploited the `uniswapV3MintCallback` function by deploying a replica (clone) of a legitimate Uniswap V3 pool. This malicious pool was able to legitimately call the callback function, circumventing the contract's intended access control. The function, which was designed to transfer tokens directly from a user's wallet to Uniswap when opening a position, was then used by the attacker to drain tokens from user wallets that had previously granted unlimited approval to the vulnerable CivTrade contract, resulting in the theft of 119.7 ETH and 50k DAI.",
+    "report_link": "https://medium.com/civfund/civtrade-hack-analysis-9a2398a6bc2e"
+}

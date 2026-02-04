@@ -1,0 +1,17 @@
+{
+    "name": "MahaLend",
+    "cause": "Donate Inflation ExchangeRate & Rounding Error",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x2881e839d4d562fad5356183e4f6a9d427ba6f475614ce8ef64dbfe557a4a2cc"
+    ],
+    "time": "2023-11-10 22:43:59 UTC",
+    "lost": "~$20 K",
+    "disclosure": {
+        "time": "2023-11-11 06:18:00 UTC",
+        "link": "['https://twitter.com/Phalcon_xyz/status/1723223766350832071']"
+    },
+    "root_cause": "rayDiv",
+    "report": "This is a common vulnerability which also affects RDNT and other protocols, which involves precision expansion and rounding. The rayDiv function is known to have rounding issues, and the attacker could try to manipulate the input b to cause the rounded value to increase to a similar magnitude. In such case, during operations like withdrawing, the actual value would be much smaller than expected due to rounding issues.",
+    "report_link": "https://web3sec.notion.site/Precision-Loss-in-RayDiv-21200ba2e5bd46f9a117ac31dac03a0e?pvs=23"
+}

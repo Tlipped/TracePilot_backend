@@ -1,0 +1,20 @@
+{
+    "name": "Formation.Fi",
+    "cause": "Flashloan",
+    "platform": "Ethereum",
+    "time": "2021/11/20 17:10",
+    "transaction_hash": [
+        "0xa992b28ecf2eed778d20d5200946ea341b950be0c3d78b1f2237a4d8d795de95"
+    ],
+    "report": "The root cause of the Formation.Fi incident lies in a logic flaw within the Vault contract's swapIn function and a token precision misalignment. The function failed to validate the user-supplied fee parameter, allowing it to directly inflate the critical totalTokens state variable. This vulnerability was compounded by the contract's failure to account for the decimal precision difference between USDT (6 decimals) and Formation USD (18 decimals), which drastically amplified the calculation error. The attack proceeded as follows: the attacker first flash-loaned 200 USDT and staked 100 USDT to mint 99 Formation USD. They then executed swapIn to swap the remaining 100 USDT while attaching a massive fee, artificially spiking the totalTokens value. Finally, by calling the withdraw function to burn the 99 Formation USD, the attacker leveraged the inflated totalTokens and the decimal mismatch to redeem 99,999 USDT—far exceeding their deposit—before repaying the loan and securing the profit.",
+    "detection": {
+        "time": "2021/11/21 18:25",
+        "link": "https://twitter.com/FormationFi/status/1462487445212180482"
+    },
+    "disclosure": {
+        "time": "2021/11/23 20:25",
+        "link": "https://medium.com/@Knownsec_Blockchain_Lab/knownsec-blockchain-lab-formation-fi-flash-loan-security-incident-analysis-8a24555f8356"
+    },
+    "root_cause": "swapIn + withdraw",
+    "report_link": "https://zhuanlan.zhihu.com/p/436652327"
+}

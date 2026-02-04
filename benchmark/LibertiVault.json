@@ -1,0 +1,13 @@
+{
+    "name": "LibertiVault",
+    "cause": "Reentrancy",
+    "platform": "Ethereum",
+    "time": "2023/7/11",
+    "link": "https://neptunemutual.com/blog/taking-a-closer-look-at-libertify-exploit/",
+    "transaction_hash": [
+        "0xcb0ad9da33ecabf75df0a24aabf8a4517e4a7c5b1b2f11fee3b6a1ad9299a282"
+    ],
+    "report": "On July 11, 2023, LibertiVault experienced a significant security breach due to a reentrancy vulnerability resulting in a loss of ～452K USD. The attacker initiated the attack by taking a flash loan of 5M USDT and proceeded to call the deposit function of the LibertiVault contract. During the swap operation, the attacker’s contract was invoked, triggering the first reentrancy. By calling the deposit function, the attacker performed a second reentrancy and deposited an additional 2.5M USDT into the contract. The problem arose in the fourth step. Ideally, the contract balance in the second calculation should have been the previous balance plus the initially deposited 2.5M balance. However, due to the reentrancy and the fact that the contract balance was obtained at the beginning, the parameter remained unchanged, and the original balance was used for the calculation.",
+    "root_cause": "deposit",
+    "report_link": "https://medium.com/coinmonks/libertivault-hack-analysis-df63fba22c9b"
+}

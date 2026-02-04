@@ -1,0 +1,17 @@
+{
+    "name": "WiseLending",
+    "cause": "Bad HealthFactor Check",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x04e16a79ff928db2fa88619cdd045cdfc7979a61d836c9c9e585b3d6f6d8bc31"
+    ],
+    "time": "2024-01-12 19:29:23 UTC",
+    "lost": "~464K",
+    "detection": {
+        "time": "2024-01-12 20:46:00 UTC",
+        "link": "['https://twitter.com/EXVULSEC/status/1746138811862577515', 'https://twitter.com/peckshield/status/1745907642118123774']"
+    },
+    "root_cause": "_calculateShares",
+    "report": "Wise Lending's system was exploited due to a rounding issue in the _calculateShares function and manipulation of donation safeguards. The attacker bypassed donation limits and exploited rounding errors through strategic deposits and withdrawals, gaining a disproportionately large share of donations.",
+    "report_link": "https://web3sec.notion.site/Precision-Loss-Vulnerability-in-Share-Accounting-4e0231af7958498385f39b5a13cab362?pvs=23"
+}

@@ -1,0 +1,13 @@
+{
+    "name": "VINU",
+    "cause": "Flashloan",
+    "platform": "Ethereum",
+    "time": "2023/6/6",
+    "link": "https://twitter.com/hexagate_/status/1666051854386511873?cxt=HHwWgoC24bPVgJ8uAAAA",
+    "transaction_hash": [
+        "0xaf46a42fe1ed7193b25c523723dc047c7500e50a00ecb7bbb822d665adb3e1f3"
+    ],
+    "report": "The exploiter passes an existing Uniswap pool as devaddr, allowing him to manipulate the price.",
+    "root_cause": "addLiquidityETH",
+    "report_link": "https://web3sec.notion.site/Lack-of-Validation-ce5fe860cee74abebd5a3759d8163eaf?pvs=23"
+}

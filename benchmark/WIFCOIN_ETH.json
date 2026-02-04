@@ -1,0 +1,17 @@
+{
+    "name": "WIFCOIN_ETH",
+    "cause": "business logic flaw",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0xda8f6a4bed7e5689a343d111632d37480c0316f1d20b732803c4bd482823e284"
+    ],
+    "time": "2024-06-16 08:35:35 UTC",
+    "lost": "~3.4 ETH (WIF token)",
+    "detection": {
+        "time": "2024-06-17 03:56:00 UTC",
+        "link": "['https://x.com/ChainAegis/status/1802550962977964139']"
+    },
+    "root_cause": "claimEarned",
+    "report": "Double claimEarned: Each time the claimEarned function is called, the code iterates through all the stakes and accumulates the calculated _earned amount. However, after calculating the rewards, the already calculated rewards are not marked as claimed. As a result, the next time claimEarned is called, it will recalculate those already claimed rewards, allowing users to claim rewards multiple times.",
+    "report_link": "https://web3sec.notion.site/Business-logic-flaw-7acc485d43764851a53c82409dc1a9bb?pvs=23"
+}

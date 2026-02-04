@@ -1,0 +1,21 @@
+{
+    "name": "DAO_SoulMate",
+    "cause": "Incorrect Access Control",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x1ea0a2e88efceccb2dd93e6e5cb89e5421666caeefb1e6fc41b68168373da342"
+    ],
+    "time": "2024-01-22 17:14:35 UTC",
+    "lost": "~319K",
+    "detection": {
+        "time": "2024-01-22 18:11:00 UTC",
+        "link": "['https://x.com/Phalcon_xyz/status/1749494924662223349']"
+    },
+    "disclosure": {
+        "time": "2024-01-23 10:37:00 UTC",
+        "link": "['https://twitter.com/MetaSec_xyz/status/1749743245599617282']"
+    },
+    "root_cause": "redeem",
+    "report": "The attacker exploited a vulnerability where anyone could call the redeem() function to burn $BUI tokens held by the contract and obtain the corresponding underlying assets.",
+    "report_link": "https://web3sec.notion.site/Lack-of-proper-access-control-3fb0448d789147219e6b1c6b31a5924c?pvs=23"
+}

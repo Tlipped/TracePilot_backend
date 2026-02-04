@@ -1,0 +1,16 @@
+{
+    "name": "Zoomer",
+    "cause": "Business Logic Flaw",
+    "platform": "Ethereum",
+    "transaction_hash": [
+        "0x06d7e7436414c658a33452d28400799f3637e83930dcec39b3bd065dabc6ef04"
+    ],
+    "time": "2024-02-23 15:41:35 UTC",
+    "lost": "~14 ETH",
+    "detection": {
+        "time": "2024-02-24 04:27:00 UTC",
+        "link": "['https://x.com/ChainAegis/status/1761246415488225668']"
+    },
+    "root_cause": "0x72c4cff6",
+    "report": "The full expert report is unavailable. Please evaluate the generated report strictly based on the provided 'root_cause' information."
+}

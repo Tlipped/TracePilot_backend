@@ -1,0 +1,13 @@
+{
+    "name": "FFIST",
+    "cause": "Business Logic Flaw",
+    "platform": "BNBChain",
+    "time": "2023/7/20",
+    "link": "https://blog.solidityscan.com/ffist-hack-analysis-9cb695c0fad9",
+    "transaction_hash": [
+        "0x199c4b88cab6b4b495b9d91af98e746811dd8f82f43117c48205e6332db9f0e0"
+    ],
+    "report": "The _airdrop() function is intended to distribute $FFIST tokens randomly to different addresses. Unfortunately, the randomness of airdrop addresses can be predicted due to manipulable parameters such as the last airdrop address, block number, from & to addresses. Moreover, the number of tokens airdropped to an address is fixed at one token, leading to an imbalance in the pool and causing $FFIST to be consistently set to 1. This imbalance allows a small amount of $FFIST tokens to be exchanged for a disproportionately large amount of USD. $FFIST suffered an attack due to a business logic issue leading to a loss of ～110K USD.",
+    "root_cause": "_airdrop",
+    "report_link": "https://blog.solidityscan.com/ffist-hack-analysis-9cb695c0fad9"
+}
