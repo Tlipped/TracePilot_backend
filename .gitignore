@@ -1,0 +1,61 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual Environment
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Project specific - 保留需要的数据结构但忽略内容
+dataset/raw/*
+!dataset/raw/.gitkeep
+dataset/processed/*
+!dataset/processed/.gitkeep
+experiment_result/*
+!experiment_result/.gitkeep
+agents/logs/*
+!agents/logs/.gitkeep
+
+# Compiler binaries (大文件)
+compiler/
+!compiler/.gitkeep
+
+# Node
+node_modules/
+package-lock.json
+
+# Logs and databases
+*.log
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment
+.env
+*.env
+settings_local.py
+
+# Cache
+.cache/
+*.cache
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test files (可选，根据需求)
+test_*.py
+*_test.py

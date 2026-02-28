@@ -80,7 +80,20 @@ class ContractDao:
                 except OSError:
                     pass
                 result = await self.downloader.download(contract_address=contract_address)
-        contract_name = result.get("ContractName", "")
+        if isinstance(result, dict):
+            contract_name = result.get("ContractName", "")
+        else:
+            print(f"[WARN] Expected dict but got {type(result)} for address {contract_address}")
+            # 尝试转换为字符串并处理
+            result_str = str(result)
+            if result_str.startswith('{'):
+                try:
+                    result_dict = json.loads(result_str)
+                    contract_name = result_dict.get("ContractName", "")
+                except:
+                    contract_name = ""
+            else:
+                contract_name = ""
         return contract_name
 
     async def get_source_code(self, contract_address: str) -> Dict[str, str]:
