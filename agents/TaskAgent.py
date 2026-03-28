@@ -6,8 +6,8 @@ from prompt.task_prompt import INIT_TASK_TREE, TASK_SP, TASK_UP, TASK_END_UP
 
 
 class TaskAgent(AgentBase):
-    def __init__(self, mcp_client, dapp_name, session_id, name="Task Organizer"):
-        super(TaskAgent, self).__init__(name, TASK_SP, max_turns=2, unique_id=dapp_name)
+    def __init__(self, mcp_client, dapp_name, session_id, name="Task Organizer", log_callback=None):
+        super(TaskAgent, self).__init__(name, TASK_SP, max_turns=2, unique_id=dapp_name,log_callback=log_callback)
         self.status = "CONTINUE_DEBUGGING"
         self.thought_process = ""
         self.task_tree = INIT_TASK_TREE

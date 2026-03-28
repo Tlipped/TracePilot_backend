@@ -2,21 +2,21 @@ import json
 import os
 import time
 import traceback
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional, Callable
 
 from settings import LLM_NAME, CACHE_DIR
 from utils.agent_helpers import AgentLogger, TokenManager, ResponseParser
 from utils.llm_client import LLMClient
-
+from app.models import LogMessage
 
 class AgentBase:
-    def __init__(self, name: str, role_prompt: str, unique_id: str = "default", need_tool=False, max_turns=1):
+    def __init__(self, name: str, role_prompt: str, unique_id: str = "default", need_tool=False, max_turns=1,log_callback: Optional[Callable[[LogMessage], None]] = None):
         self.name = name
         self.model = LLM_NAME
         self.max_turns = max_turns
         self.need_tool = need_tool
 
-        self.logger = AgentLogger(name, unique_id)
+        self.logger = AgentLogger(name, unique_id, log_callback=log_callback)
         self.tm = TokenManager(self.model)
         self.parser = ResponseParser()
 

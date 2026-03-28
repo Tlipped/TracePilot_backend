@@ -18,8 +18,8 @@ from utils.token_utils import ERC20_TRANSFER_TOPIC, parse_address
 
 class TxRoleAgent(AgentBase):
     def __init__(self, apikey_bucket: AsyncItemBucket, rpc_bucket: AsyncItemBucket, _platform, dapp_name,
-                 name="TxRoleAgent"):
-        super(TxRoleAgent, self).__init__(name, TX_ROLE_ANALYZE_SP, unique_id=dapp_name)
+                 name="TxRoleAgent", log_callback=None):
+        super(TxRoleAgent, self).__init__(name, TX_ROLE_ANALYZE_SP, unique_id=dapp_name,log_callback=log_callback)
         self.apikey_bucket = apikey_bucket
         self.rpc_bucket = rpc_bucket
         self._platform = _platform

@@ -2,7 +2,7 @@ import asyncio
 import json
 import os
 import time
-from typing import Union, List, Tuple
+from typing import Union, List, Tuple, Callable, Optional
 from agents.TraceAgent import TraceAgent
 from mcp_tools.mcp_client import MCPClient
 from process.analyze import DAppAnalyze
@@ -10,10 +10,10 @@ from process.pyg import DAppProcess
 from settings import PROJECT_PATH, SCAN_APIKEYS, JSONRPCS, MCP_SERVER_PATH
 from utils.bucket import AsyncItemBucket
 from utils.patch_quality_metrics import PatchQualityMetrics
-
+from app.models import LogMessage
 
 class WorkFlow:
-    def __init__(self, semaphore_num=1):
+    def __init__(self, semaphore_num=1,log_callback: Optional[Callable[[LogMessage], None]] = None):
         self.root = os.path.join(PROJECT_PATH, 'dataset')
         self.dapp2processed = {}
         self.dapp2report = {}
@@ -28,6 +28,14 @@ class WorkFlow:
 
         self.semaphore = asyncio.Semaphore(semaphore_num)
         self.metrics_collector = PatchQualityMetrics()
+        self.log_callback = log_callback  # 新增日志回调函数
+
+    def _log(self, agent: str, level: str, message: str):
+        """统一的日志输出方法"""
+        if self.log_callback:
+            self.log_callback(agent, level, message)
+        else:
+            print(message)
 
     @property
     def raw_file_names(self) -> Union[str, List[str], Tuple]:
@@ -71,7 +79,8 @@ class WorkFlow:
                     processed_data, transaction_debugger = await DAppProcess(
                         net2rpc_bucket=self._net2rpc_bucket,
                         net2apikey_bucket=self._net2apikey_bucket,
-                        mcp_client=local_mcp_client
+                        mcp_client=local_mcp_client,
+                        log_callback=self.log_callback
                     ).process(dapp)
                     self.write_cache(dapp_name, processed_path, processed_data)
 
@@ -84,7 +93,8 @@ class WorkFlow:
                         net2apikey_bucket=self._net2apikey_bucket,
                         net2rpc_bucket=self._net2rpc_bucket,
                         mcp_client=local_mcp_client,
-                        metrics_collector=self.metrics_collector
+                        metrics_collector=self.metrics_collector,
+                        log_callback=self.log_callback
                     ).analyze()
                     if fault_report.startswith("ERROR"):
                         print(f"LLM Fault: {fault_report}")

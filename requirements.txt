@@ -1,16 +1,39 @@
-aiohttp==3.12.15
-anytree==2.13.0
-eth_abi==5.2.0
-eth_utils==5.3.1
-fastmcp==2.14.2
-httpx==0.28.1
-matplotlib==3.10.6
-mcp==1.25.0
-multidict==6.1.0
-networkx==3.4.2
-openai==2.3.0
-Requests==2.32.5
-tiktoken==0.12.0
-tqdm==4.67.1
-transformers==4.51.3
-aiofiles==25.1.0
+# 核心异步库
+aiohttp>=3.9.0
+aiofiles>=24.0.0
+
+# 树形数据结构
+anytree>=2.13.0
+
+# 区块链相关库
+eth_abi>=5.0.0
+eth_utils>=5.0.0
+eth-typing>=3.0.0
+web3>=6.0.0
+
+# MCP 和 LLM 相关
+fastmcp>=2.14.2
+mcp>=1.25.0
+openai>=2.0.0
+
+# Web 框架
+fastapi>=0.104.1
+uvicorn[standard]>=0.24.0
+websockets>=12.0
+pydantic>=2.11.0
+
+# 数据库
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.0
+redis>=5.0.0
+
+# 工具库
+httpx>=0.28.0
+matplotlib>=3.9.0
+multidict>=6.0.0
+networkx>=3.4.0
+Requests>=2.32.0
+tiktoken>=0.12.0
+tqdm>=4.66.0
+transformers>=4.45.0
+python-dotenv>=1.1.0

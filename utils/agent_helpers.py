@@ -1,15 +1,345 @@
+# import ast
+# import json
+# import logging
+# import os
+# import re
+# from datetime import datetime
+# from typing import Any,Optional, Callable
+
+# import tiktoken
+
+# from settings import PROJECT_PATH
+# from utils.llm import MODEL_MAX_OUTPUT_TOKENS, MODEL_CONTEXT_WINDOWS
+# from app.models import LogLevel, MsgType, LogMessage
+
+# class JSONParsingError(Exception):
+#     pass
+
+
+# class AgentLogger:
+#     _session_time = datetime.now().strftime("%Y-%m-%d_%H-%M")
+#     _session_log_dir = None
+
+#     def __init__(self, agent_name: str, unique_id: str = "default",log_callback: Optional[Callable[[str, str, str], None]] = None):
+#         self.agent_name = agent_name
+#         self.unique_id = unique_id
+#         self.log_callback = log_callback
+#         if AgentLogger._session_log_dir is None:
+#             AgentLogger._session_log_dir = os.path.join(
+#                 PROJECT_PATH, f"agents/logs/{AgentLogger._session_time}"
+#             )
+#         if not os.path.exists(AgentLogger._session_log_dir):
+#             os.makedirs(AgentLogger._session_log_dir, exist_ok=True)
+
+#         self.file_logger = self._setup_file_logger()
+
+#     def _setup_file_logger(self):
+#         logger_key = f"Agent.{self.unique_id}.{self.agent_name}"
+#         logger = logging.getLogger(logger_key)
+#         logger.setLevel(logging.INFO)
+
+#         if logger.handlers:
+#             logger.handlers.clear()
+
+#         dapp_log_dir = os.path.join(
+#             AgentLogger._session_log_dir,
+#             self.unique_id
+#         )
+#         if not os.path.exists(dapp_log_dir):
+#             os.makedirs(dapp_log_dir, exist_ok=True)
+
+#         log_file = os.path.join(
+#             dapp_log_dir,
+#             f"{self.agent_name}.log"
+#         )
+
+#         file_handler = logging.FileHandler(log_file, encoding='utf-8')
+#         file_handler.setFormatter(logging.Formatter('%(asctime)s - [%(agent_name)s] - %(message)s'))
+#         logger.addHandler(file_handler)
+
+#         logger.propagate = False
+#         return logging.LoggerAdapter(logger, {'agent_name': self.agent_name})
+
+#     @staticmethod
+#     def _snippet(text: str, max_len: int = 200) -> str:
+#         if not text: return ""
+#         text = str(text).replace('\n', ' ')
+#         if len(text) <= max_len: return text
+#         return f"{text[:max_len // 2]} ... [omit{len(text) - max_len}chars] ... {text[-max_len // 2:]}"
+    
+#     # def _send_to_callback(self, level: str, message: str):
+#     #     """通过回调函数发送消息到WebSocket"""
+#     #     if self.log_callback:
+#     #         self.log_callback(self.agent_name, level, message)
+#     def _send_to_callback(self, level: LogLevel, message_type: MsgType, message: str, is_truncated: bool = False):
+#         try:
+#             log_msg = LogMessage(
+#                 agent=self.agent_name,
+#                 level=level,
+#                 message_type=message_type,
+#                 message=message,
+#                 is_truncated=is_truncated
+#             )
+#             if self.log_callback:
+#                 self.log_callback(log_msg)  # 异步调用
+#         except Exception as e:
+#             print(f"[AgentLogger] Failed to send log via callback: {e}")
+
+#     def display_start(self, mode: str, user_prompt: str):
+#         print(f"\n{'=' * 80}")
+#         print(f"🤖 [{self.unique_id}] [Agent: {self.agent_name}] is currently carrying out ({mode})...")
+#         print("-" * 80)
+#         print(f"👤 [{self.unique_id}] User input (summary): {self._snippet(user_prompt)}")
+#         # message = f"\n{'=' * 80}\n🤖 [{self.unique_id}] [Agent: {self.agent_name}] is currently carrying out ({mode})...\n{'-' * 80}\n👤 [{self.unique_id}] User input (summary): {self._snippet(user_prompt)}"
+#         # print(message)
+#         # 通过回调发送到WebSocket
+#         is_trunc = len(user_prompt) > 1000
+#         safe_content = self._snippet(user_prompt, 1000)
+
+#         md_message = f"### 🚀 执行阶段: {mode}\n\n"
+#         if is_trunc:
+#             md_message += "**[输入已截断，仅显示前 1000 字符]**\n\n"
+#         md_message += f"> {safe_content}"
+
+#         self._send_to_callback(
+#             level=LogLevel.INFO,
+#             message_type=MsgType.MARKDOWN,
+#             message=md_message,
+#             is_truncated=is_trunc
+#         )
+
+#     def display_tool_decision(self, tool_calls: list):
+#         if not tool_calls: return
+#         print("-" * 80)
+#         print(f"🛠️  [{self.unique_id}] The model determines the invocation of the tool. ({len(tool_calls)}):")
+#         for idx, tool in enumerate(tool_calls):
+#             print(f"   {idx + 1}. {tool.function.name}(...)")
+#         self._send_to_callback("info", f"Model determines the invocation of the tool ({len(tool_calls)}):")
+#         for idx, tool in enumerate(tool_calls):
+#             self._send_to_callback("info", f"   {idx + 1}. {tool.function.name}(...)")
+
+#     def display_result(self, content: Any, stats: dict):
+#         elapsed = stats.get('time', 0)
+#         tokens = stats.get('token', 0)
+#         display_content = str(content) if content else "None"
+#         print("-" * 80)
+#         print(f"📝 [{self.unique_id}] Model output (summary): {self._snippet(display_content, 300)}")
+#         print("-" * 80)
+#         print(f"📊 [{self.unique_id}] Statistics: Time Consumption {elapsed:.2f}s | Token: {tokens}")
+#         print(f"{'=' * 80}\n")
+#         # self._send_to_callback("info", f"Model output (summary): {self._snippet(display_content, 300)}")
+#         # self._send_to_callback("info", f"Statistics: Time Consumption {elapsed:.2f}s | Token: {tokens}")
+#         if isinstance(content, dict) or isinstance(content, list):
+#             json_res = json.dumps(content, indent=2, ensure_ascii=False)
+#             result_str = f"```json\n{json_res}\n```"
+#         else:
+#             result_str = f"```\n{str(content)}\n```"
+
+#         md_message = f"#### ✅ 任务输出\n\n{result_str}\n\n> 📊 **统计**: 耗时 `{stats.get('time'):.2f}s` | Token `{stats.get('token')}`"
+
+#         self._send_to_callback(
+#             level=LogLevel.INFO,
+#             message_type=MsgType.RESULT,
+#             message=md_message
+#         )
+
+#     def log_full_interaction(self, mode: str, memory_snapshot: str, input_text: str, output_text: str,
+#                              tool_calls: list = None):
+#         log_content = [
+#             f"\n{'=' * 30} {mode} INTERACTION START {'=' * 30}",
+#             f"📅 Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+#             f"🧠 [CONTEXT MEMORY SNAPSHOT]:\n{memory_snapshot}",
+#             "-" * 20,
+#             f"📥 [USER INPUT]:\n{input_text}",
+#             "-" * 20
+#         ]
+#         if tool_calls:
+#             log_content.append(f"🛠️ [TOOL CALLS]:")
+#             for t in tool_calls:
+#                 log_content.append(f"   Name: {t.function.name} | Args: {t.function.arguments}")
+#             log_content.append("-" * 20)
+#         log_content.append(f"📤 [MODEL OUTPUT]:\n{output_text}")
+#         log_content.append(f"{'=' * 30} INTERACTION END {'=' * 30}\n")
+#         self.file_logger.info("\n".join(log_content))
+
+#          # 通过回调发送到WebSocket
+#         self._send_to_callback("debug", f"Interaction start: {mode}")
+#         self._send_to_callback("debug", f"Input: {self._snippet(input_text, 200)}")
+#         if tool_calls:
+#             self._send_to_callback("debug", f"Tool calls: {len(tool_calls)} tools")
+#         self._send_to_callback("debug", f"Output: {self._snippet(output_text, 200)}")
+
+#     def log_tool_result(self, tool_name: str, tool_result: Any):
+#         self.file_logger.info(f"\n🛠️ [TOOL RESULT] ({tool_name}):\n{tool_result}\n{'-' * 40}")
+#         # 通过回调发送到WebSocket
+#         self._send_to_callback("info", f"[TOOL RESULT] ({tool_name}): {self._snippet(str(tool_result), 200)}")
+#     def log_patch_report(self, fault_report: str, final_trace: str, fix_report: str):
+#         content = f"\n{'=' * 40}\n🎯 [PATCH GENERATED]\n📄 Report: {fault_report}\n💻 Fix Report: {fix_report}\nT Trace: {final_trace}\n{'=' * 40}"
+#         self.file_logger.info(content)
+#         print(f"\n{'=' * 80}\n🎯 PATCH GENERATED\nReport Summary: {str(fault_report)[:200]}...\n{'=' * 80}\n")
+#          # 通过回调发送到WebSocket
+#         self._send_to_callback("info", "[PATCH GENERATED]")
+#         self._send_to_callback("info", f"Report: {self._snippet(str(fault_report), 200)}")
+#         self._send_to_callback("info", f"Fix Report: {self._snippet(str(fix_report), 200)}")
+#     def info(self, msg, *args, **kwargs):
+#         self.file_logger.info(msg, *args, **kwargs)
+#         self._send_to_callback("info", str(msg))
+
+#     def error(self, msg, *args, **kwargs):
+#         self.file_logger.error(msg, *args, **kwargs)
+#         self._send_to_callback("error", str(msg))
+
+#     def warning(self, msg, *args, **kwargs):
+#         self.file_logger.warning(msg, *args, **kwargs)
+#         self._send_to_callback("warning", str(msg))
+
+#     def debug(self, msg, *args, **kwargs):
+#         self.file_logger.debug(msg, *args, **kwargs)
+#         self._send_to_callback("debug", str(msg))
+# class AgentLogger:
+#     _session_time = datetime.now().strftime("%Y-%m-%d_%H-%M")
+#     _session_log_dir = None
+
+#     def __init__(self, agent_name: str, unique_id: str = "default", 
+#                  log_callback: Optional[Callable[[LogMessage], None]] = None): # 这里的类型提示也改了
+#         self.agent_name = agent_name
+#         self.unique_id = unique_id
+#         self.log_callback = log_callback
+        
+#         if AgentLogger._session_log_dir is None:
+#             AgentLogger._session_log_dir = os.path.join(
+#                 PROJECT_PATH, f"agents/logs/{AgentLogger._session_time}"
+#             )
+#         if not os.path.exists(AgentLogger._session_log_dir):
+#             os.makedirs(AgentLogger._session_log_dir, exist_ok=True)
+
+#         self.file_logger = self._setup_file_logger()
+
+#     def _setup_file_logger(self):
+#         logger_key = f"Agent.{self.unique_id}.{self.agent_name}"
+#         logger = logging.getLogger(logger_key)
+#         logger.setLevel(logging.INFO)
+
+#         if logger.handlers:
+#             logger.handlers.clear()
+
+#         dapp_log_dir = os.path.join(AgentLogger._session_log_dir, self.unique_id)
+#         if not os.path.exists(dapp_log_dir):
+#             os.makedirs(dapp_log_dir, exist_ok=True)
+
+#         log_file = os.path.join(dapp_log_dir, f"{self.agent_name}.log")
+#         file_handler = logging.FileHandler(log_file, encoding='utf-8')
+#         file_handler.setFormatter(logging.Formatter('%(asctime)s - [%(agent_name)s] - %(message)s'))
+#         logger.addHandler(file_handler)
+
+#         logger.propagate = False
+#         return logging.LoggerAdapter(logger, {'agent_name': self.agent_name})
+
+#     @staticmethod
+#     def _snippet(text: str, max_len: int = 200) -> str:
+#         if not text: return ""
+#         text = str(text).replace('\n', ' ')
+#         if len(text) <= max_len: return text
+#         return f"{text[:max_len // 2]} ... [omit{len(text) - max_len}chars] ... {text[-max_len // 2:]}"
+
+#     def _send_to_callback(self, level: LogLevel, message_type: MsgType, message: str, is_truncated: bool = False):
+#         """统一的桥接方法，构造 LogMessage 对象并发送给 TaskManager"""
+#         try:
+#             timestamp_str = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")
+#             log_msg = LogMessage(
+#                 agent=self.agent_name,
+#                 level=level,
+#                 message_type=message_type,
+#                 message=message,
+#                 is_truncated=is_truncated,
+#                 timestamp=timestamp_str
+#             )
+#             if self.log_callback:
+#                 self.log_callback(log_msg) 
+#         except Exception as e:
+#             # 这里的 print 很有必要，防止日志系统崩溃导致整个任务挂掉
+#             print(f"[AgentLogger] Critical: Failed to send log via callback: {e}")
+
+#     def display_start(self, mode: str, user_prompt: str):
+#         print(f"\n{'=' * 80}\n🤖 [{self.unique_id}] [Agent: {self.agent_name}] -> ({mode})\n{'-' * 80}")
+        
+#         is_trunc = len(user_prompt) > 1000
+#         safe_content = self._snippet(user_prompt, 1000)
+#         md_message = f"### 🚀 执行阶段: {mode}\n\n"
+#         if is_trunc: md_message += "**[输入已截断]**\n\n"
+#         md_message += f"> {safe_content}"
+
+#         self._send_to_callback(LogLevel.INFO, MsgType.MARKDOWN, md_message, is_trunc)
+
+#     def display_tool_decision(self, tool_calls: list):
+#         if not tool_calls: return
+#         print(f"🛠️  [{self.unique_id}] Model calls tools: {', '.join([t.function.name for t in tool_calls])}")
+        
+#         msg = f"Model determines invocation of tools ({len(tool_calls)}):\n"
+#         for idx, tool in enumerate(tool_calls):
+#             msg += f"- `{tool.function.name}(...)`\n"
+
+#         self._send_to_callback(LogLevel.INFO, MsgType.TOOL_CALL, msg)
+
+#     def display_result(self, content: Any, stats: dict):
+#         elapsed = stats.get('time', 0)
+#         tokens = stats.get('token', 0)
+        
+#         if isinstance(content, (dict, list)):
+#             json_res = json.dumps(content, indent=2, ensure_ascii=False)
+#             result_str = f"```json\n{json_res}\n```"
+#         else:
+#             result_str = f"```\n{str(content)}\n```"
+
+#         md_message = f"#### ✅ 任务输出\n\n{result_str}\n\n> 📊 **统计**: 耗时 `{elapsed:.2f}s` | Token `{tokens}`"
+
+#         self._send_to_callback(LogLevel.INFO, MsgType.RESULT, md_message)
+
+#     def log_full_interaction(self, mode: str, memory_snapshot: str, input_text: str, output_text: str, tool_calls: list = None):
+#         # 1. 写入本地文件
+#         log_content = [f"\n{'=' * 30} {mode} START {'=' * 30}", f"📥 [INPUT]:\n{input_text}", f"📤 [OUTPUT]:\n{output_text}", "=" * 70]
+#         self.file_logger.info("\n".join(log_content))
+
+#         # 2. 发送到 Dashboard (Debug 级别)
+#         self._send_to_callback(LogLevel.DEBUG, MsgType.TEXT, f"Interaction: {mode}")
+#         self._send_to_callback(LogLevel.DEBUG, MsgType.MARKDOWN, f"**Snapshot Snippet:** {self._snippet(input_text, 150)}")
+
+#     def log_tool_result(self, tool_name: str, tool_result: Any):
+#         self.file_logger.info(f"\n🛠️ [TOOL RESULT] ({tool_name}):\n{tool_result}")
+#         msg = f"🔧 **Tool Result** ({tool_name}):\n```\n{self._snippet(str(tool_result), 300)}\n```"
+#         self._send_to_callback(LogLevel.INFO, MsgType.RESULT, msg)
+
+#     def info(self, msg, *args, **kwargs):
+#         self.file_logger.info(msg, *args, **kwargs)
+#         self._send_to_callback(LogLevel.INFO, MsgType.TEXT, str(msg))
+
+#     def error(self, msg, *args, **kwargs):
+#         self.file_logger.error(msg, *args, **kwargs)
+#         self._send_to_callback(LogLevel.ERROR, MsgType.TEXT, str(msg))
+
+#     def warning(self, msg, *args, **kwargs):
+#         self.file_logger.warning(msg, *args, **kwargs)
+#         self._send_to_callback(LogLevel.WARNING, MsgType.TEXT, str(msg))
+
+#     def debug(self, msg, *args, **kwargs):
+#         self.file_logger.debug(msg, *args, **kwargs)
+#         self._send_to_callback(LogLevel.DEBUG, MsgType.TEXT, str(msg))
+
+
 import ast
 import json
 import logging
 import os
 import re
 from datetime import datetime
-from typing import Any
+from typing import Any,Optional, Callable
+import uuid
 
 import tiktoken
 
 from settings import PROJECT_PATH
 from utils.llm import MODEL_MAX_OUTPUT_TOKENS, MODEL_CONTEXT_WINDOWS
+from app.models import LogLevel, MsgType, LogMessage
 
 
 class JSONParsingError(Exception):
@@ -20,10 +350,14 @@ class AgentLogger:
     _session_time = datetime.now().strftime("%Y-%m-%d_%H-%M")
     _session_log_dir = None
 
-    def __init__(self, agent_name: str, unique_id: str = "default"):
+    def __init__(self, agent_name: str, unique_id: str = "default", 
+                 log_callback: Optional[Callable[[LogMessage], None]] = None):
         self.agent_name = agent_name
-        self.unique_id = unique_id
-
+        self.unique_id = unique_id  # 这将用作 task_id
+        self.log_callback = log_callback
+        
+        if AgentLogger._session_time is None:
+            AgentLogger._session_time = datetime.now().strftime("%Y-%m-%d_%H-%M")
         if AgentLogger._session_log_dir is None:
             AgentLogger._session_log_dir = os.path.join(
                 PROJECT_PATH, f"agents/logs/{AgentLogger._session_time}"
@@ -41,18 +375,11 @@ class AgentLogger:
         if logger.handlers:
             logger.handlers.clear()
 
-        dapp_log_dir = os.path.join(
-            AgentLogger._session_log_dir,
-            self.unique_id
-        )
+        dapp_log_dir = os.path.join(AgentLogger._session_log_dir, self.unique_id)
         if not os.path.exists(dapp_log_dir):
             os.makedirs(dapp_log_dir, exist_ok=True)
 
-        log_file = os.path.join(
-            dapp_log_dir,
-            f"{self.agent_name}.log"
-        )
-
+        log_file = os.path.join(dapp_log_dir, f"{self.agent_name}.log")
         file_handler = logging.FileHandler(log_file, encoding='utf-8')
         file_handler.setFormatter(logging.Formatter('%(asctime)s - [%(agent_name)s] - %(message)s'))
         logger.addHandler(file_handler)
@@ -67,68 +394,120 @@ class AgentLogger:
         if len(text) <= max_len: return text
         return f"{text[:max_len // 2]} ... [omit{len(text) - max_len}chars] ... {text[-max_len // 2:]}"
 
+    def _send_to_callback(self, level: LogLevel, message_type: MsgType, message: str, is_truncated: bool = False):
+        """统一的桥接方法，构造 LogMessage 对象并发送给 TaskManager"""
+        try:
+            from app.database.redis_client import redis_client
+            from app.database.models import TaskLog
+            from app.database import SessionLocal
+
+            timestamp_str = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")
+            log_id = str(uuid.uuid4())
+            log_msg = LogMessage(
+                agent=self.agent_name,
+                level=level,
+                message_type=message_type,
+                message=message,
+                is_truncated=is_truncated,
+                timestamp=timestamp_str,
+                log_id=log_id
+            )
+            
+            # 保存完整日志到 Redis
+            redis_client.set_log(log_id, message)
+            
+            # 保存日志记录到数据库
+            db_session = SessionLocal()
+            try:
+                db_log = TaskLog(
+                    task_id=self.unique_id,
+                    log_id=log_id,
+                    agent=self.agent_name,
+                    level=level,
+                    message_type=message_type,
+                    message=message[:1000] if len(message) > 1000 else message,  # 存储摘要
+                    full_content=message,  # 存储完整内容
+                    is_truncated=is_truncated,
+                    timestamp=datetime.now()
+                )
+                db_session.add(db_log)
+                db_session.commit()
+            except Exception as e:
+                print(f"[DB Error] Failed to save log to database: {e}")
+                db_session.rollback()
+            finally:
+                db_session.close()
+            
+            if self.log_callback:
+                self.log_callback(log_msg) 
+        except Exception as e:
+            # 这里的 print 很有必要，防止日志系统崩溃导致整个任务挂掉
+            print(f"[AgentLogger] Critical: Failed to send log via callback: {e}")
+
     def display_start(self, mode: str, user_prompt: str):
-        print(f"\n{'=' * 80}")
-        print(f"🤖 [{self.unique_id}] [Agent: {self.agent_name}] is currently carrying out ({mode})...")
-        print("-" * 80)
-        print(f"👤 [{self.unique_id}] User input (summary): {self._snippet(user_prompt)}")
+        print(f"\n{'=' * 80}\n🤖 [{self.unique_id}] [Agent: {self.agent_name}] -> ({mode})\n{'-' * 80}")
+        
+        is_trunc = len(user_prompt) > 1000
+        safe_content = self._snippet(user_prompt, 1000)
+        md_message = f"### 🚀 执行阶段: {mode}\n\n"
+        if is_trunc: md_message += "**[输入已截断]**\n\n"
+        md_message += f"> {safe_content}"
+
+        self._send_to_callback(LogLevel.INFO, MsgType.MARKDOWN, md_message, is_trunc)
 
     def display_tool_decision(self, tool_calls: list):
         if not tool_calls: return
-        print("-" * 80)
-        print(f"🛠️  [{self.unique_id}] The model determines the invocation of the tool. ({len(tool_calls)}):")
+        print(f"🛠️  [{self.unique_id}] Model calls tools: {', '.join([t.function.name for t in tool_calls])}")
+        
+        msg = f"Model determines invocation of tools ({len(tool_calls)}):\n"
         for idx, tool in enumerate(tool_calls):
-            print(f"   {idx + 1}. {tool.function.name}(...)")
+            msg += f"- `{tool.function.name}(...)`\n"
+
+        self._send_to_callback(LogLevel.INFO, MsgType.TOOL_CALL, msg)
 
     def display_result(self, content: Any, stats: dict):
         elapsed = stats.get('time', 0)
         tokens = stats.get('token', 0)
-        display_content = str(content) if content else "None"
-        print("-" * 80)
-        print(f"📝 [{self.unique_id}] Model output (summary): {self._snippet(display_content, 300)}")
-        print("-" * 80)
-        print(f"📊 [{self.unique_id}] Statistics: Time Consumption {elapsed:.2f}s | Token: {tokens}")
-        print(f"{'=' * 80}\n")
+        
+        if isinstance(content, (dict, list)):
+            json_res = json.dumps(content, indent=2, ensure_ascii=False)
+            result_str = f"```json\n{json_res}\n```"
+        else:
+            result_str = f"```\n{str(content)}\n```"
 
-    def log_full_interaction(self, mode: str, memory_snapshot: str, input_text: str, output_text: str,
-                             tool_calls: list = None):
-        log_content = [
-            f"\n{'=' * 30} {mode} INTERACTION START {'=' * 30}",
-            f"📅 Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
-            f"🧠 [CONTEXT MEMORY SNAPSHOT]:\n{memory_snapshot}",
-            "-" * 20,
-            f"📥 [USER INPUT]:\n{input_text}",
-            "-" * 20
-        ]
-        if tool_calls:
-            log_content.append(f"🛠️ [TOOL CALLS]:")
-            for t in tool_calls:
-                log_content.append(f"   Name: {t.function.name} | Args: {t.function.arguments}")
-            log_content.append("-" * 20)
-        log_content.append(f"📤 [MODEL OUTPUT]:\n{output_text}")
-        log_content.append(f"{'=' * 30} INTERACTION END {'=' * 30}\n")
+        md_message = f"#### ✅ 任务输出\n\n{result_str}\n\n> 📊 **统计**: 耗时 `{elapsed:.2f}s` | Token `{tokens}`"
+
+        self._send_to_callback(LogLevel.INFO, MsgType.RESULT, md_message)
+
+    def log_full_interaction(self, mode: str, memory_snapshot: str, input_text: str, output_text: str, tool_calls: list = None):
+        # 1. 写入本地文件
+        log_content = [f"\n{'=' * 30} {mode} START {'=' * 30}", f"📥 [INPUT]:\n{input_text}", f"📤 [OUTPUT]:\n{output_text}", "=" * 70]
         self.file_logger.info("\n".join(log_content))
 
-    def log_tool_result(self, tool_name: str, tool_result: Any):
-        self.file_logger.info(f"\n🛠️ [TOOL RESULT] ({tool_name}):\n{tool_result}\n{'-' * 40}")
+        # 2. 发送到 Dashboard (Debug 级别)
+        self._send_to_callback(LogLevel.DEBUG, MsgType.TEXT, f"Interaction: {mode}")
+        self._send_to_callback(LogLevel.DEBUG, MsgType.MARKDOWN, f"**Snapshot Snippet:** {self._snippet(input_text, 150)}")
 
-    def log_patch_report(self, fault_report: str, final_trace: str, fix_report: str):
-        content = f"\n{'=' * 40}\n🎯 [PATCH GENERATED]\n📄 Report: {fault_report}\n💻 Fix Report: {fix_report}\nT Trace: {final_trace}\n{'=' * 40}"
-        self.file_logger.info(content)
-        print(f"\n{'=' * 80}\n🎯 PATCH GENERATED\nReport Summary: {str(fault_report)[:200]}...\n{'=' * 80}\n")
+    def log_tool_result(self, tool_name: str, tool_result: Any):
+        self.file_logger.info(f"\n🛠️ [TOOL RESULT] ({tool_name}):\n{tool_result}")
+        msg = f"🔧 **Tool Result** ({tool_name}):\n```\n{self._snippet(str(tool_result), 300)}\n```"
+        self._send_to_callback(LogLevel.INFO, MsgType.RESULT, msg)
 
     def info(self, msg, *args, **kwargs):
         self.file_logger.info(msg, *args, **kwargs)
+        self._send_to_callback(LogLevel.INFO, MsgType.TEXT, str(msg))
 
     def error(self, msg, *args, **kwargs):
         self.file_logger.error(msg, *args, **kwargs)
+        self._send_to_callback(LogLevel.ERROR, MsgType.TEXT, str(msg))
 
     def warning(self, msg, *args, **kwargs):
         self.file_logger.warning(msg, *args, **kwargs)
+        self._send_to_callback(LogLevel.WARNING, MsgType.TEXT, str(msg))
 
     def debug(self, msg, *args, **kwargs):
         self.file_logger.debug(msg, *args, **kwargs)
-
+        self._send_to_callback(LogLevel.DEBUG, MsgType.TEXT, str(msg))
 
 class TokenManager:
     def __init__(self, model: str):

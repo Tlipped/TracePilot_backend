@@ -7,7 +7,7 @@ from prompt.global_memory_prompt import GLOBAL_MEMORY_SP, GLOBAL_MEMORY_UP, GLOB
 
 
 class GlobalMemoryAgent(AgentBase):
-    def __init__(self, is_multi: bool, dapp_name: str, name: str = "GlobalMemory Administrator"):
+    def __init__(self, is_multi: bool, dapp_name: str, name: str = "GlobalMemory Administrator",log_callback=None):
         """
         init global memory
         :param is_multi: if multi transaction
@@ -16,7 +16,7 @@ class GlobalMemoryAgent(AgentBase):
         """
         global_memory_sp = GLOBAL_MEMORY_SP.replace("{multi_attack_part}", MULTI_ATTACK_PART if is_multi else "")
 
-        super(GlobalMemoryAgent, self).__init__(name, global_memory_sp, max_turns=2, unique_id=dapp_name)
+        super(GlobalMemoryAgent, self).__init__(name, global_memory_sp, max_turns=2, unique_id=dapp_name,log_callback=log_callback)
 
         self.global_memory: Dict[str, Any] = {}
 

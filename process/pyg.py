@@ -19,11 +19,13 @@ class DAppProcess:
             self,
             net2rpc_bucket: Dict[str, AsyncItemBucket],
             net2apikey_bucket: Dict[str, AsyncItemBucket],
-            mcp_client
+            mcp_client,
+            log_callback=None
     ):
         self._net2rpc_bucket = net2rpc_bucket
         self._net2apikey_bucket = net2apikey_bucket
         self.mcp_client = mcp_client
+        self.log_callback = log_callback
 
     async def process(self, dapp):
         processed_data = {'dapp': dapp}
@@ -37,7 +39,8 @@ class DAppProcess:
         tx_detail_agent = TxDetailAgent(apikey_bucket=self._net2apikey_bucket[dapp['platform']],
                                         rpc_bucket=self._net2rpc_bucket[dapp['platform']],
                                         _platform=dapp["platform"],
-                                        dapp_name=dapp_name)
+                                        dapp_name=dapp_name,
+                                        log_callback=self.log_callback)
         tx_detail_str, tx2detail, tx2property = await tx_detail_agent.handle(raw_tx_list)
         _tx2property, property_dict = self.process_property(tx2property=tx2property)
 
@@ -62,7 +65,7 @@ class DAppProcess:
 
         # init trace simulator
         print("loading init trace ~")
-        trace_agent = TraceAgent(processed_data, mcp_client=self.mcp_client, dapp_name=dapp_name)
+        trace_agent = TraceAgent(processed_data, mcp_client=self.mcp_client, dapp_name=dapp_name, log_callback=self.log_callback)
         tx2init_trace = await trace_agent.init()
         processed_data["trace_tree"] = tx2init_trace
 
@@ -71,7 +74,8 @@ class DAppProcess:
         tx_role_agent = TxRoleAgent(apikey_bucket=self._net2apikey_bucket[dapp['platform']],
                                     rpc_bucket=self._net2rpc_bucket[dapp['platform']],
                                     _platform=dapp["platform"],
-                                    dapp_name=dapp_name)
+                                    dapp_name=dapp_name,
+                                    log_callback=self.log_callback)
         roles, attack_transactions, auxiliary_transactions, balance_change = await tx_role_agent.handle(processed_data,
                                                                                                         transactions)
         processed_data["transaction_roles"] = roles
@@ -81,7 +85,7 @@ class DAppProcess:
 
         # filter attack transactions
         print("filter same attack templates ~ ")
-        attack_filter = FilterAgent(dapp_name=dapp_name)
+        attack_filter = FilterAgent(dapp_name=dapp_name, log_callback=self.log_callback)
 
         num_attack_txs = len(attack_transactions)
         num_total_txs = len(sorted_tx_list)
@@ -101,7 +105,7 @@ class DAppProcess:
 
         # macro transaction fault
         print("analyzing transaction bug ~ ")
-        tx_fault_agent = TxFaultAgent(dapp_name=dapp_name)
+        tx_fault_agent = TxFaultAgent(dapp_name=dapp_name,  log_callback=self.log_callback)
         bug_summary = await tx_fault_agent.handle(processed_data)
         processed_data["bug_summary"] = bug_summary
 

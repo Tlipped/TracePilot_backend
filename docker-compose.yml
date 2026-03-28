@@ -1,0 +1,82 @@
+services:
+  backend:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: tracepilot_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://tracepilot_user:tracepilot_pass@postgres:5432/tracepilot
+      - REDIS_URL=redis://redis:6379/0
+      - PYTHONPATH=/app
+      - PROJECT_PATH=/app
+      - LLM_NAME=gpt-4
+      - CACHE_DIR=/app/data/cache
+    volumes:
+      - ./agents:/app/agents
+      - ./app:/app/app
+      - ./daos:/app/daos
+      - ./downloaders:/app/downloaders
+      - ./entities:/app/entities
+      - ./process:/app/process
+      - ./prompt:/app/prompt
+      - ./utils:/app/utils
+      - ./mcp_tools:/app/mcp_tools
+      - ./data:/app/data
+      - ./misc:/app/misc
+      - ./benchmark:/app/benchmark
+      - ./settings.py:/app/settings.py
+      - ./requirements.txt:/app/requirements.txt
+      - ./concurrent_manager.py:/app/concurrent_manager.py
+      - ./main.py:/app/main.py
+      - ./run_server.py:/app/run_server.py
+      - ./worker.py:/app/worker.py
+      - ./package.json:/app/package.json
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    command: python run_server.py
+    networks:
+      - tracepilot_net
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: tracepilot_postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: tracepilot
+      POSTGRES_USER: tracepilot_user
+      POSTGRES_PASSWORD: tracepilot_pass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tracepilot_user -d tracepilot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - tracepilot_net
+
+  redis:
+    image: redis:7-alpine
+    container_name: tracepilot_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - tracepilot_net
+
+volumes:
+  redis_data:
+  postgres_data:
+
+networks:
+  tracepilot_net:
+    driver: bridge

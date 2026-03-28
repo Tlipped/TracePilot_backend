@@ -19,8 +19,8 @@ from utils.bucket import AsyncItemBucket
 
 class TxDetailAgent(AgentBase):
     def __init__(self, apikey_bucket: AsyncItemBucket, rpc_bucket: AsyncItemBucket, _platform, dapp_name,
-                 name="TxDetailAgent"):
-        super(TxDetailAgent, self).__init__(name, TX_SUMMARY_SP, unique_id=dapp_name)
+                 name="TxDetailAgent", log_callback=None):
+        super(TxDetailAgent, self).__init__(name, TX_SUMMARY_SP, unique_id=dapp_name,log_callback=log_callback)
         self.apikey_bucket = apikey_bucket
         self.rpc_bucket = rpc_bucket
         self._platform = _platform

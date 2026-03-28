@@ -7,8 +7,8 @@ from settings import CACHE_DIR
 
 
 class TxFaultAgent(AgentBase):
-    def __init__(self, dapp_name, name="TxFaultAgent"):
-        super(TxFaultAgent, self).__init__(name, BUG_SUMMARY_SP, unique_id=dapp_name)
+    def __init__(self, dapp_name, name="TxFaultAgent", log_callback=None):
+        super(TxFaultAgent, self).__init__(name, BUG_SUMMARY_SP, unique_id=dapp_name,log_callback=log_callback)
 
     async def handle(self, dapp_data: Dict) -> str:
         bug_path = os.path.join(CACHE_DIR, 'summary/bug_summary', '%s.json' % dapp_data.get("dapp").get("name"))

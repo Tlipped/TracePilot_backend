@@ -18,8 +18,8 @@ from utils.patch import SolidityCodePatcher
 
 class FixAgent(AgentBase):
     def __init__(self, processed_data, apikey_bucket, rpc_bucket, mcp_client: MCPClient, dapp_name: str,
-                 session_id: str, name="Code Patcher", metrics_collector=None):
-        super(FixAgent, self).__init__(name, FIX_SP, unique_id=dapp_name, max_turns=1)
+                 session_id: str, name="Code Patcher", metrics_collector=None, log_callback=None):
+        super(FixAgent, self).__init__(name, FIX_SP, unique_id=dapp_name, max_turns=1,log_callback=log_callback)
         self.processed_data = processed_data
         self.apikey_bucket = apikey_bucket
         self.rpc_bucket = rpc_bucket

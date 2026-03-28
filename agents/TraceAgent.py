@@ -18,8 +18,8 @@ from utils.llm import MODEL_MAX_OUTPUT_TOKENS
 
 class TraceAgent(AgentBase):
     def __init__(self, processed_data, mcp_client, dapp_name,
-                 name="Transaction Debugger"):
-        super(TraceAgent, self).__init__(name, "", need_tool=True, unique_id=dapp_name)
+                 name="Transaction Debugger", log_callback=None):
+        super(TraceAgent, self).__init__(name, "", need_tool=True, unique_id=dapp_name,log_callback=log_callback)
         self.dapp = processed_data["dapp"]
         self.processed_data = processed_data
         self.tx_list = [tx.lower() for tx in self.dapp["transaction_hash"]]

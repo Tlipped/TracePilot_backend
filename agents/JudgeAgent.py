@@ -5,8 +5,8 @@ from prompt.tx_judge_prompt import PATCH_JUDGE_UP, PATCH_JUDGE_SP
 
 
 class JudgeAgent(AgentBase):
-    def __init__(self, dapp_name, name="Transaction Judge", metrics_collector=None):
-        super(JudgeAgent, self).__init__(name, PATCH_JUDGE_SP, unique_id=dapp_name, max_turns=2)
+    def __init__(self, dapp_name, name="Transaction Judge", metrics_collector=None, log_callback=None):
+        super(JudgeAgent, self).__init__(name, PATCH_JUDGE_SP, unique_id=dapp_name, max_turns=2,log_callback=log_callback)
         self.metrics_collector = metrics_collector
         self.unique_id = dapp_name
 

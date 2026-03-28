@@ -1,0 +1,197 @@
+{
+    "transaction": {
+        "hash": "0x20d593c9b4b86e10da07093e05a7908898575547ff0366b0f1fd1c6f7528a6ba",
+        "block_hash": "",
+        "block_number": 19138618,
+        "from": "0x24a0c66f185874b251eb70bee2c2e35e39848419",
+        "gas": 21000,
+        "gas_price": 19667372036,
+        "gas_fee_cap": 0,
+        "gas_tip_cap": 0,
+        "cumulative_gas_used": 0,
+        "gas_used": 21000,
+        "effective_gas_price": 0,
+        "input": "0x",
+        "nonce": 1,
+        "to": "0x24a0c66f185874b251eb70bee2c2e35e39848419",
+        "index": 0,
+        "value": "0x",
+        "access_list": null,
+        "status": true,
+        "addresses": [
+            "0x24a0c66f185874b251eb70bee2c2e35e39848419",
+            "0x24a0c66f185874b251eb70bee2c2e35e39848419"
+        ],
+        "contract_ids": [
+            "eth:1:0x24a0c66f185874b251eb70bee2c2e35e39848419"
+        ],
+        "network_id": "1",
+        "timestamp": "2024-02-02T05:24:11Z",
+        "function_selector": "",
+        "l1_block_number": 0,
+        "l1_timestamp": 0,
+        "deposit_tx": false,
+        "system_tx": false,
+        "sig": {
+            "v": "0x0",
+            "r": "0x0",
+            "s": "0x0"
+        },
+        "transaction_info": {
+            "contract_id": "eth:1:0x24a0c66f185874b251eb70bee2c2e35e39848419",
+            "block_number": 19138618,
+            "transaction_id": "0x20d593c9b4b86e10da07093e05a7908898575547ff0366b0f1fd1c6f7528a6ba",
+            "contract_address": "0x24a0c66f185874b251eb70bee2c2e35e39848419",
+            "method": null,
+            "parameters": null,
+            "intrinsic_gas": 21000,
+            "refund_gas": 0,
+            "call_trace": {
+                "hash": "0x20d593c9b4b86e10da07093e05a7908898575547ff0366b0f1fd1c6f7528a6ba",
+                "contract_name": "Unverified",
+                "function_pc": 0,
+                "function_op": "CALL",
+                "absolute_position": 0,
+                "caller_pc": 0,
+                "caller_op": "CALL",
+                "call_type": "CALL",
+                "address": "0x24a0c66f185874b251eb70bee2c2e35e39848419",
+                "from": "0x24a0c66f185874b251eb70bee2c2e35e39848419",
+                "from_balance": "795034103435411439",
+                "to": "0x24a0c66f185874b251eb70bee2c2e35e39848419",
+                "to_balance": "795034103435411439",
+                "value": "0",
+                "block_number": 19138618,
+                "block_timestamp": "2024-02-02T05:24:11Z",
+                "gas": 0,
+                "gas_used": 0,
+                "intrinsic_gas": 21000,
+                "storage_address": "0x0000000000000000000000000000000000000000",
+                "input": "0x",
+                "balance_diff": [
+                    {
+                        "address": "0x24A0c66f185874B251Eb70BEE2C2e35E39848419",
+                        "original": "795447118248167439",
+                        "dirty": "795034103435411439",
+                        "is_miner": false
+                    },
+                    {
+                        "address": "0x5124fcC2B3F99F571AD67D075643C743F38f1C34",
+                        "original": "18040334226886785681",
+                        "dirty": "18040335205054185681",
+                        "is_miner": true
+                    }
+                ],
+                "nonce_diff": [
+                    {
+                        "address": "0x24A0c66f185874B251Eb70BEE2C2e35E39848419",
+                        "original": "1",
+                        "dirty": "2"
+                    }
+                ],
+                "output": "0x",
+                "decoded_output": null,
+                "network_id": "1",
+                "calls": null
+            },
+            "stack_trace": null,
+            "logs": null,
+            "balance_diff": [
+                {
+                    "address": "0x24A0c66f185874B251Eb70BEE2C2e35E39848419",
+                    "original": "795447118248167439",
+                    "dirty": "795034103435411439",
+                    "is_miner": false
+                },
+                {
+                    "address": "0x5124fcC2B3F99F571AD67D075643C743F38f1C34",
+                    "original": "18040334226886785681",
+                    "dirty": "18040335205054185681",
+                    "is_miner": true
+                }
+            ],
+            "nonce_diff": [
+                {
+                    "address": "0x24A0c66f185874B251Eb70BEE2C2e35E39848419",
+                    "original": "1",
+                    "dirty": "2"
+                }
+            ],
+            "state_diff": null,
+            "raw_state_diff": null,
+            "console_logs": null,
+            "asset_changes": null,
+            "exposure_changes": null,
+            "balance_changes": [],
+            "created_at": "2024-02-02T05:24:11Z"
+        },
+        "method": "",
+        "decoded_input": null,
+        "call_trace": [
+            {
+                "call_type": "CALL",
+                "from": "0x24a0c66f185874b251eb70bee2c2e35e39848419",
+                "to": "0x24a0c66f185874b251eb70bee2c2e35e39848419",
+                "address": "0x24a0c66f185874b251eb70bee2c2e35e39848419"
+            }
+        ],
+        "value_fee_currency": null,
+        "value_gateway_fee": null,
+        "value_gateway_fee_recipient": null
+    },
+    "simulation": {
+        "id": "01921722-1eb9-459c-8c0b-17a5bb6157ba",
+        "project_id": "2bd0480b-276e-4adb-8171-2617c04a193a",
+        "owner_id": "0932ffbe-3479-489e-afe1-ff5da10f4a07",
+        "network_id": "1",
+        "block_number": 19138618,
+        "transaction_index": 0,
+        "from": "0x24a0c66f185874b251eb70bee2c2e35e39848419",
+        "to": "0x24a0c66f185874b251eb70bee2c2e35e39848419",
+        "input": "0x",
+        "gas": 21000,
+        "gas_price": "19667372036",
+        "gas_used": 21000,
+        "value": "0",
+        "status": true,
+        "access_list": null,
+        "queue_origin": "",
+        "block_header": {
+            "number": "0x124083a",
+            "hash": "0x379f9e6854e3e72303e404a5794e141cbaf7ae1a70528b07609a77983cb2a936",
+            "stateRoot": "0x94a8496a43fe99b47cb241a9bbcb783feeaad821b5c70c23e668383a7ba9cf34",
+            "parentHash": "0x2237e7ec5043389c6c7c6b63ac06d54ea6079b099cf46b96942bd057e95a4d63",
+            "sha3Uncles": "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
+            "transactionsRoot": "0x77c1c89772d41b799a0a7bcf2c2569f4eedfd496e827f89118d4c438183f3f3f",
+            "receiptsRoot": "0xddbb00c1a8adad89c9f3445a656bb55611080320d974cfdc4f81602434523a31",
+            "logsBloom": "0x4061050150bc53a2905c4c33c0089761013334018006434e423111508a8f3005648105ed2a1e013008519dc8a0c4658c23b900c48bb4e985031ab00000aa2225c017824c25344968eca2622a217888a0c53010016840aa2053741d4ccd240900f54e20005e22600113005cd50e2029503a9a00c42d749f0ed242001406181016420150e612dc010400ee05c60d626a8771c20035094de4c9c9a511609cd912ec8fd2b84da4c5ea268d06c0e11a1e5d8a2400cf44d1a6030e24cc1c0294a244c04b95172256598646058108c08c3e01845d8c4a49d6393eb54b8c540b01332239027a6b06090005b90a0c05c02204f29e91a2b030590e8240ea90380bb2f45489",
+            "timestamp": "0x65bc7c7b",
+            "difficulty": "0x0",
+            "gasLimit": "0x1c9c380",
+            "gasUsed": "0xb31ead",
+            "miner": "0x5124fcc2b3f99f571ad67d075643c743f38f1c34",
+            "extraData": "0x6631622e696f",
+            "mixHash": "0x322c1bf1fee67972bb3213c23fecf19dfce900166a83c0de15b12e4c6752830a",
+            "nonce": "0x0000000000000000",
+            "baseFeePerGas": "0x4917d893c",
+            "size": "0x0",
+            "totalDifficulty": "0x0",
+            "uncles": null,
+            "transactions": null
+        },
+        "deposit_tx": false,
+        "system_tx": false,
+        "nonce": 1,
+        "addresses": [
+            "0x24a0c66f185874b251eb70bee2c2e35e39848419",
+            "0x24a0c66f185874b251eb70bee2c2e35e39848419"
+        ],
+        "contract_ids": [
+            "eth:1:0x24a0c66f185874b251eb70bee2c2e35e39848419"
+        ],
+        "shared": false,
+        "created_at": "2026-03-03T13:37:26.816259273Z"
+    },
+    "contracts": [],
+    "generated_access_list": []
+}

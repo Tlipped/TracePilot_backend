@@ -9,8 +9,8 @@ from agents.AgentBase import AgentBase
 
 
 class FilterAgent(AgentBase):
-    def __init__(self, dapp_name, name="Transaction Filter"):
-        super(FilterAgent, self).__init__(name, FILTER_SP, max_turns=1, unique_id=dapp_name)
+    def __init__(self, dapp_name, name="Transaction Filter", log_callback=None):
+        super(FilterAgent, self).__init__(name, FILTER_SP, max_turns=1, unique_id=dapp_name,log_callback=log_callback)
 
     async def handle(self, processed_data: Dict[str, Any]) -> List[str]:
         trace_tree_raw = processed_data.get("trace_tree", {})

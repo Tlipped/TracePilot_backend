@@ -15,7 +15,8 @@ class DAppAnalyze:
                  net2apikey_bucket: Dict[str, AsyncItemBucket],
                  net2rpc_bucket: Dict[str, AsyncItemBucket],
                  mcp_client,
-                 metrics_collector: Optional[PatchQualityMetrics] = None):
+                 metrics_collector: Optional[PatchQualityMetrics] = None,
+                 log_callback=None):
         self._net2apikey_bucket = net2apikey_bucket
         self._net2rpc_bucket = net2rpc_bucket
         self.processed_data = processed_data
@@ -25,17 +26,20 @@ class DAppAnalyze:
         self.mcp_client = mcp_client
         self.transaction_debugger = transaction_debugger
         self.transaction_debugger.init_prompt(self.processed_data)
-        self.global_memory_administrator = GlobalMemoryAgent(self.is_multi, dapp_name=self.dapp_name)
-        self.task_organizer = TaskAgent(self.mcp_client, dapp_name=self.dapp_name, session_id=self.transaction_debugger.session_id)
+        self.global_memory_administrator = GlobalMemoryAgent(self.is_multi, dapp_name=self.dapp_name, log_callback=log_callback)
+        self.task_organizer = TaskAgent(self.mcp_client, dapp_name=self.dapp_name, session_id=self.transaction_debugger.session_id, log_callback=log_callback)
         self.code_patcher = FixAgent(processed_data=processed_data,
                                      apikey_bucket=self._net2apikey_bucket[processed_data["dapp"]["platform"]],
                                      rpc_bucket=self._net2rpc_bucket[processed_data["dapp"]["platform"]],
                                      mcp_client=self.mcp_client,
                                      dapp_name=self.dapp_name,
                                      session_id=self.transaction_debugger.session_id,
-                                     metrics_collector=metrics_collector)
-        self.transaction_judge = JudgeAgent(dapp_name=self.dapp_name, metrics_collector=metrics_collector)
+                                     metrics_collector=metrics_collector,
+                                     log_callback=log_callback)
+        self.transaction_judge = JudgeAgent(dapp_name=self.dapp_name, metrics_collector=metrics_collector, log_callback=log_callback)
         self.metrics_collector = metrics_collector
+        self.log_callback = log_callback
+
 
     async def analyze(self) -> [str, Dict]:
         if self.metrics_collector:
