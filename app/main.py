@@ -6,10 +6,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
 
-from fastapi import Depends, FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import Depends, FastAPI, HTTPException, Query, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.database import SessionLocal
+from app.database import SessionLocal, init_db
 from app.database.models import TaskLog
 from app.database.redis_client import redis_client
 from settings import PROJECT_PATH
@@ -324,6 +324,7 @@ async def websocket_endpoint(
             "completed_at": task_snapshot.completed_at.isoformat() if task_snapshot.completed_at else None,
             "duration": task_snapshot.duration,
             "error": task_snapshot.error,
+            "archived": task_snapshot.archived,
         }
     )
 
@@ -374,8 +375,11 @@ async def get_task(
 
 
 @app.get("/api/tasks")
-async def list_tasks(task_manager: TaskManager = Depends(get_task_manager)):
-    return await task_manager.list_tasks()
+async def list_tasks(
+    include_archived: bool = Query(False),
+    task_manager: TaskManager = Depends(get_task_manager),
+):
+    return await task_manager.list_tasks(include_archived=include_archived)
 
 
 @app.get("/api/task/{task_id}/log/{log_id}")
@@ -436,6 +440,28 @@ async def delete_task(
     if not success:
         raise HTTPException(status_code=500, detail="Failed to delete task")
     return {"message": "Task deleted", "action": "deleted"}
+
+
+@app.post("/api/tasks/{task_id}/archive")
+async def archive_task(
+    task_id: str,
+    task_manager: TaskManager = Depends(get_task_manager),
+):
+    success = task_manager.set_task_archived(task_id, archived=True)
+    if not success:
+        raise HTTPException(status_code=404, detail="Task not found or not archivable")
+    return {"message": "Task archived", "archived": True}
+
+
+@app.post("/api/tasks/{task_id}/unarchive")
+async def unarchive_task(
+    task_id: str,
+    task_manager: TaskManager = Depends(get_task_manager),
+):
+    success = task_manager.set_task_archived(task_id, archived=False)
+    if not success:
+        raise HTTPException(status_code=404, detail="Task not found or not restorable")
+    return {"message": "Task restored", "archived": False}
 
 
 @app.get("/api/tasks/{task_id}/agent-log-files")
@@ -520,6 +546,7 @@ async def get_agent_log_file(
 
 @app.on_event("startup")
 async def startup():
+    init_db()
     logger.info("[App] FastAPI server starting...")
 
 

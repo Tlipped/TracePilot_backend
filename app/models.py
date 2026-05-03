@@ -29,6 +29,7 @@ class TaskResponse(BaseModel):
     final_report: Optional[str] = None # 最终生成的 Markdown 报告内容
     result: Optional[Dict[str, Any]] = None
     error: Optional[str] = None
+    archived: bool = False
 
 class LogLevel(str, Enum):
     INFO = "info"

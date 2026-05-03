@@ -31,6 +31,7 @@ class TaskRun(Base):
     task_id = Column(String(36), unique=True, index=True)
     dapp_name = Column(String(255), nullable=False, index=True)
     status = Column(String(32), nullable=False, index=True)
+    archived = Column(Boolean, default=False, nullable=False, index=True)
 
     final_report = Column(Text)
     result = Column(Text)

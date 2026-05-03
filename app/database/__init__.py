@@ -16,6 +16,10 @@ TASK_LOG_SCHEMA_PATCHES = {
     "full_content": "ALTER TABLE task_logs ADD COLUMN full_content TEXT",
 }
 
+TASK_RUN_SCHEMA_PATCHES = {
+    "archived": "ALTER TABLE task_runs ADD COLUMN archived BOOLEAN DEFAULT FALSE NOT NULL",
+}
+
 DATABASE_URL = os.getenv(
     "DATABASE_URL", 
     "postgresql://tracepilot_user:tracepilot_pass@localhost:5432/tracepilot"
@@ -42,6 +46,7 @@ def init_db():
         # 创建所有表
         Base.metadata.create_all(bind=engine)
         ensure_task_log_schema()
+        ensure_task_run_schema()
         logger.info("[DB] Database tables created/verified successfully")
         return True
     except Exception as e:
@@ -66,6 +71,25 @@ def ensure_task_log_schema():
         for ddl in missing_patches:
             connection.execute(text(ddl))
     logger.info("[DB] task_logs schema patched with %s missing columns", len(missing_patches))
+
+
+def ensure_task_run_schema():
+    inspector = inspect(engine)
+    if "task_runs" not in inspector.get_table_names():
+        return
+
+    existing_columns = {column["name"] for column in inspector.get_columns("task_runs")}
+    missing_patches = [
+        ddl for column_name, ddl in TASK_RUN_SCHEMA_PATCHES.items()
+        if column_name not in existing_columns
+    ]
+    if not missing_patches:
+        return
+
+    with engine.begin() as connection:
+        for ddl in missing_patches:
+            connection.execute(text(ddl))
+    logger.info("[DB] task_runs schema patched with %s missing columns", len(missing_patches))
 
 def get_db():
     """获取数据库会话"""

@@ -90,6 +90,7 @@ class TaskManager:
                 "duration": task.duration,
                 "final_report": task.final_report,
                 "error": task.error,
+                "archived": task.archived,
             },
         )
 
@@ -182,8 +183,11 @@ class TaskManager:
     def get_all_tasks(self) -> List[TaskResponse]:
         return list(self.tasks.values())
 
-    async def list_tasks(self) -> List[TaskResponse]:
-        return self.get_all_tasks()
+    async def list_tasks(self, include_archived: bool = False) -> List[TaskResponse]:
+        tasks = self.get_all_tasks()
+        if include_archived:
+            return tasks
+        return [task for task in tasks if not task.archived]
 
     def _load_persisted_tasks(self):
         db = SessionLocal()
@@ -224,6 +228,7 @@ class TaskManager:
                     final_report=db_task.final_report,
                     result=result,
                     error=error,
+                    archived=bool(getattr(db_task, "archived", False)),
                 )
                 self.tasks[task.task_id] = task
                 self.task_queues[task.task_id] = asyncio.Queue(maxsize=self.EVENT_QUEUE_MAXSIZE)
@@ -285,6 +290,18 @@ class TaskManager:
         finally:
             db.close()
 
+    def set_task_archived(self, task_id: str, archived: bool = True) -> bool:
+        task = self.tasks.get(task_id)
+        if not task:
+            return False
+        if task.status not in {TaskStatus.COMPLETED, TaskStatus.FAILED}:
+            return False
+
+        task.archived = archived
+        self._persist_task(task)
+        self._emit_task_status(task_id)
+        return True
+
     def _attach_log_to_task(self, task_id: str, log_id: Optional[str]):
         if not log_id:
             return
@@ -319,6 +336,7 @@ class TaskManager:
                 "completed_at": task.completed_at.isoformat() if task.completed_at else None,
                 "duration": task.duration,
                 "error": task.error,
+                "archived": task.archived,
             },
         )
 
@@ -447,6 +465,7 @@ class TaskManager:
             db_task.final_report = task.final_report
             db_task.result = self._serialize_result(task.result)
             db_task.error = task.error
+            db_task.archived = task.archived
             db_task.created_at = task.created_at
             db_task.completed_at = task.completed_at
             db_task.updated_at = datetime.now()
