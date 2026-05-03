@@ -1,8 +1,10 @@
 import asyncio
+import base64
 import logging
 import time
 from datetime import datetime
-from typing import Any, Dict
+from pathlib import Path
+from typing import Any, Dict, List
 
 from fastapi import Depends, FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
@@ -10,6 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.database import SessionLocal
 from app.database.models import TaskLog
 from app.database.redis_client import redis_client
+from settings import PROJECT_PATH
 from .models import TaskCreateRequest, TaskResponse, TaskStatus
 from .task_manager import TaskManager, get_task_manager
 from .websocket_manager import manager
@@ -30,12 +33,63 @@ app.add_middleware(
 )
 
 
-def load_persisted_log_events(task_id: str, limit: int = 1000):
+AGENT_LOG_ROOT = Path(PROJECT_PATH) / "agents" / "logs"
+MAX_AGENT_LOG_BYTES = 2_000_000
+
+
+def _b64_encode(value: str) -> str:
+    return base64.urlsafe_b64encode(value.encode("utf-8")).decode("ascii").rstrip("=")
+
+
+def _b64_decode(value: str) -> str:
+    padding = "=" * (-len(value) % 4)
+    return base64.urlsafe_b64decode((value + padding).encode("ascii")).decode("utf-8")
+
+
+def _safe_relative_path(path: Path, root: Path) -> str:
+    return path.resolve().relative_to(root.resolve()).as_posix()
+
+
+def _parse_log_session_time(session_name: str):
+    try:
+        return datetime.strptime(session_name, "%Y-%m-%d_%H-%M")
+    except ValueError:
+        return None
+
+
+def find_agent_log_dir(task: TaskResponse) -> Path | None:
+    if not AGENT_LOG_ROOT.exists():
+        return None
+
+    candidates: List[Path] = []
+    for session_dir in AGENT_LOG_ROOT.iterdir():
+        if not session_dir.is_dir():
+            continue
+        dapp_dir = session_dir / task.dapp_name
+        if dapp_dir.is_dir():
+            candidates.append(dapp_dir)
+
+    if not candidates:
+        return None
+
+    def score(path: Path):
+        session_time = _parse_log_session_time(path.parent.name)
+        if session_time:
+            return abs((session_time - task.created_at.replace(tzinfo=None)).total_seconds())
+        try:
+            return abs(path.stat().st_mtime - task.created_at.timestamp())
+        except Exception:
+            return float("inf")
+
+    return min(candidates, key=score)
+
+
+def load_persisted_log_events(task_id: str, dapp_name: str = "", limit: int = 1000):
     db_session = SessionLocal()
     try:
         logs = (
             db_session.query(TaskLog)
-            .filter(TaskLog.task_id == task_id)
+            .filter(TaskLog.task_id.in_([task_id, dapp_name] if dapp_name else [task_id]))
             .order_by(TaskLog.timestamp.desc(), TaskLog.id.desc())
             .limit(limit)
             .all()
@@ -258,7 +312,7 @@ async def websocket_endpoint(
         }
     )
     if task_snapshot.status in {TaskStatus.COMPLETED, TaskStatus.FAILED}:
-        for event in load_persisted_log_events(task_id):
+        for event in load_persisted_log_events(task_id, task_snapshot.dapp_name):
             enqueue_outbound(event)
     enqueue_outbound(
         {
@@ -325,15 +379,24 @@ async def list_tasks(task_manager: TaskManager = Depends(get_task_manager)):
 
 
 @app.get("/api/task/{task_id}/log/{log_id}")
-async def get_full_log(task_id: str, log_id: str):
+async def get_full_log(
+    task_id: str,
+    log_id: str,
+    task_manager: TaskManager = Depends(get_task_manager),
+):
     content = redis_client.get_log(log_id)
     if content:
         return {"content": content, "source": "cache"}
 
+    task = task_manager.get_task(task_id)
+    task_ids = [task_id]
+    if task:
+        task_ids.append(task.dapp_name)
+
     db_session = SessionLocal()
     try:
         log = db_session.query(TaskLog).filter(
-            TaskLog.task_id == task_id,
+            TaskLog.task_id.in_(task_ids),
             TaskLog.log_id == log_id,
         ).first()
         if log:
@@ -343,7 +406,7 @@ async def get_full_log(task_id: str, log_id: str):
         db_session.close()
 
 
-@app.delete("/api/tasks/{task_id}")
+@app.post("/api/tasks/{task_id}/cancel")
 async def cancel_task(
     task_id: str,
     task_manager: TaskManager = Depends(get_task_manager),
@@ -352,6 +415,107 @@ async def cancel_task(
     if not success:
         raise HTTPException(status_code=404, detail="Task not found or already completed")
     return {"message": "Task cancelled"}
+
+
+@app.delete("/api/tasks/{task_id}")
+async def delete_task(
+    task_id: str,
+    task_manager: TaskManager = Depends(get_task_manager),
+):
+    task = task_manager.get_task(task_id)
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    if task.status not in {TaskStatus.COMPLETED, TaskStatus.FAILED}:
+        success = task_manager.cancel_task(task_id)
+        if not success:
+            raise HTTPException(status_code=409, detail="Task is not deletable yet")
+        return {"message": "Task cancelled", "action": "cancelled"}
+
+    success = task_manager.delete_task(task_id)
+    if not success:
+        raise HTTPException(status_code=500, detail="Failed to delete task")
+    return {"message": "Task deleted", "action": "deleted"}
+
+
+@app.get("/api/tasks/{task_id}/agent-log-files")
+async def list_agent_log_files(
+    task_id: str,
+    task_manager: TaskManager = Depends(get_task_manager),
+):
+    task = task_manager.get_task(task_id)
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    log_dir = find_agent_log_dir(task)
+    if not log_dir:
+        return {"task_id": task_id, "dapp_name": task.dapp_name, "log_dir": None, "files": []}
+
+    files = []
+    for file_path in sorted(log_dir.glob("*.log"), key=lambda path: path.name.lower()):
+        try:
+            stat = file_path.stat()
+            relative_path = _safe_relative_path(file_path, AGENT_LOG_ROOT)
+        except Exception:
+            continue
+        files.append(
+            {
+                "id": _b64_encode(relative_path),
+                "name": file_path.name,
+                "agent": file_path.stem,
+                "size": stat.st_size,
+                "modified_at": datetime.fromtimestamp(stat.st_mtime).isoformat(),
+            }
+        )
+
+    return {
+        "task_id": task_id,
+        "dapp_name": task.dapp_name,
+        "log_dir": _safe_relative_path(log_dir, AGENT_LOG_ROOT),
+        "files": files,
+    }
+
+
+@app.get("/api/tasks/{task_id}/agent-log-files/{file_id}")
+async def get_agent_log_file(
+    task_id: str,
+    file_id: str,
+    max_bytes: int = MAX_AGENT_LOG_BYTES,
+    task_manager: TaskManager = Depends(get_task_manager),
+):
+    task = task_manager.get_task(task_id)
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    try:
+        relative_path = _b64_decode(file_id)
+        file_path = (AGENT_LOG_ROOT / relative_path).resolve()
+        file_path.relative_to(AGENT_LOG_ROOT.resolve())
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid log file id")
+
+    if not file_path.is_file() or file_path.suffix.lower() != ".log":
+        raise HTTPException(status_code=404, detail="Log file not found")
+    if file_path.parent.name != task.dapp_name:
+        raise HTTPException(status_code=403, detail="Log file does not belong to this task")
+
+    max_bytes = min(max(max_bytes, 1), MAX_AGENT_LOG_BYTES)
+    raw = file_path.read_bytes()
+    truncated = len(raw) > max_bytes
+    content = raw[:max_bytes].decode("utf-8", errors="replace")
+    stat = file_path.stat()
+
+    return {
+        "task_id": task_id,
+        "dapp_name": task.dapp_name,
+        "id": file_id,
+        "name": file_path.name,
+        "agent": file_path.stem,
+        "content": content,
+        "size": stat.st_size,
+        "truncated": truncated,
+        "modified_at": datetime.fromtimestamp(stat.st_mtime).isoformat(),
+    }
 
 
 @app.on_event("startup")

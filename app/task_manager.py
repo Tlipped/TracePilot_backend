@@ -10,7 +10,8 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from .models import LogMessage, TaskResponse, TaskStatus
 from app.database import SessionLocal
-from app.database.models import TaskRun
+from app.database.models import TaskLog, TaskRun
+from app.database.redis_client import redis_client
 
 # Ensure project root is importable when task workers load `main.WorkFlow`.
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -103,9 +104,12 @@ class TaskManager:
                 try:
                     log_dict = log_msg.model_dump() if hasattr(log_msg, "model_dump") else log_msg.dict()
                     log_dict["type"] = "LOG"
+                    self._attach_log_to_task(task_id, log_dict.get("log_id"))
                     loop.call_soon_threadsafe(self._enqueue_task_message, task_id, log_dict)
                 except Exception as exc:
                     print(f"[TaskManager] Failed to serialize/enqueue log: {exc}")
+
+            thread_safe_log_callback.task_id = task_id
 
             async def run_async_part() -> Tuple[Any, Optional[str]]:
                 workflow = WorkFlow(
@@ -247,6 +251,55 @@ class TaskManager:
 
         self.update_task_result(task_id, None, "Task was cancelled")
         return True
+
+    def delete_task(self, task_id: str) -> bool:
+        task = self.tasks.get(task_id)
+        if not task:
+            return False
+        if task.status not in {TaskStatus.COMPLETED, TaskStatus.FAILED}:
+            return False
+
+        self.running_tasks.pop(task_id, None)
+        self.cancel_events.pop(task_id, None)
+        self.task_queues.pop(task_id, None)
+        self.dropped_logs.pop(task_id, None)
+        self.tasks.pop(task_id, None)
+
+        db = SessionLocal()
+        try:
+            log_query = db.query(TaskLog).filter(TaskLog.task_id.in_([task_id, task.dapp_name]))
+            log_ids = [row.log_id for row in log_query.all() if row.log_id]
+            for log_id in log_ids:
+                try:
+                    redis_client.delete_log(log_id)
+                except Exception:
+                    pass
+            log_query.delete(synchronize_session=False)
+            db.query(TaskRun).filter(TaskRun.task_id == task_id).delete(synchronize_session=False)
+            db.commit()
+            return True
+        except Exception as exc:
+            db.rollback()
+            print(f"[TaskManager] Failed to delete task {task_id}: {exc}")
+            return False
+        finally:
+            db.close()
+
+    def _attach_log_to_task(self, task_id: str, log_id: Optional[str]):
+        if not log_id:
+            return
+        db = SessionLocal()
+        try:
+            db.query(TaskLog).filter(TaskLog.log_id == log_id).update(
+                {TaskLog.task_id: task_id},
+                synchronize_session=False,
+            )
+            db.commit()
+        except Exception as exc:
+            db.rollback()
+            print(f"[TaskManager] Failed to attach log {log_id} to task {task_id}: {exc}")
+        finally:
+            db.close()
 
     def get_task_queue(self, task_id: str) -> Optional[asyncio.Queue]:
         return self.task_queues.get(task_id)

@@ -416,10 +416,11 @@ class AgentLogger:
             redis_client.set_log(log_id, message)
             
             # 保存日志记录到数据库
+            task_id = getattr(self.log_callback, "task_id", self.unique_id)
             db_session = SessionLocal()
             try:
                 db_log = TaskLog(
-                    task_id=self.unique_id,
+                    task_id=task_id,
                     log_id=log_id,
                     agent=self.agent_name,
                     level=level.value if hasattr(level, "value") else str(level),
