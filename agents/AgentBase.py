@@ -2,6 +2,7 @@ import json
 import os
 import time
 import traceback
+import asyncio
 from typing import Any, Dict, List, Optional, Callable
 
 from settings import LLM_NAME, CACHE_DIR
@@ -28,6 +29,14 @@ class AgentBase:
         self.mcp_client = None
         self.safety_margin = 0.8
         self.target_margin = 0.6
+        self.cancellation_checker: Callable[[], bool] = lambda: False
+
+    def set_cancellation_checker(self, cancellation_checker: Optional[Callable[[], bool]]):
+        self.cancellation_checker = cancellation_checker or (lambda: False)
+
+    def _check_cancelled(self):
+        if self.cancellation_checker():
+            raise asyncio.CancelledError("Task was cancelled")
 
     def init_system_prompt(self, role_prompt):
         self.memory = [{"role": "system", "content": role_prompt}]
@@ -52,8 +61,10 @@ class AgentBase:
         return "\n".join(lines)
 
     async def query(self, user_message: str, temperature=1.0, _format='json'):
+        self._check_cancelled()
         self.logger.display_start("Query", user_message)
         result = await self._send_message(user_message, temperature)
+        self._check_cancelled()
         if _format == 'str':
             return result
 
@@ -67,6 +78,7 @@ class AgentBase:
 
     async def _send_message(self, user_message: str, temperature=1.0) -> str:
         try:
+            self._check_cancelled()
             truncated_user_msg = self.tm.truncate_prompt(user_message)
             self.memory.append({"role": "user", "content": truncated_user_msg})
 
@@ -77,6 +89,7 @@ class AgentBase:
                 temperature=temperature
             )
             elapsed_time = time.time() - start_time
+            self._check_cancelled()
 
             reply = chat_completion.choices[0].message.content
             usage_token = int(chat_completion.usage.total_tokens)
@@ -94,10 +107,12 @@ class AgentBase:
             self._handle_error(e)
 
     async def query_with_tools(self, user_message: str, temperature=1.0):
+        self._check_cancelled()
         self.logger.display_start("QueryWithTools", user_message)
         ignorable_tools = ["get_current_tree", "expand_node", "collapse_node",
                            "get_patch_items", "set_current_tx", "set_attack_tx_list", "close_session"]
         try:
+            self._check_cancelled()
             truncated_user_msg = self.tm.truncate_prompt(user_message)
             self.memory.append({"role": "user", "content": truncated_user_msg})
             clean_memory = self.tm.filter_redundant_messages(self.memory, ignorable_tools)
@@ -105,6 +120,7 @@ class AgentBase:
             final_messages = self.tm.truncate_history_by_token(compressed_memory)
 
             tools = await self._get_openai_tools() if self.mcp_client else None
+            self._check_cancelled()
             start_time = time.time()
             response = await self.llm_client.create_chat_completion(
                 model=self.model,
@@ -114,6 +130,7 @@ class AgentBase:
                 temperature=temperature
             )
             elapsed_time = time.time() - start_time
+            self._check_cancelled()
 
             message = response.choices[0].message
             self.memory.append(message.model_dump())

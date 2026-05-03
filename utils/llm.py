@@ -7,10 +7,9 @@ from openai import OpenAI
 from string import Template
 
 from settings import LLM_BASE_URL, LLM_API_KEY, LLM_NAME, PROJECT_PATH, PROMPT_PATH
+from utils.tokenization import get_token_encoder
 
-import tiktoken
-
-enc = tiktoken.encoding_for_model("gpt-4o")
+enc = get_token_encoder("gpt-4o")
 
 MODEL_CONTEXT_WINDOWS = {
     # --- OpenAI ---

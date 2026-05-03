@@ -43,9 +43,11 @@ class TraceAgent(AgentBase):
 
     async def init(self):
         # init MCP sessions
+        self._check_cancelled()
         result = await self.mcp_client.call_tool("init_debug_session", {
             "dapp": self.dapp,
         })
+        self._check_cancelled()
 
         tx2init = result
         if isinstance(result, dict) and "session_id" in result:
@@ -72,9 +74,12 @@ class TraceAgent(AgentBase):
 
         # analyze trace
         while self._debug_turn_left > 0:
+            self._check_cancelled()
             current_tree = await self.get_current_trace()
+            self._check_cancelled()
             user_prompt = self._judge_too_long_trace(global_fault_understanding, current_tree, task_tree)
             tool_calls = await self.query_with_tools(user_prompt)
+            self._check_cancelled()
             self.is_init = False
 
             if not tool_calls:
@@ -92,6 +97,7 @@ class TraceAgent(AgentBase):
             pending_return_result = None
             # parse tool calls
             for tool_call in tool_calls:
+                self._check_cancelled()
                 func_name = tool_call.function.name
                 func_args_str = tool_call.function.arguments
                 call_id = tool_call.id
@@ -142,6 +148,7 @@ class TraceAgent(AgentBase):
                             func_args = self._inject_session(func_args)
 
                         tool_result = await self.mcp_client.call_tool(func_name, func_args)
+                        self._check_cancelled()
                         self.current_tx = target_tx_hash
                         self.logger.log_tool_result(func_name, tool_result)
                         self.memory.append({
@@ -159,6 +166,7 @@ class TraceAgent(AgentBase):
                     func_args = self._inject_session(func_args)
 
                 tool_result = await self.mcp_client.call_tool(func_name, func_args)
+                self._check_cancelled()
                 self.logger.log_tool_result(func_name, tool_result)
 
                 self.memory.append({
@@ -254,9 +262,11 @@ class TraceAgent(AgentBase):
     async def init_transactions(self, txs_need_analyze):
         if not txs_need_analyze or len(txs_need_analyze) == 0:
             raise ValueError(f"[{self.name}] Error: txs_need_analyze is empty, cannot initialize transactions.")
+        self._check_cancelled()
         self.current_tx = txs_need_analyze[0]
         await self.mcp_client.call_tool("set_current_tx",
                                         self._inject_session({"tx_hash": txs_need_analyze[0]}))
+        self._check_cancelled()
 
     def init_prompt(self, processed_data):
         txs_need_analyze = processed_data["transactions_need_analyze"]

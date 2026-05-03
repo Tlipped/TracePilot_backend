@@ -31,6 +31,7 @@ class FixAgent(AgentBase):
         self.metrics_collector = metrics_collector
 
     async def handle(self, fault_data: Dict):
+        self._check_cancelled()
         fix_report = fault_data.get("fix_report", {})
         json_parse_success, parse_result = self.process_fix_report(fix_report)
         if not json_parse_success:
@@ -53,8 +54,10 @@ class FixAgent(AgentBase):
         uid2faults: Dict[str, list] = {}  # {unique_id: [indexes]}
         uid2source: Dict[str, str] = {}  # {unique_id: source_code}
         for faulty_index in faulty_indexes:
+            self._check_cancelled()
             patch_item = await self.mcp_client.call_tool("get_patch_items",
                                                          {"session_id": self.session_id, "faulty_index": faulty_index})
+            self._check_cancelled()
             print(f"========================\npatch_item:\n{patch_item}========================\n")
 
             if isinstance(patch_item, str):
@@ -112,7 +115,9 @@ class FixAgent(AgentBase):
         format_contracts = self.get_format_contracts(uid2faults, uid2source) if patch_error == "" else patch_error
 
         original_compile_results = await self._load_compile_result(address2contracts)
+        self._check_cancelled()
         on_chain_bytecodes = await self._load_runtime_bytecode(list(address2contracts.keys()))
+        self._check_cancelled()
 
         patch_execution_success = False
         patches = ""
@@ -122,6 +127,7 @@ class FixAgent(AgentBase):
         final_replay_logs = ""
 
         while not patch_execution_success and retry_count < max_retries:
+            self._check_cancelled()
 
             if last_error == "":
                 patches = await self.query(FIX_UP.format(
@@ -139,6 +145,7 @@ class FixAgent(AgentBase):
                     last_error=last_error
                 ), _format='str', temperature=1.0)
             parse_success, parse_logs, patched_contracts = SolidityCodePatcher(uid2source).apply_patches(patches)
+            self._check_cancelled()
 
             if not parse_success:
                 retry_count += 1
@@ -154,6 +161,7 @@ class FixAgent(AgentBase):
 
             # compile patched code (Creation Bytecode)
             compile_success, compile_result_or_error = await self.compile_patched_codes(updated_contracts)
+            self._check_cancelled()
 
             if self.metrics_collector:
                 self.metrics_collector.record_compile_status(
@@ -179,6 +187,7 @@ class FixAgent(AgentBase):
 
             # --- Step A: Attempt Bytecode Transplantation ---
             for addr, patched_compile_item in compile_result_or_error.items():
+                self._check_cancelled()
                 original_item = original_compile_results.get(addr)
                 on_chain_code = on_chain_bytecodes.get(addr)
 
@@ -213,6 +222,7 @@ class FixAgent(AgentBase):
                 print(f"[FixAgent] Executing Strategy B (Tenderly Deploy) for: {list(addr2creation_bytecode.keys())}")
                 try:
                     deployed_results = await self._deploy_contracts(addr2creation_bytecode)
+                    self._check_cancelled()
 
                     for addr, runtime_code in deployed_results.items():
                         if runtime_code and len(runtime_code) > 2:
@@ -248,9 +258,11 @@ class FixAgent(AgentBase):
 
             try:
                 tenderly_transactions = await self.prepare_bundle_data()
+                self._check_cancelled()
                 execution_success, replay_logs = await self.run_patch_verification_from_tenderly(
                     tenderly_transactions, addr2runtime_bytecode
                 )
+                self._check_cancelled()
 
                 if not execution_success:
                     retry_count += 1

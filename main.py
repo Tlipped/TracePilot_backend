@@ -13,7 +13,11 @@ from utils.patch_quality_metrics import PatchQualityMetrics
 from app.models import LogMessage
 
 class WorkFlow:
-    def __init__(self, semaphore_num=1,log_callback: Optional[Callable[[LogMessage], None]] = None):
+    def __init__(
+            self,
+            semaphore_num=1,
+            log_callback: Optional[Callable[[LogMessage], None]] = None,
+            cancellation_checker: Optional[Callable[[], bool]] = None):
         self.root = os.path.join(PROJECT_PATH, 'dataset')
         self.dapp2processed = {}
         self.dapp2report = {}
@@ -29,6 +33,11 @@ class WorkFlow:
         self.semaphore = asyncio.Semaphore(semaphore_num)
         self.metrics_collector = PatchQualityMetrics()
         self.log_callback = log_callback  # 新增日志回调函数
+        self.cancellation_checker = cancellation_checker or (lambda: False)
+
+    def _check_cancelled(self):
+        if self.cancellation_checker():
+            raise asyncio.CancelledError("Task was cancelled")
 
     def _log(self, agent: str, level: str, message: str):
         """统一的日志输出方法"""
@@ -56,14 +65,17 @@ class WorkFlow:
 
     async def process_single_dapp(self, dapp, i):
         async with self.semaphore:
+            self._check_cancelled()
             dapp_name = dapp.get("name")
             local_mcp_client = MCPClient(MCP_SERVER_PATH)
             fault_report = ""
             try:
+                self._check_cancelled()
                 await local_mcp_client.connect()
                 processed_path = self.processed_data_names[i]
                 report_path = self.fault_report_names[i]
 
+                self._check_cancelled()
                 cached_processed_data = self.check_cache(dapp_name, processed_path)
                 cached_fault_report = self.check_cache(dapp_name, report_path)
                 if cached_fault_report:
@@ -76,17 +88,21 @@ class WorkFlow:
                 else:
                     # Macro Analysis (Process)
                     print(f"🚀 Start processing: {dapp_name}")
+                    self._check_cancelled()
                     processed_data, transaction_debugger = await DAppProcess(
                         net2rpc_bucket=self._net2rpc_bucket,
                         net2apikey_bucket=self._net2apikey_bucket,
                         mcp_client=local_mcp_client,
-                        log_callback=self.log_callback
+                        log_callback=self.log_callback,
+                        cancellation_checker=self.cancellation_checker
                     ).process(dapp)
+                    self._check_cancelled()
                     self.write_cache(dapp_name, processed_path, processed_data)
 
                 # Micro Analysis (Analyze)
                 if processed_data and transaction_debugger:
                     start_time = time.time()
+                    self._check_cancelled()
                     fault_report, analyze_items = await DAppAnalyze(
                         processed_data=processed_data,
                         transaction_debugger=transaction_debugger,
@@ -94,8 +110,10 @@ class WorkFlow:
                         net2rpc_bucket=self._net2rpc_bucket,
                         mcp_client=local_mcp_client,
                         metrics_collector=self.metrics_collector,
-                        log_callback=self.log_callback
+                        log_callback=self.log_callback,
+                        cancellation_checker=self.cancellation_checker
                     ).analyze()
+                    self._check_cancelled()
                     if fault_report.startswith("ERROR"):
                         print(f"LLM Fault: {fault_report}")
 
@@ -122,6 +140,11 @@ class WorkFlow:
                     return dapp_name, fault_report
                 return dapp_name, fault_report
 
+            except asyncio.CancelledError:
+                print(f"[CANCELLED] {dapp_name} analysis cancelled by user.")
+                if self.metrics_collector:
+                    self.metrics_collector.finalize_case(dapp_name, "CANCELLED")
+                raise
             except Exception as e:
                 import traceback
                 print(f"❌ Error processing {dapp_name}: {e}")

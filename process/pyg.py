@@ -1,6 +1,6 @@
 import asyncio
 import time
-from typing import List, Dict, Union
+from typing import Callable, List, Dict, Optional, Union
 
 from agents.FilterAgent import FilterAgent
 from agents.TraceAgent import TraceAgent
@@ -20,14 +20,26 @@ class DAppProcess:
             net2rpc_bucket: Dict[str, AsyncItemBucket],
             net2apikey_bucket: Dict[str, AsyncItemBucket],
             mcp_client,
-            log_callback=None
+            log_callback=None,
+            cancellation_checker: Optional[Callable[[], bool]] = None
     ):
         self._net2rpc_bucket = net2rpc_bucket
         self._net2apikey_bucket = net2apikey_bucket
         self.mcp_client = mcp_client
         self.log_callback = log_callback
+        self.cancellation_checker = cancellation_checker or (lambda: False)
+
+    def _check_cancelled(self):
+        if self.cancellation_checker():
+            raise asyncio.CancelledError("Task was cancelled")
+
+    def _attach_cancel(self, agent):
+        if hasattr(agent, "set_cancellation_checker"):
+            agent.set_cancellation_checker(self.cancellation_checker)
+        return agent
 
     async def process(self, dapp):
+        self._check_cancelled()
         processed_data = {'dapp': dapp}
         dapp_name = dapp["name"]
 
@@ -36,12 +48,15 @@ class DAppProcess:
         start_time = time.time()
         # analyze transaction detail
         print("downloading transaction details ~ ")
+        self._check_cancelled()
         tx_detail_agent = TxDetailAgent(apikey_bucket=self._net2apikey_bucket[dapp['platform']],
                                         rpc_bucket=self._net2rpc_bucket[dapp['platform']],
                                         _platform=dapp["platform"],
                                         dapp_name=dapp_name,
                                         log_callback=self.log_callback)
+        self._attach_cancel(tx_detail_agent)
         tx_detail_str, tx2detail, tx2property = await tx_detail_agent.handle(raw_tx_list)
+        self._check_cancelled()
         _tx2property, property_dict = self.process_property(tx2property=tx2property)
 
         processed_data["transaction_detail"] = tx_detail_str
@@ -53,31 +68,39 @@ class DAppProcess:
 
         # load transfer graph
         print("loading transfer graph ~")
+        self._check_cancelled()
         transactions, sorted_tx_list = await self.format_transactions(dapp["platform"], tx2detail, tx2balance_diff,
                                                                       tx2asset_changes)
         processed_data["transaction_hash_list"] = sorted_tx_list
         print(f"transaction_hash_list: {sorted_tx_list}")
 
         builder = FundFlowGraphBuilder(platform=dapp["platform"])
+        self._check_cancelled()
         transfer_graph = await builder.add_transactions(transactions)
         flow_graph_str = str(convert_to_graph(transfer_graph, graph_name="DApp_Transfer_Graph"))
         processed_data["transfer_graph"] = flow_graph_str
 
         # init trace simulator
         print("loading init trace ~")
+        self._check_cancelled()
         trace_agent = TraceAgent(processed_data, mcp_client=self.mcp_client, dapp_name=dapp_name, log_callback=self.log_callback)
+        self._attach_cancel(trace_agent)
         tx2init_trace = await trace_agent.init()
+        self._check_cancelled()
         processed_data["trace_tree"] = tx2init_trace
 
         # identify transaction roles
         print("analyzing transaction roles ~ ")
+        self._check_cancelled()
         tx_role_agent = TxRoleAgent(apikey_bucket=self._net2apikey_bucket[dapp['platform']],
                                     rpc_bucket=self._net2rpc_bucket[dapp['platform']],
                                     _platform=dapp["platform"],
                                     dapp_name=dapp_name,
                                     log_callback=self.log_callback)
+        self._attach_cancel(tx_role_agent)
         roles, attack_transactions, auxiliary_transactions, balance_change = await tx_role_agent.handle(processed_data,
                                                                                                         transactions)
+        self._check_cancelled()
         processed_data["transaction_roles"] = roles
         processed_data["balance_change"] = balance_change
         processed_data["attack_transactions"] = attack_transactions
@@ -85,7 +108,9 @@ class DAppProcess:
 
         # filter attack transactions
         print("filter same attack templates ~ ")
+        self._check_cancelled()
         attack_filter = FilterAgent(dapp_name=dapp_name, log_callback=self.log_callback)
+        self._attach_cancel(attack_filter)
 
         num_attack_txs = len(attack_transactions)
         num_total_txs = len(sorted_tx_list)
@@ -98,6 +123,7 @@ class DAppProcess:
         else:
             if num_attack_txs > 1:
                 txs_need_analyze = await attack_filter.handle(processed_data)
+                self._check_cancelled()
             else:
                 txs_need_analyze = attack_transactions
 
@@ -105,8 +131,11 @@ class DAppProcess:
 
         # macro transaction fault
         print("analyzing transaction bug ~ ")
+        self._check_cancelled()
         tx_fault_agent = TxFaultAgent(dapp_name=dapp_name,  log_callback=self.log_callback)
+        self._attach_cancel(tx_fault_agent)
         bug_summary = await tx_fault_agent.handle(processed_data)
+        self._check_cancelled()
         processed_data["bug_summary"] = bug_summary
 
         # single = SingleAgent(dapp_name=dapp_name)

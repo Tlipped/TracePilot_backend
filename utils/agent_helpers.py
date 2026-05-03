@@ -335,10 +335,9 @@ from datetime import datetime
 from typing import Any,Optional, Callable
 import uuid
 
-import tiktoken
-
 from settings import PROJECT_PATH
 from utils.llm import MODEL_MAX_OUTPUT_TOKENS, MODEL_CONTEXT_WINDOWS
+from utils.tokenization import get_token_encoder
 from app.models import LogLevel, MsgType, LogMessage
 
 
@@ -423,8 +422,8 @@ class AgentLogger:
                     task_id=self.unique_id,
                     log_id=log_id,
                     agent=self.agent_name,
-                    level=level,
-                    message_type=message_type,
+                    level=level.value if hasattr(level, "value") else str(level),
+                    message_type=message_type.value if hasattr(message_type, "value") else str(message_type),
                     message=message[:1000] if len(message) > 1000 else message,  # 存储摘要
                     full_content=message,  # 存储完整内容
                     is_truncated=is_truncated,
@@ -513,10 +512,7 @@ class TokenManager:
     def __init__(self, model: str):
         self.model = model
         self.context_limit = MODEL_CONTEXT_WINDOWS.get(model, 128000)
-        try:
-            self.encoder = tiktoken.encoding_for_model(model)
-        except Exception:
-            self.encoder = tiktoken.get_encoding("cl100k_base")
+        self.encoder = get_token_encoder(model)
 
     def count_tokens(self, text: str) -> int:
         try:

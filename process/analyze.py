@@ -1,4 +1,5 @@
-from typing import Dict, Optional
+import asyncio
+from typing import Callable, Dict, Optional
 
 from agents.FixAgent import FixAgent
 from agents.GlobalMemoryAgent import GlobalMemoryAgent
@@ -16,7 +17,8 @@ class DAppAnalyze:
                  net2rpc_bucket: Dict[str, AsyncItemBucket],
                  mcp_client,
                  metrics_collector: Optional[PatchQualityMetrics] = None,
-                 log_callback=None):
+                 log_callback=None,
+                 cancellation_checker: Optional[Callable[[], bool]] = None):
         self._net2apikey_bucket = net2apikey_bucket
         self._net2rpc_bucket = net2rpc_bucket
         self.processed_data = processed_data
@@ -39,11 +41,30 @@ class DAppAnalyze:
         self.transaction_judge = JudgeAgent(dapp_name=self.dapp_name, metrics_collector=metrics_collector, log_callback=log_callback)
         self.metrics_collector = metrics_collector
         self.log_callback = log_callback
+        self.cancellation_checker = cancellation_checker or (lambda: False)
 
+    def _check_cancelled(self):
+        if self.cancellation_checker():
+            raise asyncio.CancelledError("Task was cancelled")
+
+    def _attach_cancel(self, agent):
+        if hasattr(agent, "set_cancellation_checker"):
+            agent.set_cancellation_checker(self.cancellation_checker)
+        return agent
 
     async def analyze(self) -> [str, Dict]:
+        self._check_cancelled()
         if self.metrics_collector:
             self.metrics_collector.start_case(self.dapp_name)
+
+        for agent in [
+            self.transaction_debugger,
+            self.global_memory_administrator,
+            self.task_organizer,
+            self.code_patcher,
+            self.transaction_judge,
+        ]:
+            self._attach_cancel(agent)
         
         self.global_memory_administrator.init(self.processed_data)
         verify_feedback = "Initial state: Start analysis."
@@ -53,6 +74,7 @@ class DAppAnalyze:
                 self.metrics_collector.finalize_case(self.dapp_name, "NO_ATTACK_TX")
             return "empty attack transaction!", {}
 
+        self._check_cancelled()
         await self.transaction_debugger.init_transactions(self.txs_need_analyze)
         self.global_memory_administrator.init_transactions(self.txs_need_analyze)
 
@@ -62,14 +84,17 @@ class DAppAnalyze:
 
         total_turn = TOTAL_TURN
         while total_turn > 0:
+            self._check_cancelled()
             guide_turn = GUIDE_TURN
             current_hypothesis = {}
             while guide_turn > 0:
+                self._check_cancelled()
                 # generate task tree (assume)
                 await self.task_organizer.handle(
                     self.global_memory_administrator.global_memory,
                     verify_feedback
                 )
+                self._check_cancelled()
                 is_force_turn = (guide_turn == 1)
                 # transaction debug (analyze)
                 debug_result = await self.transaction_debugger.handle(
@@ -77,6 +102,7 @@ class DAppAnalyze:
                     self.task_organizer.task_tree,
                     force_terminate=is_force_turn
                 )
+                self._check_cancelled()
                 reason = debug_result.get("reason", "")
                 if isinstance(reason, str) and reason == "ERROR":
                     if self.metrics_collector:
@@ -138,7 +164,9 @@ class DAppAnalyze:
             patch_fix_total_count = 0
 
             while patch_turn > 0:
+                self._check_cancelled()
                 patch_execution_success, replay_logs, patches, fix_count = await self.code_patcher.handle(current_hypothesis)
+                self._check_cancelled()
                 patch_fix_total_count += fix_count
 
                 if self.metrics_collector:
@@ -156,6 +184,7 @@ class DAppAnalyze:
                         "patches": patches
                     }
                     judge_result = await self.transaction_judge.handle(judge_data)
+                    self._check_cancelled()
                     verdict = judge_result.get("verdict")
 
                     if verdict == "VERIFIED":  # pass
