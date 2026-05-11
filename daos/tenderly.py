@@ -3,6 +3,8 @@ import sys
 import time
 from typing import List, Optional, Dict, Set
 
+import aiohttp
+
 from daos.contract import ContractDao
 from downloaders.defs import Downloader
 from downloaders.trace import TenderlyFullSimulationDownloader, TenderlySimulateDownloader, \
@@ -177,10 +179,32 @@ class TenderlyDao:
         max_attempts = 3
         full_result = None
         for attempt in range(1, max_attempts + 1):
-            simulation_id = await self.id_downloader.download(payload=payload)
-            full_result = await self.result_downloader.download(simulation_id=simulation_id)
-            if full_result and len(full_result) >= 0:
-                break
+            try:
+                simulation_id = await self.id_downloader.download(payload=payload)
+                if not simulation_id:
+                    raise RuntimeError("Tenderly simulation id is empty")
+
+                full_result = await self.result_downloader.download(simulation_id=simulation_id)
+                if full_result and 'transaction' in full_result and 'contracts' in full_result:
+                    break
+
+                print(
+                    f"Tenderly retry {attempt}/{max_attempts}: incomplete simulation result "
+                    f"for tx {payload.get('transaction_hash')}"
+                )
+            except (asyncio.TimeoutError, aiohttp.ClientError) as exc:
+                print(
+                    f"Tenderly retry {attempt}/{max_attempts}: request failed for tx "
+                    f"{payload.get('transaction_hash')}: {type(exc).__name__} - {exc}"
+                )
+            except Exception as exc:
+                print(
+                    f"Tenderly retry {attempt}/{max_attempts}: simulation failed for tx "
+                    f"{payload.get('transaction_hash')}: {type(exc).__name__} - {exc}"
+                )
+
+            if attempt < max_attempts:
+                await asyncio.sleep(min(2 ** attempt, 8))
 
         if not full_result or 'transaction' not in full_result or 'contracts' not in full_result:
             print(f"Error: No data found for payload {payload}")

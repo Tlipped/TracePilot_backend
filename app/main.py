@@ -132,8 +132,8 @@ async def websocket_endpoint(
     outbound_queue: asyncio.Queue = asyncio.Queue(maxsize=1200)
     stop_event = asyncio.Event()
     terminal_status = {TaskStatus.COMPLETED.value, TaskStatus.FAILED.value}
-    heartbeat_interval = 10.0
-    heartbeat_timeout = 35.0
+    heartbeat_interval = 20.0
+    heartbeat_timeout = 120.0
     last_pong_at = time.monotonic()
     pong_supported = False
     dropped_outbound_logs = 0

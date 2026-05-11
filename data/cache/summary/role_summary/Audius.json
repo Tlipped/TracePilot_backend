@@ -1,0 +1,41 @@
+{
+    "summary": {
+        "transaction": {
+            "attack_transactions": [
+                "0x4227bca8ed4b8915c7eec0e14ad3748a88c4371d4176e716e8007249b9980dc9"
+            ],
+            "auxiliary_transactions": [
+                "0xfefd829e246002a8fd061eede7501bccb6e244a9aacea0ebceaecef5d877a984",
+                "0x3c09c6306b67737227edc24c663462d870e7c2bf39e9ab66877a980c900dd5d5"
+            ]
+        },
+        "address_role": {
+            "0xa0c7BD318D69424603CBf91e9969870F21B8ab4c": {
+                "role": "attacker",
+                "description": "This address is the attacker who initiated all three transactions. It deployed the malicious contract, cast a fraudulent vote, and executed the proposal to drain funds from the DAO treasury."
+            },
+            "0xbdbB5945f252bc3466A319CDcC3EE8056bf2e569": {
+                "role": "attacker-controlled contract",
+                "description": "This malicious contract was deployed by the attacker in the first auxiliary transaction. It was later used to cast a fraudulent vote with enormous voting power in the second auxiliary transaction, and it received the stolen AUDIO tokens in the attack transaction."
+            },
+            "0x4deca517d6817b6510798b7328f2314d3003abac": {
+                "role": "victim (DAO treasury)",
+                "description": "This is the DAO's governance logic contract, acting as the treasury. In the attack transaction, it was forced to transfer 18,564,497.82 AUDIO tokens to the attacker-controlled contract as a result of the malicious proposal execution, suffering the loss."
+            },
+            "0x03e75d7DD38CCE2e20FfEE35EC914C57780A8e29": {
+                "role": "attacker (funding source)",
+                "description": "This address received ETH from the miner in the second auxiliary transaction, which was then used by the attacker to pay gas fees for deploying the malicious contract and casting the fraudulent vote."
+            },
+            "0x7F101fE45e6649A6fB8F3F8B43ed03D353f2B90c": {
+                "role": "attacker (funding source)",
+                "description": "This address received ETH from the miner in the attack transaction, which was then used by the attacker to pay gas fees for executing the malicious proposal."
+            },
+            "0x829BD824B016326A401d083B33D092293333A830": {
+                "role": "attacker (funding source)",
+                "description": "This address received ETH from the miner in the first auxiliary transaction, which was then used by the attacker to pay gas fees for deploying the malicious contract."
+            }
+        }
+    },
+    "token": "8470",
+    "time": "12.957693099975586"
+}

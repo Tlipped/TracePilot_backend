@@ -199,7 +199,7 @@ class TenderlySimulateDownloader(Downloader):
 
     async def _fetch(self, payload: Dict, **kwargs):
         params = self.get_request_param(payload)
-        timeout = aiohttp.ClientTimeout(total=180)
+        timeout = aiohttp.ClientTimeout(total=300, sock_connect=30, sock_read=300)
 
         async with aiohttp.ClientSession(timeout=timeout, trust_env=True) as session:
             async with session.post(params['url'], headers=params['headers'], json=params['json']) as response:
@@ -251,7 +251,7 @@ class TenderlyFullSimulationDownloader(Downloader):
 
     async def _fetch(self, simulation_id: str, **kwargs):
         params = self.get_request_param(simulation_id)
-        timeout = aiohttp.ClientTimeout(total=180)
+        timeout = aiohttp.ClientTimeout(total=300, sock_connect=30, sock_read=300)
 
         async with aiohttp.ClientSession(timeout=timeout, trust_env=True) as session:
             async with session.post(params['url'], headers=params['headers']) as response:

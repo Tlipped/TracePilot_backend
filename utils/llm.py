@@ -25,6 +25,9 @@ MODEL_CONTEXT_WINDOWS = {
     "gemini-2.0-flash": 1000000,
     "gemini-3.0-pro": 2000000,
 
+    # --- Xiaomi MiMo ---
+    "mimo-v2.5-pro": 1048576,
+
     # --- Anthropic Claude ---
     "claude-3-5-sonnet-20241022": 200000,
     "claude-3-5-haiku": 200000,
@@ -55,6 +58,9 @@ MODEL_MAX_OUTPUT_TOKENS = {
     "gemini-1.5-flash": 8192,
     "gemini-2.0-flash": 8192,
     "gemini-3.0-pro": 8192,
+
+    # --- Xiaomi MiMo ---
+    "mimo-v2.5-pro": 131072,
 
     # --- Anthropic Claude ---
     "claude-3-5-sonnet-20241022": 8192,

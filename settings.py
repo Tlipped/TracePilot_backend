@@ -101,9 +101,12 @@ JSONRPCS = {
 
 WEB3_PROVIDER = "https://mainnet.infura.io/v3/1277d00f1f424cbb9212838bb034a8ce"
 
-LLM_NAME = 'deepseek-reasoner'
-LLM_API_KEY = 'sk-3b88436dd2044fc6a9d3fdccb779b1c6'
-LLM_BASE_URL = 'https://api.deepseek.com'
+# LLM_NAME = 'deepseek-chat'
+# LLM_API_KEY = 'sk-746c5530e16a4b4c87bb0e327c418e12'
+# LLM_BASE_URL = 'https://api.deepseek.com'
+LLM_NAME = 'mimo-v2.5-pro'
+LLM_API_KEY = 'tp-c930b4s55rmvnd3frosuf7tp4odz50pwqklfgh3iewvsw8he'
+LLM_BASE_URL = 'https://api.xiaomimimo.com/v1'
 LLM_MAX_CONCURRENT = 5
 
 PROMPT_PATH = 'prompt'
