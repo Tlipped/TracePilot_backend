@@ -4,6 +4,8 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: tracepilot_backend
+    env_file:
+      - .env
     ports:
       - "8000:8000"
     environment:
@@ -11,7 +13,6 @@ services:
       - REDIS_URL=redis://redis:6379/0
       - PYTHONPATH=/app
       - PROJECT_PATH=/app
-      - LLM_NAME=gpt-4
       - CACHE_DIR=/app/data/cache
     volumes:
       - ./agents:/app/agents

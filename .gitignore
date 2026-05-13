@@ -28,6 +28,8 @@ experiment_result/*
 !experiment_result/.gitkeep
 agents/logs/*
 !agents/logs/.gitkeep
+data/cache/*
+!data/cache/.gitkeep
 
 # Compiler binaries (大文件)
 compiler/
@@ -46,6 +48,7 @@ package-lock.json
 # Environment
 .env
 *.env
+!.env_example
 settings_local.py
 
 # Cache

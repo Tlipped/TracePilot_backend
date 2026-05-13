@@ -65,12 +65,44 @@ def ensure_task_log_schema():
         if column_name not in existing_columns
     ]
     if not missing_patches:
+        ensure_task_log_constraints()
         return
 
     with engine.begin() as connection:
         for ddl in missing_patches:
             connection.execute(text(ddl))
     logger.info("[DB] task_logs schema patched with %s missing columns", len(missing_patches))
+    ensure_task_log_constraints()
+
+
+def ensure_task_log_constraints():
+    inspector = inspect(engine)
+    if "task_logs" not in inspector.get_table_names():
+        return
+
+    task_id_column = next(
+        (column for column in inspector.get_columns("task_logs") if column["name"] == "task_id"),
+        None,
+    )
+    unique_task_id_constraints = [
+        constraint
+        for constraint in inspector.get_unique_constraints("task_logs")
+        if constraint.get("column_names") == ["task_id"]
+    ]
+
+    with engine.begin() as connection:
+        if task_id_column is not None:
+            column_type = task_id_column.get("type")
+            current_length = getattr(column_type, "length", None)
+            if current_length is not None and current_length < 255:
+                connection.execute(text("ALTER TABLE task_logs ALTER COLUMN task_id TYPE VARCHAR(255)"))
+                logger.info("[DB] task_logs.task_id widened to VARCHAR(255)")
+
+        for constraint in unique_task_id_constraints:
+            constraint_name = constraint.get("name")
+            if constraint_name:
+                connection.execute(text(f'ALTER TABLE task_logs DROP CONSTRAINT "{constraint_name}"'))
+                logger.info("[DB] dropped invalid unique constraint on task_logs.task_id: %s", constraint_name)
 
 
 def ensure_task_run_schema():

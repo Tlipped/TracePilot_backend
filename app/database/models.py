@@ -10,7 +10,7 @@ class TaskLog(Base):
     __tablename__ = "task_logs"
 
     id = Column(Integer, primary_key=True, index=True)
-    task_id = Column(String(36), nullable=False, index=True)
+    task_id = Column(String(255), nullable=False, index=True)
     log_id = Column(String(36), nullable=False, index=True)
     agent = Column(String(128), index=True)
     level = Column(String(32), index=True)

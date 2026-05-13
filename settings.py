@@ -1,10 +1,12 @@
 import os
 
 import re
+from dotenv import load_dotenv
 
 RAW_JSON_PATH = 'dataset/raw'
 
 PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(PROJECT_PATH, ".env"))
 # PROJECT_PATH, _ = os.path.split(os.path.realpath(__file__))
 PC_TRACER_RELATED_PATH = 'misc/tracer.js'
 with open(os.path.join(PROJECT_PATH, PC_TRACER_RELATED_PATH), 'r') as f:
@@ -101,13 +103,18 @@ JSONRPCS = {
 
 WEB3_PROVIDER = "https://mainnet.infura.io/v3/1277d00f1f424cbb9212838bb034a8ce"
 
-# LLM_NAME = 'deepseek-chat'
-# LLM_API_KEY = 'sk-746c5530e16a4b4c87bb0e327c418e12'
-# LLM_BASE_URL = 'https://api.deepseek.com'
-LLM_NAME = 'mimo-v2.5-pro'
-LLM_API_KEY = 'tp-c930b4s55rmvnd3frosuf7tp4odz50pwqklfgh3iewvsw8he'
-LLM_BASE_URL = 'https://api.xiaomimimo.com/v1'
-LLM_MAX_CONCURRENT = 5
+
+def _get_int_env(name: str, default: int) -> int:
+    try:
+        return int(os.getenv(name, str(default)))
+    except (TypeError, ValueError):
+        return default
+
+
+LLM_NAME = os.getenv("LLM_NAME", "deepseek-chat")
+LLM_API_KEY = os.getenv("LLM_API_KEY", "")
+LLM_BASE_URL = os.getenv("LLM_BASE_URL", "https://api.deepseek.com")
+LLM_MAX_CONCURRENT = _get_int_env("LLM_MAX_CONCURRENT", 5)
 
 PROMPT_PATH = 'prompt'
 
