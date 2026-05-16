@@ -75,6 +75,53 @@ def ensure_task_log_schema():
     ensure_task_log_constraints()
 
 
+def _get_column_storage_info(connection, table_name: str, column_name: str):
+    return connection.execute(
+        text(
+            """
+            SELECT data_type, udt_name, character_maximum_length
+            FROM information_schema.columns
+            WHERE table_name = :table_name
+              AND column_name = :column_name
+            ORDER BY CASE WHEN table_schema = current_schema() THEN 0 ELSE 1 END
+            LIMIT 1
+            """
+        ),
+        {"table_name": table_name, "column_name": column_name},
+    ).mappings().first()
+
+
+def _ensure_varchar_column(connection, table_name: str, column_name: str, max_length: int):
+    allowed_columns = {
+        ("task_logs", "level"),
+        ("task_logs", "message_type"),
+    }
+    if (table_name, column_name) not in allowed_columns:
+        raise ValueError(f"Unsafe schema patch target: {table_name}.{column_name}")
+
+    column_info = _get_column_storage_info(connection, table_name, column_name)
+    if not column_info:
+        return
+
+    data_type = (column_info.get("data_type") or "").lower()
+    current_length = column_info.get("character_maximum_length")
+    needs_patch = (
+        data_type == "user-defined"
+        or data_type not in {"character varying", "text"}
+        or (current_length is not None and current_length < max_length)
+    )
+
+    if needs_patch:
+        connection.execute(
+            text(
+                f"ALTER TABLE {table_name} "
+                f"ALTER COLUMN {column_name} TYPE VARCHAR({max_length}) "
+                f"USING {column_name}::text"
+            )
+        )
+        logger.info("[DB] %s.%s converted to VARCHAR(%s)", table_name, column_name, max_length)
+
+
 def ensure_task_log_constraints():
     inspector = inspect(engine)
     if "task_logs" not in inspector.get_table_names():
@@ -97,6 +144,9 @@ def ensure_task_log_constraints():
             if current_length is not None and current_length < 255:
                 connection.execute(text("ALTER TABLE task_logs ALTER COLUMN task_id TYPE VARCHAR(255)"))
                 logger.info("[DB] task_logs.task_id widened to VARCHAR(255)")
+
+        _ensure_varchar_column(connection, "task_logs", "level", 32)
+        _ensure_varchar_column(connection, "task_logs", "message_type", 32)
 
         for constraint in unique_task_id_constraints:
             constraint_name = constraint.get("name")

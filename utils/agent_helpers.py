@@ -493,6 +493,31 @@ class AgentLogger:
         msg = f"🔧 **Tool Result** ({tool_name}):\n```\n{self._snippet(str(tool_result), 300)}\n```"
         self._send_to_callback(LogLevel.INFO, MsgType.RESULT, msg)
 
+    def log_patch_report(self, fault_report: str, final_trace: str, fix_report: str):
+        log_content = [
+            "",
+            "=" * 40,
+            "[PATCH GENERATED]",
+            f"Fault Report:\n{fault_report}",
+            f"Fix Report:\n{fix_report}",
+            f"Trace Snapshot:\n{final_trace}",
+            "=" * 40,
+        ]
+        self.file_logger.info("\n".join(log_content))
+        print(
+            f"\n{'=' * 80}\nPATCH GENERATED\n"
+            f"Report Summary: {self._snippet(str(fault_report), 200)}\n"
+            f"{'=' * 80}\n"
+        )
+
+        md_message = (
+            "### Patch Candidate Generated\n\n"
+            f"**Fault report:** {self._snippet(str(fault_report), 800)}\n\n"
+            f"**Fix report:** {self._snippet(str(fix_report), 800)}\n\n"
+            f"**Trace snapshot:**\n```\n{self._snippet(str(final_trace), 1200)}\n```"
+        )
+        self._send_to_callback(LogLevel.INFO, MsgType.MARKDOWN, md_message)
+
     def info(self, msg, *args, **kwargs):
         self.file_logger.info(msg, *args, **kwargs)
         self._send_to_callback(LogLevel.INFO, MsgType.TEXT, str(msg))

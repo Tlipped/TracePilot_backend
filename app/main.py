@@ -1,5 +1,6 @@
 import asyncio
 import base64
+import json
 import logging
 import time
 from datetime import datetime
@@ -35,6 +36,7 @@ app.add_middleware(
 
 AGENT_LOG_ROOT = Path(PROJECT_PATH) / "agents" / "logs"
 MAX_AGENT_LOG_BYTES = 2_000_000
+PROCESSED_DATA_ROOT = Path(PROJECT_PATH) / "dataset" / "processed"
 
 
 def _b64_encode(value: str) -> str:
@@ -48,6 +50,150 @@ def _b64_decode(value: str) -> str:
 
 def _safe_relative_path(path: Path, root: Path) -> str:
     return path.resolve().relative_to(root.resolve()).as_posix()
+
+
+def _safe_processed_file_name(dapp_name: str) -> str:
+    return dapp_name.replace("/", "_").replace("\\", "_")
+
+
+def _short_hash(value: str) -> str:
+    return f"{value[:10]}...{value[-8:]}" if len(value) > 18 else value
+
+
+def _summarize_balance_change(tx_hash: str, balance_change: Dict[str, Any]) -> Dict[str, Any]:
+    tx_balance = balance_change.get(tx_hash, {}) if isinstance(balance_change, dict) else {}
+    participants = []
+    total_usd_delta = 0.0
+
+    for address, token_changes in tx_balance.items():
+        token_summary = []
+        address_usd_delta = 0.0
+        if not isinstance(token_changes, dict):
+            continue
+        for token_address, change in token_changes.items():
+            if not isinstance(change, dict):
+                continue
+            usd_value = change.get("usd_value")
+            if isinstance(usd_value, (int, float)):
+                address_usd_delta += usd_value
+                total_usd_delta += usd_value
+            token_summary.append(
+                {
+                    "token": change.get("symbol") or token_address,
+                    "name": change.get("name"),
+                    "amount": change.get("fmt_amount"),
+                    "usd_value": usd_value,
+                    "contract": change.get("contract"),
+                }
+            )
+        participants.append(
+            {
+                "address": address,
+                "usd_delta": address_usd_delta,
+                "tokens": token_summary[:8],
+            }
+        )
+
+    participants.sort(key=lambda item: abs(item.get("usd_delta") or 0), reverse=True)
+    return {
+        "participant_count": len(participants),
+        "total_usd_delta": total_usd_delta,
+        "top_participants": participants[:8],
+    }
+
+
+def _summarize_transaction(
+    tx_hash: str,
+    processed_data: Dict[str, Any],
+    index: int,
+) -> Dict[str, Any]:
+    detail = (processed_data.get("transaction_to_detail") or {}).get(tx_hash, {}) or {}
+    attack_transactions = set(processed_data.get("attack_transactions") or [])
+    auxiliary_transactions = set(processed_data.get("auxiliary_transactions") or [])
+    debug_targets = set(processed_data.get("transactions_need_analyze") or [])
+    address_roles = processed_data.get("transaction_roles") or {}
+    from_addr = str(detail.get("from") or "").lower()
+    to_addr = str(detail.get("to") or detail.get("contract_address") or "").lower()
+
+    if tx_hash in attack_transactions:
+        tx_type = "attack"
+    elif tx_hash in auxiliary_transactions:
+        tx_type = "auxiliary"
+    else:
+        tx_type = "candidate"
+
+    involved_roles = []
+    for address in [from_addr, to_addr]:
+        role_item = address_roles.get(address) if isinstance(address_roles, dict) else None
+        if role_item:
+            involved_roles.append(
+                {
+                    "address": address,
+                    "role": role_item.get("role"),
+                    "description": role_item.get("description"),
+                }
+            )
+
+    logs = ((detail.get("log_analysis") or {}).get("detailed_logs") or [])[:8]
+    return {
+        "hash": tx_hash,
+        "display_hash": _short_hash(tx_hash),
+        "type": tx_type,
+        "is_debug_target": tx_hash in debug_targets,
+        "order": index,
+        "from": from_addr or None,
+        "to": to_addr or None,
+        "from_role": (address_roles.get(from_addr) or {}).get("role") if isinstance(address_roles, dict) else None,
+        "to_role": (address_roles.get(to_addr) or {}).get("role") if isinstance(address_roles, dict) else None,
+        "involved_roles": involved_roles,
+        "block_number": detail.get("block_number"),
+        "timestamp": detail.get("timestamp"),
+        "function_signature": detail.get("function_signature"),
+        "status": (detail.get("status") or {}).get("description"),
+        "success": (detail.get("status") or {}).get("success"),
+        "value_eth": (detail.get("value") or {}).get("eth"),
+        "gas_used": (detail.get("gas") or {}).get("used"),
+        "cost_eth": (detail.get("cost") or {}).get("total_eth"),
+        "interacted_addresses": ((detail.get("log_analysis") or {}).get("interacted_addresses") or [])[:12],
+        "event_logs": logs,
+        "balance_summary": _summarize_balance_change(tx_hash, processed_data.get("balance_change") or {}),
+    }
+
+
+def _load_macro_analysis_payload(task: TaskResponse) -> Dict[str, Any]:
+    processed_file = PROCESSED_DATA_ROOT / f"{_safe_processed_file_name(task.dapp_name)}.json"
+    if not processed_file.exists():
+        raise HTTPException(status_code=404, detail="Processed macro analysis is not available yet")
+
+    try:
+        processed_data = json.loads(processed_file.read_text(encoding="utf-8"))
+    except Exception as exc:
+        logger.exception("[Macro] Failed to read processed data for %s", task.dapp_name)
+        raise HTTPException(status_code=500, detail=f"Failed to load processed macro analysis: {exc}") from exc
+
+    tx_order = processed_data.get("transaction_hash_list") or (processed_data.get("dapp") or {}).get("transaction_hash") or []
+    transaction_summaries = [
+        _summarize_transaction(tx_hash, processed_data, index)
+        for index, tx_hash in enumerate(tx_order)
+    ]
+
+    return {
+        "task_id": task.task_id,
+        "dapp_name": task.dapp_name,
+        "processed_file": _safe_relative_path(processed_file, PROCESSED_DATA_ROOT),
+        "dapp": processed_data.get("dapp"),
+        "transaction_hash_list": tx_order,
+        "transaction_roles": processed_data.get("transaction_roles", {}),
+        "attack_transactions": processed_data.get("attack_transactions", []),
+        "auxiliary_transactions": processed_data.get("auxiliary_transactions", []),
+        "transactions_need_analyze": processed_data.get("transactions_need_analyze", []),
+        "bug_summary": processed_data.get("bug_summary", ""),
+        "time_used": processed_data.get("time_used", {}),
+        "token_used": processed_data.get("token_used", {}),
+        "transactions": transaction_summaries,
+        "balance_change": processed_data.get("balance_change", {}),
+        "transaction_to_property": processed_data.get("transaction_to_property", {}),
+    }
 
 
 def _parse_log_session_time(session_name: str):
@@ -84,6 +230,21 @@ def find_agent_log_dir(task: TaskResponse) -> Path | None:
     return min(candidates, key=score)
 
 
+def _serialize_task_log(log: TaskLog, task_id: str) -> Dict[str, Any]:
+    return {
+        "type": "LOG",
+        "task_id": task_id,
+        "agent": log.agent or "Unknown",
+        "level": log.level or "info",
+        "message": log.message or "",
+        "message_type": log.message_type or "text",
+        "is_truncated": bool(log.is_truncated),
+        "timestamp": log.timestamp.isoformat() if log.timestamp else datetime.now().isoformat(),
+        "log_id": log.log_id,
+        "persisted_id": log.id,
+    }
+
+
 def load_persisted_log_events(task_id: str, dapp_name: str = "", limit: int = 1000):
     db_session = SessionLocal()
     try:
@@ -96,20 +257,35 @@ def load_persisted_log_events(task_id: str, dapp_name: str = "", limit: int = 10
         )
         events = []
         for log in reversed(logs):
-            events.append(
-                {
-                    "type": "LOG",
-                    "task_id": task_id,
-                    "agent": log.agent or "Unknown",
-                    "level": log.level or "info",
-                    "message": log.message or "",
-                    "message_type": log.message_type or "text",
-                    "is_truncated": bool(log.is_truncated),
-                    "timestamp": log.timestamp.isoformat() if log.timestamp else datetime.now().isoformat(),
-                    "log_id": log.log_id,
-                }
-            )
+            events.append(_serialize_task_log(log, task_id))
         return events
+    finally:
+        db_session.close()
+
+
+def load_persisted_log_page(task_id: str, dapp_name: str = "", limit: int = 200, before_id: int | None = None):
+    db_session = SessionLocal()
+    try:
+        task_ids = [task_id, dapp_name] if dapp_name else [task_id]
+        base_query = db_session.query(TaskLog).filter(TaskLog.task_id.in_(task_ids))
+        total = base_query.count()
+        query = base_query
+        if before_id is not None:
+            query = query.filter(TaskLog.id < before_id)
+
+        rows = (
+            query.order_by(TaskLog.id.desc())
+            .limit(limit)
+            .all()
+        )
+        rows_chronological = list(reversed(rows))
+        next_before_id = min((row.id for row in rows), default=None)
+        return {
+            "events": [_serialize_task_log(log, task_id) for log in rows_chronological],
+            "next_before_id": next_before_id if len(rows) >= limit else None,
+            "has_more": len(rows) >= limit,
+            "total": total,
+        }
     finally:
         db_session.close()
 
@@ -374,6 +550,17 @@ async def get_task(
     return task
 
 
+@app.get("/api/tasks/{task_id}/macro-analysis")
+async def get_macro_analysis(
+    task_id: str,
+    task_manager: TaskManager = Depends(get_task_manager),
+):
+    task = task_manager.get_task(task_id)
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return _load_macro_analysis_payload(task)
+
+
 @app.get("/api/tasks")
 async def list_tasks(
     include_archived: bool = Query(False),
@@ -408,6 +595,19 @@ async def get_full_log(
         raise HTTPException(status_code=404, detail="Log not found")
     finally:
         db_session.close()
+
+
+@app.get("/api/tasks/{task_id}/logs")
+async def get_task_logs(
+    task_id: str,
+    limit: int = Query(200, ge=1, le=1000),
+    before_id: int | None = Query(None),
+    task_manager: TaskManager = Depends(get_task_manager),
+):
+    task = task_manager.get_task(task_id)
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return load_persisted_log_page(task_id, task.dapp_name, limit=limit, before_id=before_id)
 
 
 @app.post("/api/tasks/{task_id}/cancel")

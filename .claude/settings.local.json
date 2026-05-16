@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la \"F:\\\\keyan_learning\\\\TracePilot-dashboard\")",
+      "Read(//f/keyan_learning/TracePilot-dashboard/**)"
+    ]
+  }
+}
