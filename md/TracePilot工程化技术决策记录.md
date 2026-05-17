@@ -284,3 +284,34 @@
 3. 前端按用户角色拆成报告、学习、审计、原始调试四种模式，避免所有人都被多 Agent 日志淹没。
 4. 对长日志做分页恢复和虚拟滚动，让系统能支撑更长的真实任务。
 5. 对宏观分析结果做结构化展示，把论文中的中间推理结果转化为可解释、可演示、可复现的产品能力。
+
+## 16. Backend Automated Review Service 后端自动化审查接口
+
+**决策**：新增 `/api/tasks/{task_id}/automated-review`，在后端基于任务状态、持久化日志、宏观分析结果和最终报告做确定性的跨 Agent 一致性审查。前端优先消费后端审查结果；如果接口不可用，再回退到本地启发式检查。
+
+**为什么先不新增 LLM ReviewAgent**：
+
+- 自动审查首先要解决“结论是否可复现、证据链是否连续”的工程问题，确定性规则比新的 LLM Judge 更容易解释和复查。
+- 新增 ReviewAgent 会增加 Token 成本、延迟和二次幻觉风险。论文也强调多 Agent 系统存在 hallucination amplification，审查层不应该一开始就完全依赖另一个模型结论。
+- 当前系统已有宏观分析、Trace Debug、Patch、Verification 等中间产物，足够先做实体对齐：交易哈希、函数名、补丁信号、验证信号、根因信号。
+- 后端接口可以被前端、导出证据包、未来权限系统共同复用，比只放在前端更像平台能力。
+
+**当前检查项**：
+
+- `macro-to-debug`：宏观阶段选出的调试交易是否进入 Trace Debug 或最终报告。
+- `attack-classification-overlap`：多个 Agent 是否引用同一攻击交易，避免各说各话。
+- `root-to-patch`：根因/调试阶段提到的函数是否进入补丁或验证阶段。
+- `verification-loop`：是否同时存在补丁信号和验证/回放/成功失败信号。
+- `root-cause-quorum`：根因语言是否出现在多个关键 Agent，而不是只出现在最终报告。
+
+**为什么这算后端业务能力而不是前端美化**：
+
+- 它读取并融合后端任务、数据库日志、宏观分析 JSON、最终报告，是对 TracePilot 多阶段 pipeline 的二次审查。
+- 它输出统一 JSON schema：`score`、`status`、`checks`、`agent_signals`、`shared_transactions`、`shared_functions`、`next_actions`。
+- 后续可以直接写入 evidence package 或审计报告导出链路，成为“可复现平台”的一部分。
+
+**后续扩展**：
+
+- 推动 Agent 输出结构化字段，例如 `debug_target_txs`、`root_cause_functions`、`patch_target_functions`、`verification_result`，减少从自然语言日志中抽取实体。
+- 当 deterministic review 发现高风险或证据缺口时，再触发轻量 ReviewAgent 生成复核问题，而不是每个任务都默认调用 ReviewAgent。
+- 将审查结果持久化到数据库，支持历史对比、失败任务复盘和报告导出。

@@ -15,6 +15,7 @@ from app.database.models import TaskLog
 from app.database.redis_client import redis_client
 from settings import PROJECT_PATH
 from .models import TaskCreateRequest, TaskResponse, TaskStatus
+from .review_service import build_automated_review
 from .task_manager import TaskManager, get_task_manager
 from .websocket_manager import manager
 
@@ -608,6 +609,27 @@ async def get_task_logs(
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
     return load_persisted_log_page(task_id, task.dapp_name, limit=limit, before_id=before_id)
+
+
+@app.get("/api/tasks/{task_id}/automated-review")
+async def get_automated_review(
+    task_id: str,
+    log_limit: int = Query(2000, ge=1, le=5000),
+    task_manager: TaskManager = Depends(get_task_manager),
+):
+    task = task_manager.get_task(task_id)
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    logs = load_persisted_log_events(task_id, task.dapp_name, limit=log_limit)
+    macro = None
+    try:
+        macro = _load_macro_analysis_payload(task)
+    except HTTPException as exc:
+        if exc.status_code != 404:
+            raise
+
+    return build_automated_review(task, logs, macro)
 
 
 @app.post("/api/tasks/{task_id}/cancel")
