@@ -223,7 +223,49 @@
 - 加入“证据缺口”提示，例如缺少交易哈希、缺少工具验证、缺少补丁回放结果。
 - 在导出的 JSON evidence package 中保存 evidence score，形成可复查的审计证据包。
 
-## 14. Docker Compose
+## 14. Cross-Agent Consistency 多 Agent 一致性检查
+
+**决策**：在前端新增多 Agent 一致性检查，对宏观交易筛选、Trace Debug、根因定位、补丁生成和补丁验证之间的连续性进行打分。
+
+**论文依据**：
+
+- 论文将 TracePilot 描述为两阶段框架：先从交易序列中提炼全局故障理解，再进行聚焦的 Trace 探索来隔离故障逻辑。
+- 论文强调多 Agent 系统存在 hallucination amplification 风险，即错误信息可能在 Agent 网络中传播。
+- 论文的核心卖点之一是 self-verifiable，即不能只依赖模型报告，而要通过补丁验证等机制验证定位结果。
+
+**为什么要做**：
+
+- Evidence Intelligence 能判断“单条证据强不强”，但还不能判断“多个 Agent 的结论是否在同一条链上”。
+- 多 Agent 一致性检查用于发现结论漂移：例如宏观阶段选出的攻击交易没有被 Trace Debugger 继续分析，或者 Debugger 找到的根因函数没有进入补丁阶段。
+- 这能支撑面试回答“如何避免多 Agent 互相幻觉、结论漂移”：通过跨阶段关键实体对齐，而不是只看最终报告。
+
+**当前检查项**：
+
+- **Macro transaction selection -> Trace debugging**：宏观阶段选出的 `transactions_need_analyze` / attack transaction 是否被 Transaction Debugger 或最终报告引用。
+- **Attack transaction agreement**：是否有多个 Agent 引用同一攻击交易，避免各说各话。
+- **Root cause function -> Patch continuity**：根因定位/Trace Debug 中提到的函数是否被 Code Patcher、Transaction Judge 或最终报告继续引用。
+- **Patch verification loop**：是否同时存在 patch/fix 信号和 verification/replay/success/failure 信号。
+- **Root cause quorum**：root cause 相关语言是否出现在多个关键 Agent 中，而不是只出现在最终报告。
+
+**为什么先在前端实现启发式检查**：
+
+- 当前目标是产品可观测性和演示，前端可以快速读取已有日志、最终报告和宏观分析结果。
+- 启发式规则可解释、可复现，能直接显示每项检查的证据和建议。
+- 不新增 LLM 调用，避免引入额外成本和二次幻觉。
+
+**局限性**：
+
+- 函数名抽取目前基于正则，可能会混入普通函数或遗漏复杂签名。
+- 不同 Agent 输出格式不完全统一，检查结果依赖日志中是否显式提到交易哈希和函数名。
+- 后续应推动后端和 Agent 输出结构化字段，例如 `root_cause_functions`、`debug_target_txs`、`patch_target_functions`、`verification_result`。
+
+**后续可扩展**：
+
+- 将一致性检查沉淀为后端 `/consistency-analysis` 接口，保存到证据包。
+- 引入结构化 Agent 输出 schema，减少从自然语言日志中抽取实体。
+- 当一致性分数过低时，触发一个轻量 Review Agent 生成复核问题，而不是直接相信最终报告。
+
+## 15. Docker Compose
 
 **决策**：使用 Docker Compose 同时启动 backend、PostgreSQL、Redis。
 
