@@ -14,7 +14,7 @@ from app.database import SessionLocal, init_db
 from app.database.models import TaskLog
 from app.database.redis_client import redis_client
 from settings import PROJECT_PATH
-from .models import TaskCreateRequest, TaskResponse, TaskStatus
+from .models import DappCatalogItem, DappCatalogResponse, TaskCreateRequest, TaskResponse, TaskStatus
 from .review_service import build_automated_review
 from .task_manager import TaskManager, get_task_manager
 from .websocket_manager import manager
@@ -38,6 +38,7 @@ app.add_middleware(
 AGENT_LOG_ROOT = Path(PROJECT_PATH) / "agents" / "logs"
 MAX_AGENT_LOG_BYTES = 2_000_000
 PROCESSED_DATA_ROOT = Path(PROJECT_PATH) / "dataset" / "processed"
+RAW_DATA_ROOT = Path(PROJECT_PATH) / "dataset" / "raw"
 
 
 def _b64_encode(value: str) -> str:
@@ -55,6 +56,19 @@ def _safe_relative_path(path: Path, root: Path) -> str:
 
 def _safe_processed_file_name(dapp_name: str) -> str:
     return dapp_name.replace("/", "_").replace("\\", "_")
+
+
+def _load_json_file(path: Path) -> Dict[str, Any]:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _as_reference(value: Any) -> Dict[str, Any] | None:
+    if not isinstance(value, dict):
+        return None
+    return {
+        "time": value.get("time"),
+        "link": value.get("link"),
+    }
 
 
 def _short_hash(value: str) -> str:
@@ -538,6 +552,56 @@ async def create_task(
     if not task:
         raise HTTPException(status_code=500, detail="Failed to create task")
     return task
+
+
+@app.get("/api/dapps", response_model=DappCatalogResponse)
+async def list_dapps():
+    if not RAW_DATA_ROOT.exists():
+        raise HTTPException(status_code=404, detail="Raw DApp dataset is not available")
+
+    items: List[DappCatalogItem] = []
+    for raw_file in sorted(RAW_DATA_ROOT.glob("*.json"), key=lambda path: path.stem.lower()):
+        try:
+            raw_data = _load_json_file(raw_file)
+        except Exception as exc:
+            logger.warning("[DApps] Skipping unreadable raw file %s: %s", raw_file, exc)
+            continue
+
+        name = str(raw_data.get("name") or raw_file.stem)
+        tx_hashes = raw_data.get("transaction_hash") or []
+        if not isinstance(tx_hashes, list):
+            tx_hashes = []
+
+        processed_file = PROCESSED_DATA_ROOT / f"{_safe_processed_file_name(name)}.json"
+        has_processed = processed_file.exists()
+        demo_ready = has_processed and bool(tx_hashes)
+
+        items.append(
+            DappCatalogItem(
+                name=name,
+                cause=raw_data.get("cause"),
+                platform=raw_data.get("platform"),
+                time=raw_data.get("time"),
+                root_cause=raw_data.get("root_cause"),
+                report=raw_data.get("report"),
+                detection=_as_reference(raw_data.get("detection")),
+                disclosure=_as_reference(raw_data.get("disclosure")),
+                report_link=raw_data.get("report_link"),
+                transaction_hash=[str(tx_hash) for tx_hash in tx_hashes],
+                transaction_count=len(tx_hashes),
+                raw_file=_safe_relative_path(raw_file, RAW_DATA_ROOT),
+                processed_file=_safe_relative_path(processed_file, PROCESSED_DATA_ROOT) if has_processed else None,
+                has_processed_analysis=has_processed,
+                demo_ready=demo_ready,
+            )
+        )
+
+    items.sort(key=lambda item: (not item.demo_ready, item.name.lower()))
+    return DappCatalogResponse(
+        total=len(items),
+        demo_ready_count=sum(1 for item in items if item.demo_ready),
+        items=items,
+    )
 
 
 @app.get("/api/tasks/{task_id}", response_model=TaskResponse)

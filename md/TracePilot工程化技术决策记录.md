@@ -315,3 +315,36 @@
 - 推动 Agent 输出结构化字段，例如 `debug_target_txs`、`root_cause_functions`、`patch_target_functions`、`verification_result`，减少从自然语言日志中抽取实体。
 - 当 deterministic review 发现高风险或证据缺口时，再触发轻量 ReviewAgent 生成复核问题，而不是每个任务都默认调用 ReviewAgent。
 - 将审查结果持久化到数据库，支持历史对比、失败任务复盘和报告导出。
+
+## 17. DApp Case Catalog 案例目录产品化入口
+
+**决策**：新增后端 `/api/dapps` 接口，由后端扫描 `dataset/raw` 和 `dataset/processed`，输出可运行案例目录、漏洞背景、链平台、根因函数、交易数量、是否已有宏观分析结果、是否适合 Demo 等结构化字段。前端新建任务弹窗优先消费该接口；如果后端暂不可用，再回退到前端内置 JSON 元数据。
+
+**为什么要做**：
+
+- TracePilot 的第一阶段产品目标不是“任意项目审计”，而是稳定演示真实链上攻击复盘。案例目录应当由后端数据集事实驱动，而不是由前端硬编码文件列表驱动。
+- 论文强调 TracePilot 面向真实 DApp 攻击交易，核心价值来自跨交易故障定位和 self-verifiable 分析流程。`/api/dapps` 把“哪些真实案例可跑、哪些已有宏观分析、哪些适合演示”显式暴露出来，形成产品入口。
+- 面试或组会演示时，用户不应该先记住 DApp 名称或手工准备 JSON；他应该能在产品里选择案例、查看背景、确认交易数量和证据完整度，再启动分析任务。
+
+**为什么不继续只用前端 `src/data/*.json`**：
+
+- 前端静态导入适合早期 Demo，但它不知道后端 `dataset/processed` 是否存在，也无法判断某个案例是否已经具备宏观分析结果。
+- 数据集是后端 pipeline 的输入资产，前端不应成为数据目录的权威来源。否则后续新增/删除案例时，容易出现“前端能选但后端不能跑”或“后端有结果但前端不知道”的割裂。
+- 产品化以后，案例目录还会承载更多运行条件，例如链类型、Trace 是否已缓存、源码是否可用、公开报告链接、推荐演示优先级等，这些都更适合由后端统一组织。
+
+**当前实现**：
+
+- 后端 `DappCatalogItem` schema 包含 `name`、`cause`、`platform`、`time`、`root_cause`、`transaction_hash`、`transaction_count`、`raw_file`、`processed_file`、`has_processed_analysis`、`demo_ready` 等字段。
+- `demo_ready` 当前定义为：存在 raw 交易哈希，并且已经存在对应 processed 宏观分析文件。这个判断简单但可解释，适合作为 MVP 的演示筛选。
+- 前端任务创建弹窗展示 Demo ready、Macro analysis、platform、cause、root cause 和交易数量，让用户在启动长任务前先理解案例质量。
+- 当前仍保留前端回退逻辑，避免后端未启动时整个任务创建入口不可用。
+
+**面试可讲点**：
+
+我没有把案例选择做成一个简单下拉框，而是把它抽象为后端案例目录 API。这样做的本质是把 TracePilot 从“前端读一堆 JSON 的演示页面”推进到“后端管理真实攻击样本、前端消费产品化案例资产”的架构。它也对应论文中的真实链上攻击复盘场景：先确定可复现案例，再启动多 Agent 分析，再把宏观分析、Trace Debug、补丁验证和一致性审查串成证据链。
+
+**后续扩展**：
+
+- 在 `/api/dapps` 中加入 `trace_cached`、`source_available`、`estimated_runtime`、`recommended_for_demo`、`evidence_coverage` 等字段。
+- 支持 `GET /api/dapps/{name}` 返回单个案例的完整背景和推荐讲解路径。
+- 将案例目录与报告导出联动，生成“案例背景 + 分析结论 + 证据链 + 审查结果”的完整复盘材料。

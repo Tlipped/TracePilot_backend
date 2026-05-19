@@ -1,8 +1,8 @@
 """
 TracePilot Web API Package
 """
-from pydantic import BaseModel,Field
-from typing import Optional, Dict, Any
+from pydantic import BaseModel, Field
+from typing import Optional, Dict, Any, List
 from enum import Enum
 import uuid
 from datetime import datetime
@@ -17,6 +17,35 @@ class TaskStatus(str, Enum):
 
 class TaskCreateRequest(BaseModel):
     dapp_name: str
+
+
+class DappReference(BaseModel):
+    time: Optional[str] = None
+    link: Optional[str] = None
+
+
+class DappCatalogItem(BaseModel):
+    name: str
+    cause: Optional[str] = None
+    platform: Optional[str] = None
+    time: Optional[str] = None
+    root_cause: Optional[str] = None
+    report: Optional[str] = None
+    detection: Optional[DappReference] = None
+    disclosure: Optional[DappReference] = None
+    report_link: Optional[str] = None
+    transaction_hash: List[str] = Field(default_factory=list)
+    transaction_count: int = 0
+    raw_file: str
+    processed_file: Optional[str] = None
+    has_processed_analysis: bool = False
+    demo_ready: bool = False
+
+
+class DappCatalogResponse(BaseModel):
+    total: int
+    demo_ready_count: int
+    items: List[DappCatalogItem] = Field(default_factory=list)
 
 
 class TaskResponse(BaseModel):
